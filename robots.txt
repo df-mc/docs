@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://discord.gg/U4kFWHhTNR/sitemap.xml.gz
