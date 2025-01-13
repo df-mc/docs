@@ -1,0 +1,27 @@
+input: .
+output: .retype
+url: https://discord.gg/U4kFWHhTNR
+
+branding:
+  title: Dragonfly
+  label: v0.10.2
+  logo: static/logo.png
+  colors:
+    label:
+      background: "#91d0f9"
+
+links:
+- text: GitHub
+  icon: mark-github
+  link: https://github.com/df-mc/dragonfly
+- text: Discord
+  icon: comment-discussion
+  link: https://discord.gg/U4kFWHhTNR
+favicon: static/logo.png
+
+search:
+  hotkeys:
+    - "/"
+
+footer:
+  copyright: "&copy; Copyright {{ year }}. All rights reserved."

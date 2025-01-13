@@ -1,0 +1,3 @@
+---
+icon: command-palette
+---
