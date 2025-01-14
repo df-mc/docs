@@ -153,8 +153,8 @@ When your server runs, the server will automatically load and add any empty fiel
 
 We're now ready to start our server! Simply run the following command in your terminal, add a server in your Minecraft tab with the address of `127.0.0.1` and port `19132` (or whatever you specified in your `config.toml`) and you should be able to join the server!
 
-!!!
-**Congratulations!** You just made your first basic Dragonfly server! With this is mind, you should now be able to traverse through the next few sections to see real world examples of servers and how to organize your file system as well learning about control flow through your program with events and other tasks. 
+!!!success **Congratulations!**
+You just made your first basic Dragonfly server! With this is mind, you should now be able to traverse through the next few sections to see real world examples of servers and how to organize your file system as well learning about control flow through your program with events and other tasks. 
 !!!
 
 ## Further Information
