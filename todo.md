@@ -11,7 +11,6 @@ layout: page
 ### Software
 - Overengineering
 - Redudancy
-- Worlds
 
 ### Guides
 - Setup
