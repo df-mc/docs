@@ -13,7 +13,7 @@ layout: page
 - Redudancy
 
 ### Guides
-- Setup
+- Database Setup (Code)
 - Practice
 - Minigames
 - Factions
