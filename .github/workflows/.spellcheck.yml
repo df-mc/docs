@@ -1,9 +1,13 @@
 name: Spellcheck Action
 on: push
+
 jobs:
   build:
-    - name: Get all changed markdown files
-      uses: tj-actions/changed-files@v45
+    name: Get all changed markdown files
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: tj-actions/changed-files@v45
       id: changed_files
       with:
         files: |
