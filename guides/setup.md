@@ -45,28 +45,21 @@ package main
 import (
 	"log/slog"
 	"os"
-	"os/signal"
-	"syscall"
 
+	"github.com/df-mc/dragonfly/server"
 	"github.com/df-mc/dragonfly/server/block/cube"
-	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/dragonfly/server/player/chat"
 	"github.com/df-mc/dragonfly/server/world"
-	"github.com/df-mc/example-project/minecraft"
 
 	"github.com/restartfu/gophig"
 )
 
 func main() {
-
+	log := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
 	slog.SetLogLoggerLevel(slog.LevelDebug)
 	chat.Global.Subscribe(chat.StdoutSubscriber{})
-	c, err := readConfig()
-	if err != nil {
-		panic(err)
-	}
-	log := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
-	conf, err := c.Config(log)
+
+	conf, err := readConfig(log)
 	if err != nil {
 		panic(err)
 	}
@@ -84,37 +77,28 @@ func main() {
 	w.StopRaining()
 
 	srv.Listen()
-
-	ch := make(chan os.Signal, 2)
-	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
-	go func() {
-		<-ch
-		if err := srv.Close(); err != nil {
-			log.Error("close server: %v", err)
-		}
-	}()
+	srv.CloseOnProgramEnd()
 
 	for p := range srv.Accept() {
-		p.Handle(player.NopHandler{})
+		log.Debug("Player joined", "name", p.Name())
 	}
 
 }
 
-func readConfig() (minecraft.Config, error) {
-	c := practice.DefaultConfig()
-	g := gophig.NewGophig[minecraft.Config]("config.toml", gophig.TOMLMarshaler{}, 0777)
+func readConfig(log *slog.Logger) (server.Config, error) {
+	defaultCfg := server.DefaultConfig()
+	g := gophig.NewGophig[server.UserConfig]("config.toml", gophig.TOMLMarshaler{}, 0777)
 
-	conf, err := g.LoadConf()
+	cfg, err := g.LoadConf()
 	if os.IsNotExist(err) {
-		err = g.SaveConf(c)
+		if err = g.SaveConf(defaultCfg); err != nil {
+			return server.Config{}, err
+		}
+		return defaultCfg.Config(log)
 	}
-	return conf, err
+	return cfg.Config(log)
 }
 ```
-
-!!!
-Note: Change the import of `"github.com/df-mc/practice-example/practice"` to be the package name and project name you specified with you intialized your Go module!
-!!!
 
 ## Custom Configuration File
 
@@ -154,7 +138,7 @@ When your server runs, the server will automatically load and add any empty fiel
 We're now ready to start our server! Simply run the following command in your terminal, add a server in your Minecraft tab with the address of `127.0.0.1` and port `19132` (or whatever you specified in your `config.toml`) and you should be able to join the server!
 
 !!!success **Congratulations!**
-You just made your first basic Dragonfly server! With this is mind, you should now be able to traverse through the next few sections to see real world examples of servers and how to organize your file system as well learning about control flow through your program with events and other tasks. 
+You just made your first basic Dragonfly server! With this is mind, you should now be able to traverse through the next few sections to see real world examples of servers and how to organize your file system as well learning about control flow through your program with events and other tasks.
 !!!
 
 ## Further Information
