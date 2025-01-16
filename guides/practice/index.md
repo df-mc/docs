@@ -1,3 +1,4 @@
 ---
 icon: ruby
+visibility: hidden
 ---
