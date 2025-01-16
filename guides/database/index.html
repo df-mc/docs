@@ -10,24 +10,24 @@
     <meta name="generator" content="Retype 3.6.0">
 
     <!-- Primary Meta Tags -->
-    <title>Language</title>
-    <meta name="title" content="Language">
-    <meta name="description" content="If you are a developer from softwares like Pocketmine-MP and Nukkit, you are primarily used to programming in an Object-Oriented Programming (OOP)...">
+    <title>Database Setup</title>
+    <meta name="title" content="Database Setup">
+    <meta name="description" content="Data storage is important when it comes to persistent loading and saving of data on your server.">
 
     <!-- Canonical -->
-    <link rel="canonical" href="https://discord.gg/U4kFWHhTNR/philosophy/language/">
+    <link rel="canonical" href="https://discord.gg/U4kFWHhTNR/guides/database/">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://discord.gg/U4kFWHhTNR/philosophy/language/">
-    <meta property="og:title" content="Language">
-    <meta property="og:description" content="If you are a developer from softwares like Pocketmine-MP and Nukkit, you are primarily used to programming in an Object-Oriented Programming (OOP)...">
+    <meta property="og:url" content="https://discord.gg/U4kFWHhTNR/guides/database/">
+    <meta property="og:title" content="Database Setup">
+    <meta property="og:description" content="Data storage is important when it comes to persistent loading and saving of data on your server.">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://discord.gg/U4kFWHhTNR/philosophy/language/">
-    <meta property="twitter:title" content="Language">
-    <meta property="twitter:description" content="If you are a developer from softwares like Pocketmine-MP and Nukkit, you are primarily used to programming in an Object-Oriented Programming (OOP)...">
+    <meta property="twitter:url" content="https://discord.gg/U4kFWHhTNR/guides/database/">
+    <meta property="twitter:title" content="Database Setup">
+    <meta property="twitter:description" content="Data storage is important when it comes to persistent loading and saving of data on your server.">
 
     <script data-cfasync="false">(function () { var el = document.documentElement, m = localStorage.getItem("doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
@@ -37,6 +37,7 @@
     <script data-cfasync="false" src="../../resources/js/config.js?v=3.6.0.790379633531" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../../resources/js/retype.js?v=3.6.0" data-turbo-eval="false" defer></script>
     <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.6.0.790379633531" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.6.0.790379633531" defer></script>
 </head>
 <body>
     <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -203,16 +204,371 @@
                                 <!-- Rendered if sidebar right is enabled -->
                                 <div id="docs-sidebar-right-toggle"></div>
                                 <!-- Page content  -->
-<doc-anchor-target id="language" class="break-words">
+<doc-anchor-target id="database-setup" class="break-words">
     <h1>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#language">#</doc-anchor-trigger>
-        <span>Language</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#database-setup">#</doc-anchor-trigger>
+        <span>Database Setup</span>
     </h1>
 </doc-anchor-target>
-<p>If you are a developer from softwares like Pocketmine-MP and Nukkit, you are primarily used to programming in an Object-Oriented Programming (OOP) Language (e.g PHP, Java, Kotlin).</p>
-<p>One of the biggest problems that you must overcome is to drop the concept of OOP in exchange for Go&#x27;s more functional style.</p>
-<p>Although you are probably akinned to the extremely organized and strict nature of OOP organization, these concepts simply do not work with the good practices of Go and will often backfire at you. This in turn makes your once elegant Go code, into something not so much.</p>
-<p>In the next section, we will give a few examples of examples of paradigms you are used to in Java/PHP, make their bad equivalents in Go, explain why they are bad, and then show the best way to actually implement them in Go!</p>
+<p>Data storage is important when it comes to persistent loading and saving of data on your server.</p>
+<p>There are many solutions that server use for data storage, but the most two most popular kind is persistent data storage with SQL or NoSQL databases. The simple different between these two are that SQL have structured tables and language for queries, whereas NoSQL utilizes documents (essentially JSON objects).</p>
+<p>In our following examples, we will be using MongoDB, a NoSQL database. The reason for this is that MongoDB is a performant database solution, and by the nature of being NoSQL, it makes it extremely easy to perform queries and saving data. One of the big tooling the Go MongoDB library provides is type-safe data fetching so that all you need to do is make your own struct to represent your data.</p>
+<doc-anchor-target id="setup">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#setup">#</doc-anchor-trigger>
+        <span>Setup</span>
+    </h2>
+</doc-anchor-target>
+<p>If you have not already done so, install MongoDB on your system and then install the Go package. The tutorial for this is below.</p>
+<p>
+<div class="mb-6 px-5 py-4 flex justify-between relative border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded transition-colors duration-150">
+    <div class="flex items-center text-blue-500 dark:text-blue-400">
+        <span class="inline-block mb-px">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" role="presentation" fill="currentColor"><path fill="none" d="M0 0h24v24H0z"/><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z"/></svg>
+        </span>
+        <span class="inline-block font-medium ml-2">Project Setup</span>
+    </div>
+    <div class="flex items-center text-xs text-gray-400 dark:text-dark-400">
+        <span>../setup/</span>
+    </div>
+    <a href="../setup/" class="absolute block inset-0"></a>
+</div>
+</p>
+<doc-anchor-target id="data-folder-organization">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#data-folder-organization">#</doc-anchor-trigger>
+        <span>Data Folder Organization</span>
+    </h2>
+</doc-anchor-target>
+<p>In the previous setup tutorial to set up your project, we created a <code v-pre>minecraft</code> directory that held all of our server logic. In this folder, we will create a folder called <code v-pre>data</code> which will store all our files that are involved with our database and models.</p>
+<doc-anchor-target id="database-entry-point">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#database-entry-point">#</doc-anchor-trigger>
+        <span>Database Entry Point</span>
+    </h2>
+</doc-anchor-target>
+<p>We want to create an entry point to our database so that it is loaded on the server start. To do this without much work, we can utilize Go&#x27;s <code v-pre>init()</code> function, which will automatically run whenever the package is imported in any file associated from the main file.</p>
+<p>For our current example, we will assume the server will save some type of user/player data, as such, we will make a users collection which will store the user data.</p>
+<p>Create a <code v-pre>data.go</code> in the previously created <code v-pre>minecraft/data</code> folder, and use the following code:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<div class="codeblock-title">minecraft/data/data.go</div>
+<pre class="language-go"><code v-pre class="language-go">package data
+
+import (
+	&quot;context&quot;
+	&quot;go.mongodb.org/mongo-driver/mongo&quot;
+	&quot;go.mongodb.org/mongo-driver/mongo/options&quot;
+)
+
+// ctx returns a context.Context.
+func ctx() context.Context {
+	return context.Background()
+}
+
+// db is the Upper database session.
+var db *mongo.Database
+
+const URI = &quot;mongodb://localhost&quot;
+
+// init creates the Upper database connection.
+func init() {
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(URI))
+	if err != nil {
+		panic(err)
+	}
+	db = client.Database(&quot;minecraft&quot;)
+
+	userCollection = db.Collection(&quot;users&quot;)
+}</code></pre>
+</doc-codeblock></div>
+<p>This code simply utilizes an <code v-pre>init()</code> function to load our database from a specific URI (in this case, we will be using localhost assuming it&#x27;s a local database). We will then fetch/create a <code v-pre>minecraft</code> database which will hold the collection of our <code v-pre>users</code>.</p>
+<div class="flex mb-6">
+    <div class="shrink-0 w-1 rounded-tl rounded-bl bg-blue-500 dark:bg-blue-400"></div>
+    <div class="flex w-full py-4 border border-l-0 border-gray-300 rounded-tr rounded-br doc-alert bg-white dark:bg-dark-700 dark:border-dark-700" role="alert">
+        <div class="flex items-center ml-4 h-7">
+            <svg xmlns="http://www.w3.org/2000/svg" class="mb-px text-blue-500 dark:text-blue-400" width="22" height="22" viewBox="0 0 24 24" role="presentation">
+                <g fill="currentColor"><g>
+                    <path d="M12 1C5.93 1 1 5.93 1 12s4.93 11 11 11 11-4.93 11-11S18.07 1 12 1zm0 20c-4.96 0-9-4.04-9-9s4.04-9 9-9 9 4.04 9 9-4.04 9-9 9z"></path>
+                    <path d="M12 11c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1s1-.45 1-1v-4c0-.55-.45-1-1-1zM12.01 7c-.56 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z"></path>
+                    <path fill="none" d="M0 0h24v24H0z"></path>
+                </g></g>
+            </svg>
+        </div>
+        <div class="pr-5 ml-3 w-full">
+            <h5><strong>Note</strong></h5>
+<p>There is no need to check if the database nor collection are created, the methods on the database client and database will do this for us!</p>
+        </div>
+    </div>
+</div>
+<doc-anchor-target id="user-collection">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#user-collection">#</doc-anchor-trigger>
+        <span>User Collection</span>
+    </h2>
+</doc-anchor-target>
+<p>You will notice that there is an error because we haven&#x27;t created a <code v-pre>userCollection</code> database yet. This will be our next step. Create a <code v-pre>user.go</code> file in the same directory and use the following code:</p>
+<div class="flex mb-6">
+    <div class="shrink-0 w-1 rounded-tl rounded-bl bg-blue-500 dark:bg-blue-400"></div>
+    <div class="flex w-full py-4 border border-l-0 border-gray-300 rounded-tr rounded-br doc-alert bg-white dark:bg-dark-700 dark:border-dark-700" role="alert">
+        <div class="flex items-center ml-4 h-7">
+            <svg xmlns="http://www.w3.org/2000/svg" class="mb-px text-blue-500 dark:text-blue-400" width="22" height="22" viewBox="0 0 24 24" role="presentation">
+                <g fill="currentColor"><g>
+                    <path d="M12 1C5.93 1 1 5.93 1 12s4.93 11 11 11 11-4.93 11-11S18.07 1 12 1zm0 20c-4.96 0-9-4.04-9-9s4.04-9 9-9 9 4.04 9 9-4.04 9-9 9z"></path>
+                    <path d="M12 11c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1s1-.45 1-1v-4c0-.55-.45-1-1-1zM12.01 7c-.56 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z"></path>
+                    <path fill="none" d="M0 0h24v24H0z"></path>
+                </g></g>
+            </svg>
+        </div>
+        <div class="pr-5 ml-3 w-full">
+            <h5><strong>Important</strong></h5>
+<p>We will be explaining this code in chunks. Thus, when copying code down, make sure to paste everything code block in this section in the same <code v-pre>user.go</code> file as you read on.</p>
+        </div>
+    </div>
+</div>
+<div class="codeblock-wrapper"><doc-codeblock>
+<div class="codeblock-title">minecraft/data/user.go</div>
+<pre class="language-go"><code v-pre class="language-go">package data
+
+import (
+	&quot;errors&quot;
+	&quot;log&quot;
+	&quot;strings&quot;
+	&quot;sync&quot;
+	&quot;time&quot;
+
+	&quot;go.mongodb.org/mongo-driver/bson&quot;
+	&quot;go.mongodb.org/mongo-driver/mongo&quot;
+)
+
+var (
+	userCollection *mongo.Collection
+	userMu         sync.Mutex
+	users          = map[string]User{}
+)</code></pre>
+</doc-codeblock></div>
+<p>Firstly, we will create our <code v-pre>userCollection</code> which will hold our actual collection tied to the database. We will then create a <code v-pre>users</code> map that holds cached users as we do not want to make unneeded calls to the database (along with this, a mutex to preserve concurrent safety).</p>
+<doc-anchor-target id="user-structure">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#user-structure">#</doc-anchor-trigger>
+        <span>User Structure</span>
+    </h2>
+</doc-anchor-target>
+<p>Next, we want to create our actual <code v-pre>User</code> struct (note, you should have an error here for an unknown <code v-pre>User</code> struct, this is what we&#x27;ll be making):</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<div class="codeblock-title">minecraft/data/user.go</div>
+<pre class="language-go"><code v-pre class="language-go">type User struct {
+	XUID string
+    DisplayName string
+	Name string
+    ExampleField int
+}</code></pre>
+</doc-codeblock></div>
+<p>This is an example <code v-pre>User</code> field that has very simple data fields, you can add more as you go on for your needs. Note that the specific examples covered in the later guides will provide you with data fields to use.</p>
+<doc-anchor-target id="user-saving">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#user-saving">#</doc-anchor-trigger>
+        <span>User Saving</span>
+    </h2>
+</doc-anchor-target>
+<p>Next, we want to create a function that can manually save a user, to do this, we will using the follow code:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<div class="codeblock-title">minecraft/data/user.go</div>
+<pre class="language-go"><code v-pre class="language-go">func saveUserData(u User) error {
+	filter := bson.M{&quot;name&quot;: bson.M{&quot;$eq&quot;: u.Name}}
+	update := bson.M{&quot;$set&quot;: u}
+
+	res, _ := userCollection.UpdateOne(ctx(), filter, update)
+
+	if res.MatchedCount == 0 {
+		_, _ = userCollection.InsertOne(ctx(), u)
+	}
+
+	return nil
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="default-user-helper">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#default-user-helper">#</doc-anchor-trigger>
+        <span>Default User Helper</span>
+    </h2>
+</doc-anchor-target>
+<p>We will now create a small helper function to create a default user, which will just be a blank user:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<div class="codeblock-title">minecraft/data/user.go</div>
+<pre class="language-go"><code v-pre class="language-go">func DefaultUser(name string) User {
+	u := User{
+		DisplayName: name,
+		Name:        strings.ToLower(name),
+	}
+	return u
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="data-flushing">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#data-flushing">#</doc-anchor-trigger>
+        <span>Data Flushing</span>
+    </h2>
+</doc-anchor-target>
+<p>Now want a simple lightweight system to store flush our users and store them in a cache as well as have a way to fetch cached users. We want to do this at an interval, so we will combine an <code v-pre>init()</code> function with a go-routine and tickers:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<div class="codeblock-title">minecraft/data/user.go</div>
+<pre class="language-go"><code v-pre class="language-go">func cachedUserCheck(f func(User) bool) (User, bool) {
+	userMu.Lock()
+	defer userMu.Unlock()
+	for _, u := range users {
+		if f(u) {
+			return u, true
+		}
+	}
+	return User{}, false
+}
+
+func FlushCache() {
+	userMu.Lock()
+	defer userMu.Unlock()
+	for _, u := range users {
+		err := saveUserData(u)
+		if err != nil {
+			log.Println(&quot;Error saving user data:&quot;, err)
+			return
+		}
+	}
+}
+
+func init() {
+	t := time.NewTicker(5 * time.Minute)
+	go func() {
+		for range t.C {
+			FlushCache()
+		}
+	}()
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="data-decoding">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#data-decoding">#</doc-anchor-trigger>
+        <span>Data Decoding</span>
+    </h2>
+</doc-anchor-target>
+<p>Before we get into loading and saving our players, we need to create a simple helper method that will decode our results from the MongoDB format (BSON). You don&#x27;t really need to understand what goes on in this function, but bear in mind that additional modifications will be made to this in later guides:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<div class="codeblock-title">minecraft/data/user.go</div>
+<pre class="language-go"><code v-pre class="language-go">unc decodeSingleUserResult(result *mongo.SingleResult) (User, error) {
+	var u = DefaultUser(&quot;&quot;)
+
+	err := result.Decode(&amp;u)
+	if err != nil {
+		return User{}, err
+	}
+
+	userMu.Lock()
+	defer userMu.Unlock()
+	users[u.Name] = u
+
+	return u, nil
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="user-loading">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#user-loading">#</doc-anchor-trigger>
+        <span>User Loading</span>
+    </h2>
+</doc-anchor-target>
+<p>Let&#x27;s now create functions to load our users. We will have two different functions to do this for our needs, <code v-pre>LoadUser</code> and <code v-pre>LoadUserOrCreate</code>. The names are self-explanatory where the latter will simply create a user if it&#x27;s not already made (this is specifically designed for first-time users):</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<div class="codeblock-title">minecraft/data/user.go</div>
+<pre class="language-go"><code v-pre class="language-go">func LoadUserOrCreate(name string) (User, error) {
+	if u, ok := cachedUserCheck(func(u User) bool {
+		return u.Name == strings.ToLower(name)
+	}); ok {
+		return u, nil
+	}
+
+	filter := bson.M{&quot;name&quot;: bson.M{&quot;$eq&quot;: strings.ToLower(name)}}
+
+	result := userCollection.FindOne(ctx(), filter)
+	if err := result.Err(); err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return DefaultUser(name), nil
+		}
+		return User{}, err
+	}
+
+	u, err := decodeSingleUserResult(result)
+	if err != nil {
+		return User{}, err
+	}
+
+	return u, nil
+}
+
+func LoadUser(name string) (User, bool) {
+	if u, ok := cachedUserCheck(func(u User) bool {
+		return u.Name == strings.ToLower(name)
+	}); ok {
+		return u, true
+	}
+
+	filter := bson.M{&quot;name&quot;: bson.M{&quot;$eq&quot;: strings.ToLower(name)}}
+
+	result := userCollection.FindOne(ctx(), filter)
+	if err := result.Err(); err != nil {
+		return User{}, false
+	}
+	u, err := decodeSingleUserResult(result)
+	if err != nil {
+		return User{}, false
+	}
+
+	return u, true
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="user-saving-1">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#user-saving-1">#</doc-anchor-trigger>
+        <span>User Saving</span>
+    </h2>
+</doc-anchor-target>
+<p>Lastly, we need a way to save user data to the cache, we can do this with the method below:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<div class="codeblock-title">minecraft/data/user.go</div>
+<pre class="language-go"><code v-pre class="language-go">func SaveUser(u User) {
+	userMu.Lock()
+	defer userMu.Unlock()
+	users[u.Name] = u
+}</code></pre>
+</doc-codeblock></div>
+<div class="flex mb-6">
+    <div class="shrink-0 w-1 rounded-tl rounded-bl bg-green-500"></div>
+    <div class="flex w-full py-4 border border-l-0 border-gray-300 rounded-tr rounded-br doc-alert bg-white dark:bg-dark-700 dark:border-dark-700" role="alert">
+        <div class="flex items-center ml-4 h-7">
+            <svg xmlns="http://www.w3.org/2000/svg" class="mb-px text-green-500" width="22" height="22" viewBox="0 0 24 24" role="presentation">
+                <g fill="currentColor"><g>
+                    <path d="M21 9.09c-.55 0-1 .45-1 1v.92c0 4.96-4.04 8.99-9 8.99-4.97 0-9-4.04-9-9s4.04-9 9-9c1.27 0 2.5.26 3.66.78.51.22 1.1 0 1.32-.51.23-.5 0-1.1-.51-1.32C14.06.32 12.56 0 11.01 0H11C4.94 0 0 4.93 0 10.99 0 17.06 4.93 22 10.99 22H11c6.06 0 11-4.93 11-10.99v-.92c0-.56-.45-1-1-1z"></path>
+                    <path d="M8.71 9.31a.996.996 0 10-1.41 1.41l3 3c.19.19.44.29.71.29.27 0 .52-.11.71-.29l10-10.01a.996.996 0 10-1.41-1.41L11 11.6 8.71 9.31z"></path>
+                </g></g>
+            </svg>
+        </div>
+        <div class="pr-5 ml-3 w-full">
+            <h5><strong>Congratulations!</strong></h5>
+<p>You just made your first basic database system for Dragonfly! Note, that you will have to use the <code v-pre>data</code> package outside this package in order for the database to actually start!</p>
+        </div>
+    </div>
+</div>
+<doc-anchor-target id="recap">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#recap">#</doc-anchor-trigger>
+        <span>Recap</span>
+    </h2>
+</doc-anchor-target>
+<p>A basic recap of the above database system:</p>
+<ul>
+<li>Every 5 minutes, users in the cache are manually saved to the database to prevent performance issues from constantly</li>
+<li>Loading users will first look into the user cache before making a query to the database, after which the decoding writes the data on the default user to return the actual user which needs to be loaded</li>
+<li>Saving users will simply write to the cache which will be manually saved every 5 minutes as previously mentioned</li>
+<li>If a user is not found or an error occurs, a blank user and false value is returned, allowing for proper handling</li>
+</ul>
+<p>With this, you should have a flexible database system that is both performant and easy-to-use for whatever your needs are in Dragonfly. Remember that modifications to this file will be needed if you are following the specific server guides.</p>
 
                                 
                                 <!-- Required only on API pages -->
@@ -222,20 +578,20 @@
                             
                                 <nav class="flex mt-14">
                                     <div class="w-1/2">
-                                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../../philosophy/what-is-dragonfly/">
+                                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../../getting-started/">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="mr-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19 11H7.41l5.29-5.29a.996.996 0 10-1.41-1.41l-7 7a1 1 0 000 1.42l7 7a1.024 1.024 0 001.42-.01.996.996 0 000-1.41L7.41 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                                             <span>
                                                 <span class="block text-xs font-normal text-gray-400 dark:text-dark-400">Previous</span>
-                                                <span class="block mt-1">What is Dragonfly?</span>
+                                                <span class="block mt-1">Getting Started</span>
                                             </span>
                                         </a>
                                     </div>
                             
                                     <div class="w-1/2">
-                                        <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../../philosophy/language/encapsulation/">
+                                        <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../../guides/factions/">
                                             <span>
                                                 <span class="block text-xs font-normal text-right text-gray-400 dark:text-dark-400">Next</span>
-                                                <span class="block mt-1">Encapsulation</span>
+                                                <span class="block mt-1">Factions</span>
                                             </span>
                                             <svg xmlns="http://www.w3.org/2000/svg" class="ml-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                                         </a>
@@ -279,6 +635,6 @@
 
     <div id="docs-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "Language", level: 2, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "Database Setup", level: 2, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>
