@@ -86,18 +86,18 @@ func main() {
 }
 
 func readConfig(log *slog.Logger) (server.Config, error) {
-	c := server.DefaultConfig()
+	defaultCfg := server.DefaultConfig()
 	g := gophig.NewGophig[server.UserConfig]("config.toml", gophig.TOMLMarshaler{}, 0777)
 
-	conf, err := g.LoadConf()
+	cfg, err := g.LoadConf()
 	if os.IsNotExist(err) {
-		if err = g.SaveConf(c); err != nil {
+		if err = g.SaveConf(defaultCfg); err != nil {
 			return server.Config{}, err
 		}
+		return defaultCfg.Config(log)
 	}
-	return conf.Config(log)
+	return cfg.Config(log)
 }
-
 ```
 
 ## Custom Configuration File
