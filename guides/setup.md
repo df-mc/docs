@@ -48,11 +48,10 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/df-mc/dragonfly/server"
 	"github.com/df-mc/dragonfly/server/block/cube"
-	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/dragonfly/server/player/chat"
 	"github.com/df-mc/dragonfly/server/world"
-	"github.com/df-mc/example-project/minecraft"
 
 	"github.com/restartfu/gophig"
 )
@@ -99,21 +98,19 @@ func main() {
 
 }
 
-func readConfig() (minecraft.Config, error) {
-	c := practice.DefaultConfig()
-	g := gophig.NewGophig[minecraft.Config]("config.toml", gophig.TOMLMarshaler{}, 0777)
+func readConfig(log *slog.Logger) (server.Config, error) {
+	c := server.DefaultConfig()
+	g := gophig.NewGophig[server.UserConfig]("config.toml", gophig.TOMLMarshaler{}, 0777)
 
 	conf, err := g.LoadConf()
 	if os.IsNotExist(err) {
-		err = g.SaveConf(c)
+		if err = g.SaveConf(c); err != nil {
+			return server.Config{}, err
+		}
 	}
-	return conf, err
+	return conf.Config(log)
 }
 ```
-
-!!!
-Note: Change the import of `"github.com/df-mc/practice-example/practice"` to be the package name and project name you specified with you intialized your Go module!
-!!!
 
 ## Custom Configuration File
 
