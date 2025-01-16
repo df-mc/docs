@@ -105,7 +105,7 @@ func readConfig(log *slog.Logger) (server.Config, error) {
 We are not done quite yet! You will see that your program will error because we have not created our file yet to handle the custom configuration. To do so, create a folder called `minecraft` and in it, a file called `config.go` and use the following code:
 
 ```go minecraft/config.go
-package practice
+package minecraft
 
 import (
 	"github.com/df-mc/dragonfly/server"
@@ -143,4 +143,4 @@ You just made your first basic Dragonfly server! With this is mind, you should n
 
 ## Further Information
 
-Please note that on the more specific tutorials on programming specific gamemodes, you will most likely modify certain behaviour in both the entry point file and the configuration file. Understand and analyze the behaviour of every chunk of code within these files so you have understanding of why you will change code in a later section
+Please note that on the more specific tutorials on programming specific gamemodes, you will most likely modify certain behavior in both the entry point file and the configuration file. Understand and analyze the behavior of every chunk of code within these files so you have understanding of why you will change code in a later section
