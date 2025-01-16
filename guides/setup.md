@@ -45,8 +45,6 @@ package main
 import (
 	"log/slog"
 	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/df-mc/dragonfly/server"
 	"github.com/df-mc/dragonfly/server/block/cube"
@@ -57,14 +55,11 @@ import (
 )
 
 func main() {
+	log := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
 	slog.SetLogLoggerLevel(slog.LevelDebug)
 	chat.Global.Subscribe(chat.StdoutSubscriber{})
-	c, err := readConfig()
-	if err != nil {
-		panic(err)
-	}
-	log := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
-	conf, err := c.Config(log)
+
+	conf, err := readConfig(log)
 	if err != nil {
 		panic(err)
 	}
@@ -82,15 +77,7 @@ func main() {
 	w.StopRaining()
 
 	srv.Listen()
-
-	ch := make(chan os.Signal, 2)
-	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
-	go func() {
-		<-ch
-		if err := srv.Close(); err != nil {
-			log.Error("close server: %v", err)
-		}
-	}()
+	srv.CloseOnProgramEnd()
 
 	for p := range srv.Accept() {
 		log.Debug("Player joined", "name", p.Name())
@@ -110,6 +97,7 @@ func readConfig(log *slog.Logger) (server.Config, error) {
 	}
 	return conf.Config(log)
 }
+
 ```
 
 ## Custom Configuration File
