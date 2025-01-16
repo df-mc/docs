@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/U4kFWHhTNR">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.6.0.790132973876">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.6.0.790376564251">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.6.0">
@@ -32,12 +32,12 @@
     <script data-cfasync="false">(function () { var el = document.documentElement, m = localStorage.getItem("doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
     <link href="../../static/logo.png" rel="icon">
-    <link href="../../resources/css/retype.css?v=3.6.0.790132973876" rel="stylesheet">
+    <link href="../../resources/css/retype.css?v=3.6.0.790376564251" rel="stylesheet">
 
-    <script data-cfasync="false" src="../../resources/js/config.js?v=3.6.0.790132973876" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../../resources/js/config.js?v=3.6.0.790376564251" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../../resources/js/retype.js?v=3.6.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.6.0.790132973876" data-turbo-eval="false" defer></script>
-    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.6.0.790132973876" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.6.0.790376564251" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.6.0.790376564251" defer></script>
 </head>
 <body>
     <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -289,28 +289,21 @@
 import (
 	&quot;log/slog&quot;
 	&quot;os&quot;
-	&quot;os/signal&quot;
-	&quot;syscall&quot;
 
+	&quot;github.com/df-mc/dragonfly/server&quot;
 	&quot;github.com/df-mc/dragonfly/server/block/cube&quot;
-	&quot;github.com/df-mc/dragonfly/server/player&quot;
 	&quot;github.com/df-mc/dragonfly/server/player/chat&quot;
 	&quot;github.com/df-mc/dragonfly/server/world&quot;
-	&quot;github.com/df-mc/example-project/minecraft&quot;
 
 	&quot;github.com/restartfu/gophig&quot;
 )
 
 func main() {
-
+	log := slog.New(slog.NewTextHandler(os.Stdout, &amp;slog.HandlerOptions{Level: slog.LevelDebug}))
 	slog.SetLogLoggerLevel(slog.LevelDebug)
 	chat.Global.Subscribe(chat.StdoutSubscriber{})
-	c, err := readConfig()
-	if err != nil {
-		panic(err)
-	}
-	log := slog.New(slog.NewTextHandler(os.Stdout, &amp;slog.HandlerOptions{Level: slog.LevelDebug}))
-	conf, err := c.Config(log)
+
+	conf, err := readConfig(log)
 	if err != nil {
 		panic(err)
 	}
@@ -328,50 +321,28 @@ func main() {
 	w.StopRaining()
 
 	srv.Listen()
-
-	ch := make(chan os.Signal, 2)
-	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
-	go func() {
-		&lt;-ch
-		if err := srv.Close(); err != nil {
-			log.Error(&quot;close server: %v&quot;, err)
-		}
-	}()
+	srv.CloseOnProgramEnd()
 
 	for p := range srv.Accept() {
-		p.Handle(player.NopHandler{})
+		log.Debug(&quot;Player joined&quot;, &quot;name&quot;, p.Name())
 	}
 
 }
 
-func readConfig() (minecraft.Config, error) {
-	c := practice.DefaultConfig()
-	g := gophig.NewGophig[minecraft.Config](&quot;config.toml&quot;, gophig.TOMLMarshaler{}, 0777)
+func readConfig(log *slog.Logger) (server.Config, error) {
+	defaultCfg := server.DefaultConfig()
+	g := gophig.NewGophig[server.UserConfig](&quot;config.toml&quot;, gophig.TOMLMarshaler{}, 0777)
 
-	conf, err := g.LoadConf()
+	cfg, err := g.LoadConf()
 	if os.IsNotExist(err) {
-		err = g.SaveConf(c)
+		if err = g.SaveConf(defaultCfg); err != nil {
+			return server.Config{}, err
+		}
+		return defaultCfg.Config(log)
 	}
-	return conf, err
+	return cfg.Config(log)
 }</code></pre>
 </doc-codeblock></div>
-<div class="flex mb-6">
-    <div class="shrink-0 w-1 rounded-tl rounded-bl bg-blue-500 dark:bg-blue-400"></div>
-    <div class="flex w-full py-4 border border-l-0 border-gray-300 rounded-tr rounded-br doc-alert bg-white dark:bg-dark-700 dark:border-dark-700" role="alert">
-        <div class="flex items-center ml-4 h-7">
-            <svg xmlns="http://www.w3.org/2000/svg" class="mb-px text-blue-500 dark:text-blue-400" width="22" height="22" viewBox="0 0 24 24" role="presentation">
-                <g fill="currentColor"><g>
-                    <path d="M12 1C5.93 1 1 5.93 1 12s4.93 11 11 11 11-4.93 11-11S18.07 1 12 1zm0 20c-4.96 0-9-4.04-9-9s4.04-9 9-9 9 4.04 9 9-4.04 9-9 9z"></path>
-                    <path d="M12 11c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1s1-.45 1-1v-4c0-.55-.45-1-1-1zM12.01 7c-.56 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z"></path>
-                    <path fill="none" d="M0 0h24v24H0z"></path>
-                </g></g>
-            </svg>
-        </div>
-        <div class="pr-5 ml-3 w-full">
-<p>Note: Change the import of <code v-pre>&quot;github.com/df-mc/practice-example/practice&quot;</code> to be the package name and project name you specified with you intialized your Go module!</p>
-        </div>
-    </div>
-</div>
 <doc-anchor-target id="custom-configuration-file">
     <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#custom-configuration-file">#</doc-anchor-trigger>
