@@ -186,7 +186,7 @@ func init() {
 Before we get into loading and saving our players, we need to create a simple helper method that will decode our results from the MongoDB format (BSON). You don't really need to understand what goes on in this function, but bear in mind that additional modifications will be made to this in later guides:
 
 ```go minecraft/data/user.go
-unc decodeSingleUserResult(result *mongo.SingleResult) (User, error) {
+func decodeSingleUserResult(result *mongo.SingleResult) (User, error) {
 	var u = DefaultUser("")
 
 	err := result.Decode(&u)
