@@ -27,6 +27,11 @@ Windows          | https://www.mongodb.com/docs/manual/tutorial/install-mongodb-
 Linux            | https://www.mongodb.com/docs/manual/administration/install-on-linux/
 MacOS            | https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-os-x/
 
+You will also have to install the Go package for MongoDB, this can be done with the simple command:
+```
+go get go.mongodb.org/mongo-driver/v2/mongo
+```
+
 ## Installing Gophig
 
 For the following projects, we will be using `gophig` to load our own custom configuration files for our server. To install, simply run:
