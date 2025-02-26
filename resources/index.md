@@ -2,9 +2,9 @@
 order: 0
 icon: light-bulb
 ---
-# Philosophy
+# Resources
 
-While this section may seem extremely redundant and not needed, it's important to understand that most Dragonfly users come from other popular softwares - such as Pocketmine-MP and Nukkit.
+While this specific section may seem extremely redundant and not needed, it's important to understand that most Dragonfly users come from other popular softwares - such as Pocketmine-MP and Nukkit.
 
 Although Dragonfly aims to serve the same purpose as these other softwares, they couldn't be more different in how we have to create software using them.
 
