@@ -4,40 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/docs">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.6.0.790380425984">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.6.0.793909362918">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.6.0">
 
     <!-- Primary Meta Tags -->
-    <title>Worlds</title>
-    <meta name="title" content="Worlds">
-    <meta name="description" content="As of v0.10, all code that modifies worlds must be executed from within a transaction (*world.Tx) to ensure synchronisation with the world.">
+    <title>Object Coupling</title>
+    <meta name="title" content="Object Coupling">
 
     <!-- Canonical -->
-    <link rel="canonical" href="https://df-mc.github.io/docs/philosophy/software/worlds/">
+    <link rel="canonical" href="https://df-mc.github.io/docs/resources/language/object-coupling/">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://df-mc.github.io/docs/philosophy/software/worlds/">
-    <meta property="og:title" content="Worlds">
-    <meta property="og:description" content="As of v0.10, all code that modifies worlds must be executed from within a transaction (*world.Tx) to ensure synchronisation with the world.">
+    <meta property="og:url" content="https://df-mc.github.io/docs/resources/language/object-coupling/">
+    <meta property="og:title" content="Object Coupling">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://df-mc.github.io/docs/philosophy/software/worlds/">
-    <meta property="twitter:title" content="Worlds">
-    <meta property="twitter:description" content="As of v0.10, all code that modifies worlds must be executed from within a transaction (*world.Tx) to ensure synchronisation with the world.">
+    <meta property="twitter:url" content="https://df-mc.github.io/docs/resources/language/object-coupling/">
+    <meta property="twitter:title" content="Object Coupling">
 
     <script data-cfasync="false">(function () { var el = document.documentElement, m = localStorage.getItem("doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
     <link href="../../../static/logo.png" rel="icon">
-    <link href="../../../resources/css/retype.css?v=3.6.0.790380425984" rel="stylesheet">
+    <link href="../../../resources/css/retype.css?v=3.6.0.793909362918" rel="stylesheet">
 
-    <script data-cfasync="false" src="../../../resources/js/config.js?v=3.6.0.790380425984" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../../../resources/js/config.js?v=3.6.0.793909362918" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../../../resources/js/retype.js?v=3.6.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../../../resources/js/lunr.js?v=3.6.0.790380425984" data-turbo-eval="false" defer></script>
-    <script id="prism-js" data-cfasync="false" src="../../../resources/js/prism.js?v=3.6.0.790380425984" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../../../resources/js/lunr.js?v=3.6.0.793909362918" data-turbo-eval="false" defer></script>
 </head>
 <body>
     <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -204,265 +200,12 @@
                                 <!-- Rendered if sidebar right is enabled -->
                                 <div id="docs-sidebar-right-toggle"></div>
                                 <!-- Page content  -->
-<doc-anchor-target id="worlds" class="break-words">
+<doc-anchor-target id="object-coupling" class="break-words">
     <h1>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#worlds">#</doc-anchor-trigger>
-        <span>Worlds</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#object-coupling">#</doc-anchor-trigger>
+        <span>Object Coupling</span>
     </h1>
 </doc-anchor-target>
-<p>As of v0.10, all code that modifies worlds must be executed from within a
-transaction (<code v-pre>*world.Tx</code>) to ensure synchronisation with the world. Transactions
-can be run as such:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-go"><code v-pre class="language-go">var w *world.World
-w.Exec(func(tx *world.Tx) {
-	// Use tx to edit the world, for example:
-	tx.SetBlock(pos, block.Dirt{})
-})</code></pre>
-</doc-codeblock></div>
-<p>A <code v-pre>*world.Tx</code> is only valid inside of this transaction function. Using it outside
-of this scope (e.g. on a different goroutine) is not permitted:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-go"><code v-pre class="language-go">var w *world.World
-w.Exec(func(tx *world.Tx) {
-    // tx is valid here.
-    go func() {
-        // tx is invalid here.
-    }()
-})
-// tx is also invalid here</code></pre>
-</doc-codeblock></div>
-<p>Trying to use the <code v-pre>*world.Tx</code> in these invalid cases leads to the following panic:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-none"><code v-pre class="language-none">world.Tx: use of transaction after transaction finishes is not permitted</code></pre>
-</doc-codeblock></div>
-<p><code v-pre>w.Exec()</code> returns a <code v-pre>&lt;-chan struct{}</code> which may be used to wait for the finishing
-of the transaction&#x27;s execution. In cases where code needs to await a transaction,
-it can do so as such:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-go"><code v-pre class="language-go">var w *world.World
-&lt;-w.Exec(func(tx *world.Tx) {})</code></pre>
-</doc-codeblock></div>
-<doc-anchor-target id="entities-and-transactions">
-    <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#entities-and-transactions">#</doc-anchor-trigger>
-        <span>Entities and transactions</span>
-    </h2>
-</doc-anchor-target>
-<p>Following the introduction of transactions to worlds, entities have undergone some
-significant changes as well. A new <code v-pre>*world.EntityHandle</code> was introduced which is
-a persistent identifier of a <code v-pre>world.Entity</code>. Meanwhile, <code v-pre>world.Entity</code>s are now
-only valid in the context of a transaction. Let us examine an example:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-go"><code v-pre class="language-go">var w *world.World
-
-// Create a snowball entity using spawn options.
-opts := world.EntitySpawnOpts{Position: pos}
-handle := entity.NewSnowball(opts, nil) // handle is a *world.EntityHandle
-
-var snowball world.Entity // Don't do this! See the explanation below.
-&lt;-w.Exec(func(tx *world.Tx) {
-	snowball = tx.AddEntity(handle) // AddEntity adds the handle to the world and returns a world.Entity.
-	fmt.Println(snowball.Position()) // Will equal 'pos'
-})
-// snowball is no longer valid here.</code></pre>
-</doc-codeblock></div>
-<p>In this example, a snowball is created as a <code v-pre>*world.EntityHandle</code>. As explained before,
-these handles are persistent and always valid. The <code v-pre>world.Entity</code> returned by tx.AddEntity(),
-however, is only valid while the transaction is active. This means that <code v-pre>snowball</code> in
-this example is no longer valid when the transaction ends.</p>
-<p>If we were to correctly get access to the snowball again using the handle we have
-stored, we can open a new transaction using the following:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-go"><code v-pre class="language-go">var handle *world.EntityHandle
-
-handle.ExecWorld(func(tx *world.Tx, e world.Entity) {
-	tx.RemoveEntity(e)
-})</code></pre>
-</doc-codeblock></div>
-<p><code v-pre>ExecWorld()</code> obtains the entity&#x27;s world in a thread-safe way and opens a transaction
-in it when it does. If the entity is not added to a world, <code v-pre>ExecWorld()</code> will block until
-the entity is added to a world and run the transaction function once it is. If the
-entity is closed before <code v-pre>ExecWorld()</code> is called, <code v-pre>ExecWorld()</code> will return false and not
-run the transaction function.</p>
-<p>In short: Avoid storing <code v-pre>world.Entity</code> implementations (includes <code v-pre>*player.Player</code>) in
-any field that lasts longer than a transaction. Instead, store a <code v-pre>*world.EntityHandle</code> and
-open a new transaction when needed. Another consequence is that <code v-pre>world.Entity</code> implementations,
-such as <code v-pre>*player.Player</code>, should not be compared for equality with <code v-pre>==</code>. Instead, compare their
-respective handles by checking, e.g., if <code v-pre>(world.Entity).H() == (*player.Player).H()</code>.</p>
-<doc-anchor-target id="handlers-and-transactions">
-    <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#handlers-and-transactions">#</doc-anchor-trigger>
-        <span>Handlers and transactions</span>
-    </h2>
-</doc-anchor-target>
-<p>Handlers, such as <code v-pre>player.Handler</code> and <code v-pre>world.Handler</code>, have the respective <code v-pre>*player.Player</code>/
-<code v-pre>*world.Tx</code> passed to them in an <code v-pre>event.Context[T]</code>, like so:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-go"><code v-pre class="language-go">func (h Handler) HandleMove(ctx *event.Context[*player.Player], newPos mgl64.Vec3, newRot cube.Rotation) {
-	p := ctx.Val() // *player.Player
-}</code></pre>
-</doc-codeblock></div>
-<p>As explained in the section <doc-anchor-trigger to="#entities-and-transactions">Entities and transactions</doc-anchor-trigger>, these
-values are not valid when moved to another goroutine or when stored in a field of the Handler.</p>
-<doc-anchor-target id="updating-from-older-versions">
-    <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#updating-from-older-versions">#</doc-anchor-trigger>
-        <span>Updating from older versions</span>
-    </h2>
-</doc-anchor-target>
-<p>Libraries and servers using Dragonfly written before v0.10 require several changes.
-Some of the biggest changes and updating suggestions are listed below.</p>
-<doc-anchor-target id="transactions">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#transactions">#</doc-anchor-trigger>
-        <span>Transactions</span>
-    </h3>
-</doc-anchor-target>
-<p>Editing worlds now requires opening a transaction in advance. This means that code
-such as this:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-go"><code v-pre class="language-go">var w *world.World
-w.SetBlock(pos, block.Dirt{})
-w.AddEntity(ent)</code></pre>
-</doc-codeblock></div>
-<p>must be refactored to be run in a transaction like this:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-go"><code v-pre class="language-go">var w *world.World
-w.Exec(func(tx *world.Tx) {
-	tx.SetBlock(pos, block.Dirt{})
-	tx.AddEntity(ent)
-})</code></pre>
-</doc-codeblock></div>
-<p>Most places, such as methods in <code v-pre>world.Block</code> implementations, will now have a
-<code v-pre>*world.Tx</code> passed around instead of a <code v-pre>*world.World</code> and should otherwise require
-relatively few changes, other than changing <code v-pre>*world.World</code> =&gt; <code v-pre>*world.Tx</code>.</p>
-<p>Pay additional attention in places where your code creates goroutines or calls
-<code v-pre>time.AfterFunc()</code>, because these require a new transaction.</p>
-<doc-anchor-target id="handlers">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#handlers">#</doc-anchor-trigger>
-        <span>Handlers</span>
-    </h3>
-</doc-anchor-target>
-<p>Storing a <code v-pre>*player.Player</code> in a field of the Handler is no longer valid, as player
-entities don&#x27;t last the entire lifetime. Instead, the player is now passed in all
-handle functions as shown in <doc-anchor-trigger to="#handlers-and-transactions">Handlers and transactions</doc-anchor-trigger>.
-Consider storing only the data necessary in your handler and, if needed, store
-the <code v-pre>*world.EntityHandle</code> of the player instead of the player itself.</p>
-<p>As a result of these transaction changes, handlers are now entirely thread safe.
-This means that data stored in handlers, unless accessed from different goroutines
-elsewhere, does not need to be protected using e.g. a mutex.</p>
-<doc-anchor-target id="commands">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#commands">#</doc-anchor-trigger>
-        <span>Commands</span>
-    </h3>
-</doc-anchor-target>
-<p>Commands now have a transaction passed to them too, and players/entities returned by
-a <code v-pre>[]Target</code> parameter will only include those from the same world as the caller of
-the command.</p>
-<doc-anchor-target id="forms">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#forms">#</doc-anchor-trigger>
-        <span>Forms</span>
-    </h3>
-</doc-anchor-target>
-<p>Like with commands, forms are opened within a transaction now. The transaction is
-passed to all Submit methods and Close methods.</p>
-<doc-anchor-target id="accepting-players">
-    <h3>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#accepting-players">#</doc-anchor-trigger>
-        <span>Accepting players</span>
-    </h3>
-</doc-anchor-target>
-<p>Accepting players was changed from the following:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-go"><code v-pre class="language-go">for srv.Accept(func(p *player.Player) {
-	// Use p.
-})</code></pre>
-</doc-codeblock></div>
-<p>to:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-go"><code v-pre class="language-go">for p := range srv.Accept() {
-	// Use p.
-}</code></pre>
-</doc-codeblock></div>
-<p>Like in other places, using <code v-pre>p</code> outside of this context (different goroutine or
-time.AfterFunc()) is not permitted.</p>
-<doc-anchor-target id="troubleshooting">
-    <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#troubleshooting">#</doc-anchor-trigger>
-        <span>Troubleshooting</span>
-    </h2>
-</doc-anchor-target>
-<p>You might run into some issues trying to update to the new world transactions. Here are some of the most common issues
-and what you can do to solve them:</p>
-<doc-anchor-target id="panic-worldtx-use-of-transaction-after-transaction-finishes-is-not-permitted">
-    <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#panic-worldtx-use-of-transaction-after-transaction-finishes-is-not-permitted">#</doc-anchor-trigger>
-        <span>panic: <code v-pre>world.Tx: use of transaction after transaction finishes is not permitted</code>:</span>
-    </h4>
-</doc-anchor-target>
-<p>This panic happens when a transaction is used after it is closed. Common causes for this include using entities outside
-of transactions, e.g. when storing <code v-pre>*player.Player</code> as opposed to its <code v-pre>*world.EntityHandle</code>. Solving this issue involves
-making sure that a <code v-pre>*world.Tx</code> is not used outside a transaction. This also includes entities that implement
-<code v-pre>world.Entity</code>, such as <code v-pre>*player.Player</code>. Instead, store their <code v-pre>*world.EntityHandle</code>, which is persistent, unique and
-safe for use outside a transaction.</p>
-<doc-anchor-target id="deadlockfreeze-while-opening-a-transaction">
-    <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#deadlockfreeze-while-opening-a-transaction">#</doc-anchor-trigger>
-        <span>Deadlock/freeze while opening a transaction:</span>
-    </h4>
-</doc-anchor-target>
-<p>You might run into deadlocks trying to create world transactions. This results from opening a transaction from within
-a transaction. Let&#x27;s say we have the following function:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-go"><code v-pre class="language-go">func Do(p *player.Player, w *world.World) {
-    p.Message(&quot;Do called&quot;)
-    &lt;-w.Exec(func(tx *world.Tx) {
-        fmt.Printf(&quot;Range: %v\n&quot;, tx.Range())
-    })
-}</code></pre>
-</doc-codeblock></div>
-<p>This function will cause a deadlock because the presence of a <code v-pre>*player.Player</code>, which implements <code v-pre>world.Entity</code>, means
-that this function is called while a transaction is already opened. Because we wait for the new transaction we create to
-finish (<strong><code v-pre>&lt;-</code></strong><code v-pre>w.Exec()</code>), a deadlock is created. There are two ways to solve this:</p>
-<p>If, in this example, <code v-pre>w</code> is always equal to the player&#x27;s world, we can simply do the following:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-go"><code v-pre class="language-go">func Do(p *player.Player, w *world.World) {
-    p.Message(&quot;Do called&quot;)
-    fmt.Printf(&quot;Range: %v\n&quot;, p.Tx().Range())
-}</code></pre>
-</doc-codeblock></div>
-<p>If, on the other hand, <code v-pre>w</code> is not guaranteed to be the player&#x27;s world, we can simply remove the arrow so that we do not
-wait for the transaction to end inside the current transaction:</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-go"><code v-pre class="language-go">func Do(p *player.Player, w *world.World) {
-    p.Message(&quot;Do called&quot;)
-    w.Exec(func(tx *world.Tx) {
-        fmt.Printf(&quot;Range: %v\n&quot;, tx.Range())
-    })
-}</code></pre>
-</doc-codeblock></div>
-<p>Now, the transaction is run asynchronously once our current transaction ends.</p>
-<doc-anchor-target id="multi-world-managers">
-    <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#multi-world-managers">#</doc-anchor-trigger>
-        <span>Multi-world Managers</span>
-    </h2>
-</doc-anchor-target>
-<p>TODO</p>
-<doc-anchor-target id="conclusion">
-    <h2>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#conclusion">#</doc-anchor-trigger>
-        <span>Conclusion</span>
-    </h2>
-</doc-anchor-target>
-<p>Transactions help prevent many race conditions and make it easier to optimise
-particularly hot code paths. They do make code slightly more complicated and
-you may have questions about them. Do not hesitate to ask any questions in the
-Bedrock Gophers Discord.</p>
 
                                 
                                 <!-- Required only on API pages -->
@@ -470,27 +213,6 @@ Bedrock Gophers Discord.</p>
                             </div>
                             <footer class="clear-both">
                             
-                                <nav class="flex mt-14">
-                                    <div class="w-1/2">
-                                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../../../philosophy/software/tasks/">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="mr-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19 11H7.41l5.29-5.29a.996.996 0 10-1.41-1.41l-7 7a1 1 0 000 1.42l7 7a1.024 1.024 0 001.42-.01.996.996 0 000-1.41L7.41 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
-                                            <span>
-                                                <span class="block text-xs font-normal text-gray-400 dark:text-dark-400">Previous</span>
-                                                <span class="block mt-1">Tasks</span>
-                                            </span>
-                                        </a>
-                                    </div>
-                            
-                                    <div class="w-1/2">
-                                        <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../../../community/">
-                                            <span>
-                                                <span class="block text-xs font-normal text-right text-gray-400 dark:text-dark-400">Next</span>
-                                                <span class="block mt-1">Community</span>
-                                            </span>
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="ml-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
-                                        </a>
-                                    </div>
-                                </nav>
                             </footer>
                         </main>
                 
@@ -529,6 +251,6 @@ Bedrock Gophers Discord.</p>
 
     <div id="docs-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "Worlds", level: 3, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "Object Coupling", level: 3, icon: "file", hasPrism: false, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>
