@@ -1,0 +1,3563 @@
+---
+title: "entity"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# entity
+
+
+```go
+import "github.com/df-mc/dragonfly/server/entity"
+```
+
+
+
+
+
+
+
+## Variables
+
+<Accordions>
+
+<Accordion title="DefaultRegistry">
+```go
+var DefaultRegistry 
+```
+
+DefaultRegistry is a world.EntityRegistry that registers all default entities
+implemented by Dragonfly.
+
+</Accordion>
+
+</Accordions>
+
+
+
+## Functions
+
+<Accordions>
+
+<Accordion title="EyePosition">
+```go
+func EyePosition(e world.Entity) mgl64.Vec3
+```
+
+
+EyePosition returns the position of the eyes of the entity if the entity implements entity.Eyed, or the
+actual position if it doesn't.
+
+</Accordion>
+
+<Accordion title="NewAreaEffectCloud">
+```go
+func NewAreaEffectCloud(opts world.EntitySpawnOpts, p potion.Potion) *world.EntityHandle
+```
+
+
+NewAreaEffectCloud creates a new area effect cloud entity and returns it.
+
+</Accordion>
+
+<Accordion title="NewAreaEffectCloudWith">
+```go
+func NewAreaEffectCloudWith(opts world.EntitySpawnOpts, t potion.Potion, duration, reapplicationDelay, durationOnUse time.Duration, radius, radiusOnUse, radiusGrowth float64) *world.EntityHandle
+```
+
+
+NewAreaEffectCloudWith ...
+
+</Accordion>
+
+<Accordion title="NewArrow">
+```go
+func NewArrow(opts world.EntitySpawnOpts, owner world.Entity) *world.EntityHandle
+```
+
+
+NewArrow creates a new Arrow and returns it. It is equivalent to calling NewTippedArrow with `potion.Potion{}` as
+tip.
+
+</Accordion>
+
+<Accordion title="NewArrowWithDamage">
+```go
+func NewArrowWithDamage(opts world.EntitySpawnOpts, damage float64, owner world.Entity) *world.EntityHandle
+```
+
+
+NewArrowWithDamage creates a new Arrow with the given base damage, and returns it. It is equivalent to calling
+NewTippedArrowWithDamage with `potion.Potion{}` as tip.
+
+</Accordion>
+
+<Accordion title="NewBottleOfEnchanting">
+```go
+func NewBottleOfEnchanting(opts world.EntitySpawnOpts, owner world.Entity) *world.EntityHandle
+```
+
+
+NewBottleOfEnchanting ...
+
+</Accordion>
+
+<Accordion title="NewEgg">
+```go
+func NewEgg(opts world.EntitySpawnOpts, owner world.Entity) *world.EntityHandle
+```
+
+
+NewEgg creates an Egg entity. Egg is as a throwable entity that can be used
+to spawn chicks.
+
+</Accordion>
+
+<Accordion title="NewEnderPearl">
+```go
+func NewEnderPearl(opts world.EntitySpawnOpts, owner world.Entity) *world.EntityHandle
+```
+
+
+NewEnderPearl creates an EnderPearl entity. EnderPearl is a smooth, greenish-
+blue item used to teleport.
+
+</Accordion>
+
+<Accordion title="NewExperienceOrb">
+```go
+func NewExperienceOrb(opts world.EntitySpawnOpts, xp int) *world.EntityHandle
+```
+
+
+NewExperienceOrb creates a new experience orb and returns it.
+
+</Accordion>
+
+<Accordion title="NewExperienceOrbs">
+```go
+func NewExperienceOrbs(pos mgl64.Vec3, amount int) (orbs []*world.EntityHandle)
+```
+
+
+NewExperienceOrbs takes in a position and an amount and automatically splits the amount into multiple orbs, returning
+a slice of the created orbs.
+
+</Accordion>
+
+<Accordion title="NewFallingBlock">
+```go
+func NewFallingBlock(opts world.EntitySpawnOpts, block world.Block) *world.EntityHandle
+```
+
+
+NewFallingBlock creates a new FallingBlock entity.
+
+</Accordion>
+
+<Accordion title="NewFirework">
+```go
+func NewFirework(opts world.EntitySpawnOpts, firework item.Firework) *world.EntityHandle
+```
+
+
+NewFirework creates a firework entity. Firework is an item (and entity) used
+for creating decorative explosions, boosting when flying with elytra, and
+loading into a crossbow as ammunition.
+
+</Accordion>
+
+<Accordion title="NewFireworkAttached">
+```go
+func NewFireworkAttached(opts world.EntitySpawnOpts, firework item.Firework, owner world.Entity) *world.EntityHandle
+```
+
+
+NewFireworkAttached creates a firework entity with an owner that the firework
+may be attached to.
+
+</Accordion>
+
+<Accordion title="NewItem">
+```go
+func NewItem(opts world.EntitySpawnOpts, i item.Stack) *world.EntityHandle
+```
+
+
+NewItem creates a new item entity using the item stack passed. The item
+entity will be positioned at the position passed. If the stack's count
+exceeds its max count, the count of the stack will be changed to the
+maximum.
+
+</Accordion>
+
+<Accordion title="NewItemPickupDelay">
+```go
+func NewItemPickupDelay(opts world.EntitySpawnOpts, i item.Stack, delay time.Duration) *world.EntityHandle
+```
+
+
+NewItemPickupDelay creates a new item entity containing item stack i. A
+delay may be specified which defines for how long the item stack cannot be
+picked up from the ground.
+
+</Accordion>
+
+<Accordion title="NewLightning">
+```go
+func NewLightning(opts world.EntitySpawnOpts) *world.EntityHandle
+```
+
+
+NewLightning creates a lightning entity. The lightning entity will be
+positioned at the position passed. Lightning is a lethal element to
+thunderstorms. Lightning momentarily increases the skylight's brightness to
+slightly greater than full daylight.
+
+</Accordion>
+
+<Accordion title="NewLightningWithDamage">
+```go
+func NewLightningWithDamage(opts world.EntitySpawnOpts, dmg float64, blockFire bool, entityFireDuration time.Duration) *world.EntityHandle
+```
+
+
+NewLightningWithDamage creates a new lightning entities using the damage and
+fire properties passed.
+
+</Accordion>
+
+<Accordion title="NewLingeringPotion">
+```go
+func NewLingeringPotion(opts world.EntitySpawnOpts, t potion.Potion, owner world.Entity) *world.EntityHandle
+```
+
+
+NewLingeringPotion creates a new lingering potion. LingeringPotion is a
+variant of a splash potion that can be thrown to leave clouds with status
+effects that linger on the ground in an area.
+
+</Accordion>
+
+<Accordion title="NewSnowball">
+```go
+func NewSnowball(opts world.EntitySpawnOpts, owner world.Entity) *world.EntityHandle
+```
+
+
+NewSnowball creates a snowball entity at a position with an owner entity.
+
+</Accordion>
+
+<Accordion title="NewSplashPotion">
+```go
+func NewSplashPotion(opts world.EntitySpawnOpts, t potion.Potion, owner world.Entity) *world.EntityHandle
+```
+
+
+NewSplashPotion creates a splash potion. SplashPotion is an item that grants
+effects when thrown.
+
+</Accordion>
+
+<Accordion title="NewTNT">
+```go
+func NewTNT(opts world.EntitySpawnOpts, fuse time.Duration) *world.EntityHandle
+```
+
+
+NewTNT creates a new primed TNT entity.
+
+</Accordion>
+
+<Accordion title="NewText">
+```go
+func NewText(text string, pos mgl64.Vec3) *world.EntityHandle
+```
+
+
+NewText creates and returns a new Text entity with the text and position provided.
+
+</Accordion>
+
+<Accordion title="NewTippedArrow">
+```go
+func NewTippedArrow(opts world.EntitySpawnOpts, owner world.Entity, tip potion.Potion) *world.EntityHandle
+```
+
+
+NewTippedArrow creates a new Arrow with a potion effect added to an entity when hit.
+
+</Accordion>
+
+<Accordion title="NewTippedArrowWithDamage">
+```go
+func NewTippedArrowWithDamage(opts world.EntitySpawnOpts, damage float64, owner world.Entity, tip potion.Potion) *world.EntityHandle
+```
+
+
+NewTippedArrowWithDamage creates a new Arrow with a potion effect added to an entity when hit and, and returns it.
+It uses the given damage as the base damage.
+
+</Accordion>
+
+</Accordions>
+
+
+
+## Types
+
+
+### AreaEffectCloudBehaviour
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type AreaEffectCloudBehaviour struct {
+	conf	AreaEffectCloudBehaviourConfig
+
+	stationary	*StationaryBehaviour
+
+	duration	time.Duration
+	radius		float64
+	targets		map[*world.EntityHandle]time.Duration
+}
+```
+
+
+
+AreaEffectCloudBehaviour is the cloud that is created when: lingering
+potions are thrown; creepers with potion effects explode; dragon fireballs
+hit the ground.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Effects">
+```go
+func (*AreaEffectCloudBehaviour) Effects() []effect.Effect
+```
+
+Effects returns the effects the area effect cloud provides.
+
+</Accordion>
+
+<Accordion title="Radius">
+```go
+func (*AreaEffectCloudBehaviour) Radius() float64
+```
+
+Radius returns the current radius of the area effect cloud.
+
+</Accordion>
+
+<Accordion title="Tick">
+```go
+func (*AreaEffectCloudBehaviour) Tick(e *Ent, tx *world.Tx) *Movement
+```
+
+Tick ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### AreaEffectCloudBehaviourConfig
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type AreaEffectCloudBehaviourConfig struct {
+	Potion	potion.Potion
+	// Radius specifies the initial radius of the cloud. Defaults to 3.0.
+	Radius	float64
+	// RadiusUseGrowth is the value that is added to the radius every time the
+	// effect cloud is used/consumed. This is typically a negative value. (-0.5)
+	RadiusUseGrowth	float64
+	// RadiusTickGrowth is the value added to the radius every tick. This is
+	// typically a negative value. (-0.005)
+	RadiusTickGrowth	float64
+	// Duration specifies the initial duration of the cloud. Defaults to 30s.
+	Duration	time.Duration
+	// DurationUseGrowth is the duration that is added to the effect cloud every
+	// time it is used/consumed. This is 0 in normal situations.
+	DurationUseGrowth	time.Duration
+	// ReapplicationDelay specifies the delay with which the effects from the
+	// cloud can be re-applied to users.
+	ReapplicationDelay	time.Duration
+}
+```
+
+
+
+AreaEffectCloudBehaviourConfig contains optional parameters for an area
+effect cloud entity.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Potion: {
+      description: '',
+      type: 'potion.Potion',
+      typeLink: '../item-potion.mdx#potion',
+    },
+    Radius: {
+      description: 'Radius specifies the initial radius of the cloud. Defaults to 3.0.',
+      type: 'float64',
+    },
+    RadiusUseGrowth: {
+      description: 'RadiusUseGrowth is the value that is added to the radius every time the effect cloud is used/consumed. This is typically a negative value. (-0.5)',
+      type: 'float64',
+    },
+    RadiusTickGrowth: {
+      description: 'RadiusTickGrowth is the value added to the radius every tick. This is typically a negative value. (-0.005)',
+      type: 'float64',
+    },
+    Duration: {
+      description: 'Duration specifies the initial duration of the cloud. Defaults to 30s.',
+      type: 'time.Duration',
+    },
+    DurationUseGrowth: {
+      description: 'DurationUseGrowth is the duration that is added to the effect cloud every time it is used/consumed. This is 0 in normal situations.',
+      type: 'time.Duration',
+    },
+    ReapplicationDelay: {
+      description: 'ReapplicationDelay specifies the delay with which the effects from the cloud can be re-applied to users.',
+      type: 'time.Duration',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Apply">
+```go
+func (AreaEffectCloudBehaviourConfig) Apply(data *world.EntityData)
+```
+
+</Accordion>
+
+<Accordion title="New">
+```go
+func (AreaEffectCloudBehaviourConfig) New() *AreaEffectCloudBehaviour
+```
+
+New creates an AreaEffectCloudBehaviour using the parameter in conf and t.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ArrowShakeAction
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ArrowShakeAction struct {
+	// Duration is the duration of the shake.
+	Duration	time.Duration
+
+	action
+}
+```
+
+
+
+ArrowShakeAction makes an arrow entity display a shaking animation for the given duration.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Duration: {
+      description: 'Duration is the duration of the shake.',
+      type: 'time.Duration',
+    },
+    action: {
+      description: '',
+      type: 'action',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EntityAction">
+```go
+func (ArrowShakeAction) EntityAction()
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### AttackDamageSource
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type AttackDamageSource struct {
+	// Attacker holds the attacking entity. The entity may be a player or
+	// any other entity.
+	Attacker world.Entity
+}
+```
+
+
+
+AttackDamageSource is used for damage caused by other entities, for
+example when a player attacks another player.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Attacker: {
+      description: 'Attacker holds the attacking entity. The entity may be a player or any other entity.',
+      type: 'world.Entity',
+      typeLink: '../world.mdx#entity',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Fire">
+```go
+func (AttackDamageSource) Fire() bool
+```
+
+</Accordion>
+
+<Accordion title="IgnoreTotem">
+```go
+func (AttackDamageSource) IgnoreTotem() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByArmour">
+```go
+func (AttackDamageSource) ReducedByArmour() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByResistance">
+```go
+func (AttackDamageSource) ReducedByResistance() bool
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Behaviour
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Behaviour interface {
+	// Tick ticks the Ent using the Behaviour. A Movement is returned that
+	// specifies the movement of the entity over the tick. Nil may be returned
+	// if the entity did not move.
+	Tick(e *Ent, tx *world.Tx) *Movement
+}
+```
+
+
+
+Behaviour implements the behaviour of an Ent.
+
+
+
+
+
+
+---
+
+### Collector
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Collector interface {
+	world.Entity
+	// Collect collects the stack passed. It is called if the Collector is standing near an item entity that
+	// may be picked up.
+	// The count of items collected from the stack n is returned, along with a
+	// bool that indicates if the Collector was in a state where it could
+	// collect any items in the first place.
+	Collect(stack item.Stack) (n int, ok bool)
+}
+```
+
+
+
+Collector represents an entity in the world that is able to collect an item, typically an entity such as
+a player or a zombie.
+
+
+
+
+
+
+---
+
+### CriticalHitAction
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type CriticalHitAction struct {
+	action
+	// Count is the count of particles around the entity.
+	Count	int
+}
+```
+
+
+
+CriticalHitAction is a world.EntityAction that makes an entity display critical hit particles. This will show stars
+around the entity.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    action: {
+      description: '',
+      type: 'action',
+    },
+    Count: {
+      description: 'Count is the count of particles around the entity.',
+      type: 'int',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EntityAction">
+```go
+func (CriticalHitAction) EntityAction()
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### DeathAction
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type DeathAction struct{ action }
+```
+
+
+
+DeathAction is a world.EntityAction that makes an entity display the death animation. After this animation, the
+entity disappears from viewers watching it.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    action: {
+      description: '',
+      type: 'action',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EntityAction">
+```go
+func (DeathAction) EntityAction()
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### DrowningDamageSource
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type DrowningDamageSource struct{}
+```
+
+
+
+DrowningDamageSource is used for damage caused by an entity drowning in
+water.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Fire">
+```go
+func (DrowningDamageSource) Fire() bool
+```
+
+</Accordion>
+
+<Accordion title="IgnoreTotem">
+```go
+func (DrowningDamageSource) IgnoreTotem() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByArmour">
+```go
+func (DrowningDamageSource) ReducedByArmour() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByResistance">
+```go
+func (DrowningDamageSource) ReducedByResistance() bool
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### EatAction
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type EatAction struct{ action }
+```
+
+
+
+EatAction is a world.EntityAction that makes an entity display the eating particles at its mouth to viewers with the
+item in its hand being eaten.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    action: {
+      description: '',
+      type: 'action',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EntityAction">
+```go
+func (EatAction) EntityAction()
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### EffectManager
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type EffectManager struct {
+	initialEffects	[]effect.Effect
+	effects		map[reflect.Type]effect.Effect
+}
+```
+
+
+
+EffectManager manages the effects of an entity. The effect manager will only store effects that last for
+a specific duration. Instant effects are applied instantly and not stored.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Add">
+```go
+func (*EffectManager) Add(e effect.Effect, entity Living) effect.Effect
+```
+
+Add adds an effect to the manager. If the effect is instant, it is applied to the Living entity passed
+immediately. If not, the effect is added to the EffectManager and is applied to the entity every time the
+Tick method is called.
+Effect levels of 0 or below will not do anything.
+Effect returns the final effect it added to the entity. That might be the effect passed or an effect with
+a higher level/duration than the one passed. Add panics if the effect has a negative duration or level.
+
+</Accordion>
+
+<Accordion title="Effect">
+```go
+func (*EffectManager) Effect(e effect.Type) (effect.Effect, bool)
+```
+
+Effect returns the effect instance and true if the entity has the effect. If not found, it will return an empty
+effect instance and false.
+
+</Accordion>
+
+<Accordion title="Effects">
+```go
+func (*EffectManager) Effects() []effect.Effect
+```
+
+Effects returns a list of all effects currently present in the effect manager. This will never include
+effects that have expired.
+
+</Accordion>
+
+<Accordion title="Remove">
+```go
+func (*EffectManager) Remove(e effect.Type, entity Living)
+```
+
+Remove removes any Effect present in the EffectManager with the type of the effect passed.
+
+</Accordion>
+
+<Accordion title="Tick">
+```go
+func (*EffectManager) Tick(entity Living, tx *world.Tx)
+```
+
+Tick ticks the EffectManager, applying all of its effects to the Living entity passed when applicable and
+removing expired effects.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### EnchantedHitAction
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type EnchantedHitAction struct {
+	action
+	// Count is the count of particles around the entity.
+	Count	int
+}
+```
+
+
+
+EnchantedHitAction is a world.Action that makes an entity display enchanted hit particles. This will show circles
+around the entity.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    action: {
+      description: '',
+      type: 'action',
+    },
+    Count: {
+      description: 'Count is the count of particles around the entity.',
+      type: 'int',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EntityAction">
+```go
+func (EnchantedHitAction) EntityAction()
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Ent
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Ent struct {
+	tx	*world.Tx
+	handle	*world.EntityHandle
+	data	*world.EntityData
+	once	sync.Once
+}
+```
+
+
+
+Ent is a world.Entity implementation that allows entity implementations to
+share a lot of code. It is currently under development and is prone to
+(breaking) changes.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Age">
+```go
+func (*Ent) Age() time.Duration
+```
+
+Age returns the total time lived of this entity. It increases by
+time.Second/20 for every time Tick is called.
+
+</Accordion>
+
+<Accordion title="Behaviour">
+```go
+func (*Ent) Behaviour() Behaviour
+```
+
+</Accordion>
+
+<Accordion title="Close">
+```go
+func (*Ent) Close() error
+```
+
+Close closes the Ent and removes the associated entity from the world.
+
+</Accordion>
+
+<Accordion title="Explode">
+```go
+func (*Ent) Explode(src mgl64.Vec3, impact float64, conf block.ExplosionConfig)
+```
+
+Explode propagates the explosion behaviour of the underlying Behaviour.
+
+</Accordion>
+
+<Accordion title="Extinguish">
+```go
+func (*Ent) Extinguish()
+```
+
+Extinguish ...
+
+</Accordion>
+
+<Accordion title="H">
+```go
+func (*Ent) H() *world.EntityHandle
+```
+
+</Accordion>
+
+<Accordion title="NameTag">
+```go
+func (*Ent) NameTag() string
+```
+
+NameTag returns the name tag of the entity. An empty string is returned if
+no name tag was set.
+
+</Accordion>
+
+<Accordion title="OnFireDuration">
+```go
+func (*Ent) OnFireDuration() time.Duration
+```
+
+OnFireDuration ...
+
+</Accordion>
+
+<Accordion title="Position">
+```go
+func (*Ent) Position() mgl64.Vec3
+```
+
+Position returns the current position of the entity.
+
+</Accordion>
+
+<Accordion title="Rotation">
+```go
+func (*Ent) Rotation() cube.Rotation
+```
+
+Rotation returns the rotation of the entity.
+
+</Accordion>
+
+<Accordion title="SetNameTag">
+```go
+func (*Ent) SetNameTag(s string)
+```
+
+SetNameTag changes the name tag of an entity. The name tag is removed if an
+empty string is passed.
+
+</Accordion>
+
+<Accordion title="SetOnFire">
+```go
+func (*Ent) SetOnFire(duration time.Duration)
+```
+
+SetOnFire ...
+
+</Accordion>
+
+<Accordion title="SetVelocity">
+```go
+func (*Ent) SetVelocity(v mgl64.Vec3)
+```
+
+SetVelocity sets the velocity of the entity. The values in the Vec3 passed represent the speed on
+that axis in blocks/tick.
+
+</Accordion>
+
+<Accordion title="Tick">
+```go
+func (*Ent) Tick(tx *world.Tx, current int64)
+```
+
+Tick ticks Ent, progressing its lifetime and closing the entity if it is
+in the void.
+
+</Accordion>
+
+<Accordion title="Velocity">
+```go
+func (*Ent) Velocity() mgl64.Vec3
+```
+
+Velocity returns the current velocity of the entity. The values in the Vec3 returned represent the speed on
+that axis in blocks/tick.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ExperienceManager
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ExperienceManager struct {
+	experience	int
+	dec		float64
+}
+```
+
+
+
+ExperienceManager manages experience and levels for entities, and provides functions to add, remove, and calculate
+experience needed for upcoming levels.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Add">
+```go
+func (*ExperienceManager) Add(amount int) (level int, progress float64)
+```
+
+Add adds experience to the total experience and recalculates the level and progress if necessary. Passing a negative
+value is valid. If the new experience would otherwise drop below 0, it is set to 0.
+
+</Accordion>
+
+<Accordion title="Experience">
+```go
+func (*ExperienceManager) Experience() int
+```
+
+Experience returns the amount of experience the manager currently has.
+
+</Accordion>
+
+<Accordion title="Level">
+```go
+func (*ExperienceManager) Level() int
+```
+
+Level returns the current experience level.
+
+</Accordion>
+
+<Accordion title="Progress">
+```go
+func (*ExperienceManager) Progress() float64
+```
+
+Progress returns the progress towards the next level.
+
+</Accordion>
+
+<Accordion title="Reset">
+```go
+func (*ExperienceManager) Reset()
+```
+
+Reset resets the total experience, level, and progress of the manager to zero.
+
+</Accordion>
+
+<Accordion title="SetLevel">
+```go
+func (*ExperienceManager) SetLevel(level int)
+```
+
+SetLevel sets the level of the manager.
+
+</Accordion>
+
+<Accordion title="SetProgress">
+```go
+func (*ExperienceManager) SetProgress(progress float64)
+```
+
+SetProgress sets the progress of the manager.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ExperienceOrbBehaviour
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ExperienceOrbBehaviour struct {
+	conf	ExperienceOrbBehaviourConfig
+
+	passive	*PassiveBehaviour
+
+	lastSearch	time.Time
+	target		*world.EntityHandle
+}
+```
+
+
+
+ExperienceOrbBehaviour implements Behaviour for an experience orb entity.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Experience">
+```go
+func (*ExperienceOrbBehaviour) Experience() int
+```
+
+Experience returns the amount of experience the orb carries.
+
+</Accordion>
+
+<Accordion title="Tick">
+```go
+func (*ExperienceOrbBehaviour) Tick(e *Ent, tx *world.Tx) *Movement
+```
+
+Tick finds a target for the experience orb and moves the orb towards it.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ExperienceOrbBehaviourConfig
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ExperienceOrbBehaviourConfig struct {
+	// Gravity is the amount of Y velocity subtracted every tick.
+	Gravity	float64
+	// Drag is used to reduce all axes of the velocity every tick. Velocity is
+	// multiplied with (1-Drag) every tick.
+	Drag	float64
+	// ExistenceDuration specifies how long the experience orb should last. The
+	// default is time.Minute * 5.
+	ExistenceDuration	time.Duration
+	// Experience is the amount of experience held by the orb. Default is 1.
+	Experience	int
+}
+```
+
+
+
+ExperienceOrbBehaviourConfig holds optional parameters for the creation of
+an ExperienceOrbBehaviour.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Gravity: {
+      description: 'Gravity is the amount of Y velocity subtracted every tick.',
+      type: 'float64',
+    },
+    Drag: {
+      description: 'Drag is used to reduce all axes of the velocity every tick. Velocity is multiplied with (1-Drag) every tick.',
+      type: 'float64',
+    },
+    ExistenceDuration: {
+      description: 'ExistenceDuration specifies how long the experience orb should last. The default is time.Minute * 5.',
+      type: 'time.Duration',
+    },
+    Experience: {
+      description: 'Experience is the amount of experience held by the orb. Default is 1.',
+      type: 'int',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Apply">
+```go
+func (ExperienceOrbBehaviourConfig) Apply(data *world.EntityData)
+```
+
+</Accordion>
+
+<Accordion title="New">
+```go
+func (ExperienceOrbBehaviourConfig) New() *ExperienceOrbBehaviour
+```
+
+New creates an ExperienceOrbBehaviour using the parameters in conf.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ExplosionDamageSource
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ExplosionDamageSource struct{}
+```
+
+
+
+ExplosionDamageSource is used for damage caused by an explosion.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AffectedByEnchantment">
+```go
+func (ExplosionDamageSource) AffectedByEnchantment(e item.EnchantmentType) bool
+```
+
+</Accordion>
+
+<Accordion title="Fire">
+```go
+func (ExplosionDamageSource) Fire() bool
+```
+
+</Accordion>
+
+<Accordion title="IgnoreTotem">
+```go
+func (ExplosionDamageSource) IgnoreTotem() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByArmour">
+```go
+func (ExplosionDamageSource) ReducedByArmour() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByResistance">
+```go
+func (ExplosionDamageSource) ReducedByResistance() bool
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Eyed
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Eyed interface {
+	// EyeHeight returns the offset from their base position that the eyes of an entity are found at.
+	EyeHeight() float64
+}
+```
+
+
+
+Eyed represents an entity that has eyes.
+
+
+
+
+
+
+---
+
+### FallDamageSource
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FallDamageSource struct{}
+```
+
+
+
+FallDamageSource is used for damage caused by falling.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AffectedByEnchantment">
+```go
+func (FallDamageSource) AffectedByEnchantment(e item.EnchantmentType) bool
+```
+
+</Accordion>
+
+<Accordion title="Fire">
+```go
+func (FallDamageSource) Fire() bool
+```
+
+</Accordion>
+
+<Accordion title="IgnoreTotem">
+```go
+func (FallDamageSource) IgnoreTotem() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByArmour">
+```go
+func (FallDamageSource) ReducedByArmour() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByResistance">
+```go
+func (FallDamageSource) ReducedByResistance() bool
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### FallingBlockBehaviour
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FallingBlockBehaviour struct {
+	passive	*PassiveBehaviour
+	block	world.Block
+}
+```
+
+
+
+FallingBlockBehaviour implements the behaviour for falling block entities.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Block">
+```go
+func (*FallingBlockBehaviour) Block() world.Block
+```
+
+Block returns the world.Block of the entity.
+
+</Accordion>
+
+<Accordion title="Tick">
+```go
+func (*FallingBlockBehaviour) Tick(e *Ent, tx *world.Tx) *Movement
+```
+
+Tick implements the movement and solidification behaviour of falling blocks.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### FallingBlockBehaviourConfig
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FallingBlockBehaviourConfig struct {
+	Block	world.Block
+	// Gravity is the amount of Y velocity subtracted every tick.
+	Gravity	float64
+	// Drag is used to reduce all axes of the velocity every tick. Velocity is
+	// multiplied with (1-Drag) every tick.
+	Drag	float64
+	// DistanceFallen specifies how far the falling block has already fallen.
+	// Blocks that damage entities on impact, like anvils, deal increased damage
+	// based on the distance fallen.
+	DistanceFallen	float64
+}
+```
+
+
+
+FallingBlockBehaviourConfig holds optional parameters for
+FallingBlockBehaviour.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Block: {
+      description: '',
+      type: 'world.Block',
+      typeLink: '../world.mdx#block',
+    },
+    Gravity: {
+      description: 'Gravity is the amount of Y velocity subtracted every tick.',
+      type: 'float64',
+    },
+    Drag: {
+      description: 'Drag is used to reduce all axes of the velocity every tick. Velocity is multiplied with (1-Drag) every tick.',
+      type: 'float64',
+    },
+    DistanceFallen: {
+      description: 'DistanceFallen specifies how far the falling block has already fallen. Blocks that damage entities on impact, like anvils, deal increased damage based on the distance fallen.',
+      type: 'float64',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Apply">
+```go
+func (FallingBlockBehaviourConfig) Apply(data *world.EntityData)
+```
+
+</Accordion>
+
+<Accordion title="New">
+```go
+func (FallingBlockBehaviourConfig) New() *FallingBlockBehaviour
+```
+
+New creates a FallingBlockBehaviour using the optional parameters in conf and
+a block type.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### FireworkBehaviour
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FireworkBehaviour struct {
+	conf	FireworkBehaviourConfig
+	passive	*PassiveBehaviour
+}
+```
+
+
+
+FireworkBehaviour implements Behaviour for a firework entity.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Attached">
+```go
+func (*FireworkBehaviour) Attached() bool
+```
+
+Attached specifies if the firework is attached to its owner.
+
+</Accordion>
+
+<Accordion title="Firework">
+```go
+func (*FireworkBehaviour) Firework() item.Firework
+```
+
+Firework returns the underlying item.Firework of the FireworkBehaviour.
+
+</Accordion>
+
+<Accordion title="Owner">
+```go
+func (*FireworkBehaviour) Owner() *world.EntityHandle
+```
+
+Owner returns the world.Entity that launched the firework.
+
+</Accordion>
+
+<Accordion title="Tick">
+```go
+func (*FireworkBehaviour) Tick(e *Ent, tx *world.Tx) *Movement
+```
+
+Tick moves the firework and makes it explode when it reaches its maximum
+duration.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### FireworkBehaviourConfig
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FireworkBehaviourConfig struct {
+	Firework	item.Firework
+	Owner		*world.EntityHandle
+	// ExistenceDuration is the duration that an entity with this behaviour
+	// should last. Once this time expires, the entity is closed. If
+	// ExistenceDuration is 0, the entity will never expire automatically.
+	ExistenceDuration	time.Duration
+	// SidewaysVelocityMultiplier is a value that the sideways velocity (X/Z) is
+	// multiplied with every tick. For normal fireworks this is 1.15.
+	SidewaysVelocityMultiplier	float64
+	// UpwardsAcceleration is a value added to the firework's velocity every
+	// tick. For normal fireworks, this is 0.04.
+	UpwardsAcceleration	float64
+	// Attached specifies if the firework is attached to its owner. If true,
+	// the firework will boost the speed of the owner while flying.
+	Attached	bool
+}
+```
+
+
+
+FireworkBehaviourConfig holds optional parameters for a FireworkBehaviour.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Firework: {
+      description: '',
+      type: 'item.Firework',
+      typeLink: '../item.mdx#firework',
+    },
+    Owner: {
+      description: '',
+      type: '*world.EntityHandle',
+      typeLink: '../world.mdx#entityhandle',
+    },
+    ExistenceDuration: {
+      description: 'ExistenceDuration is the duration that an entity with this behaviour should last. Once this time expires, the entity is closed. If ExistenceDuration is 0, the entity will never expire automatically.',
+      type: 'time.Duration',
+    },
+    SidewaysVelocityMultiplier: {
+      description: 'SidewaysVelocityMultiplier is a value that the sideways velocity (X/Z) is multiplied with every tick. For normal fireworks this is 1.15.',
+      type: 'float64',
+    },
+    UpwardsAcceleration: {
+      description: 'UpwardsAcceleration is a value added to the firework\'s velocity every tick. For normal fireworks, this is 0.04.',
+      type: 'float64',
+    },
+    Attached: {
+      description: 'Attached specifies if the firework is attached to its owner. If true, the firework will boost the speed of the owner while flying.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Apply">
+```go
+func (FireworkBehaviourConfig) Apply(data *world.EntityData)
+```
+
+</Accordion>
+
+<Accordion title="New">
+```go
+func (FireworkBehaviourConfig) New() *FireworkBehaviour
+```
+
+New creates a FireworkBehaviour for an fw and owner using the optional
+parameters in conf.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### FireworkExplosionAction
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FireworkExplosionAction struct{ action }
+```
+
+
+
+FireworkExplosionAction is a world.EntityAction that makes a Firework rocket display an explosion particle.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    action: {
+      description: '',
+      type: 'action',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EntityAction">
+```go
+func (FireworkExplosionAction) EntityAction()
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Flammable
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Flammable interface {
+	// OnFireDuration returns duration of fire in ticks.
+	OnFireDuration() time.Duration
+	// SetOnFire sets the entity on fire for the specified duration.
+	SetOnFire(duration time.Duration)
+	// Extinguish extinguishes the entity.
+	Extinguish()
+}
+```
+
+
+
+Flammable is an interface for entities that can be set on fire.
+
+
+
+
+
+
+---
+
+### FoodHealingSource
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FoodHealingSource struct{}
+```
+
+
+
+FoodHealingSource is a healing source used for when an entity regenerates health automatically when their food
+bar is at least 90% filled.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="HealingSource">
+```go
+func (FoodHealingSource) HealingSource()
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### GlideDamageSource
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type GlideDamageSource struct{}
+```
+
+
+
+GlideDamageSource is used for damage caused by gliding into a block.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Fire">
+```go
+func (GlideDamageSource) Fire() bool
+```
+
+</Accordion>
+
+<Accordion title="IgnoreTotem">
+```go
+func (GlideDamageSource) IgnoreTotem() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByArmour">
+```go
+func (GlideDamageSource) ReducedByArmour() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByResistance">
+```go
+func (GlideDamageSource) ReducedByResistance() bool
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### HealthManager
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type HealthManager struct {
+	health	float64
+	max	float64
+}
+```
+
+
+
+HealthManager handles the health of an entity.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AddHealth">
+```go
+func (*HealthManager) AddHealth(health float64)
+```
+
+AddHealth adds a given amount of health points to the player. If the health added to the current health
+exceeds the max, health will be set to the max. If the health is instead negative and results in a health
+lower than 0, the final health will be 0.
+
+</Accordion>
+
+<Accordion title="Health">
+```go
+func (*HealthManager) Health() float64
+```
+
+Health returns the current health of an entity.
+
+</Accordion>
+
+<Accordion title="MaxHealth">
+```go
+func (*HealthManager) MaxHealth() float64
+```
+
+MaxHealth returns the maximum health of the entity.
+
+</Accordion>
+
+<Accordion title="SetMaxHealth">
+```go
+func (*HealthManager) SetMaxHealth(max float64)
+```
+
+SetMaxHealth changes the max health of an entity to the maximum passed. If the maximum is set to 0 or
+lower, SetMaxHealth will default to a value of 1.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### HurtAction
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type HurtAction struct{ action }
+```
+
+
+
+HurtAction is a world.EntityAction that makes an entity display the animation for being hurt. The entity will be
+shown as red for a short duration.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    action: {
+      description: '',
+      type: 'action',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EntityAction">
+```go
+func (HurtAction) EntityAction()
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ItemBehaviour
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ItemBehaviour struct {
+	conf	ItemBehaviourConfig
+	passive	*PassiveBehaviour
+	i	item.Stack
+
+	pickupDelay	time.Duration
+}
+```
+
+
+
+ItemBehaviour implements the behaviour of item entities.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Explode">
+```go
+func (*ItemBehaviour) Explode(e *Ent, src mgl64.Vec3, impact float64, conf block.ExplosionConfig)
+```
+
+Explode reacts to explosions. The item entity is destroyed, unless the item
+type is blast proof.
+
+</Accordion>
+
+<Accordion title="Item">
+```go
+func (*ItemBehaviour) Item() item.Stack
+```
+
+Item returns the item.Stack held by the entity.
+
+</Accordion>
+
+<Accordion title="Tick">
+```go
+func (*ItemBehaviour) Tick(e *Ent, tx *world.Tx) *Movement
+```
+
+Tick moves the entity, checks if it should be picked up by a nearby collector
+or if it should merge with nearby item entities.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ItemBehaviourConfig
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ItemBehaviourConfig struct {
+	Item	item.Stack
+	// Gravity is the amount of Y velocity subtracted every tick.
+	Gravity	float64
+	// Drag is used to reduce all axes of the velocity every tick. Velocity is
+	// multiplied with (1-Drag) every tick.
+	Drag	float64
+	// ExistenceDuration specifies how long the item stack should last. The
+	// default is time.Minute * 5.
+	ExistenceDuration	time.Duration
+	// PickupDelay specifies how much time must expire before the item can be
+	// picked up by collectors. The default is time.Second / 2.
+	PickupDelay	time.Duration
+}
+```
+
+
+
+ItemBehaviourConfig holds optional parameters for an ItemBehaviour.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Item: {
+      description: '',
+      type: 'item.Stack',
+      typeLink: '../item.mdx#stack',
+    },
+    Gravity: {
+      description: 'Gravity is the amount of Y velocity subtracted every tick.',
+      type: 'float64',
+    },
+    Drag: {
+      description: 'Drag is used to reduce all axes of the velocity every tick. Velocity is multiplied with (1-Drag) every tick.',
+      type: 'float64',
+    },
+    ExistenceDuration: {
+      description: 'ExistenceDuration specifies how long the item stack should last. The default is time.Minute * 5.',
+      type: 'time.Duration',
+    },
+    PickupDelay: {
+      description: 'PickupDelay specifies how much time must expire before the item can be picked up by collectors. The default is time.Second / 2.',
+      type: 'time.Duration',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Apply">
+```go
+func (ItemBehaviourConfig) Apply(data *world.EntityData)
+```
+
+</Accordion>
+
+<Accordion title="New">
+```go
+func (ItemBehaviourConfig) New() *ItemBehaviour
+```
+
+New creates an ItemBehaviour using i and the optional parameters in conf.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### LightningDamageSource
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type LightningDamageSource struct{}
+```
+
+
+
+LightningDamageSource is used for damage caused by being struck by
+lightning.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Fire">
+```go
+func (LightningDamageSource) Fire() bool
+```
+
+</Accordion>
+
+<Accordion title="IgnoreTotem">
+```go
+func (LightningDamageSource) IgnoreTotem() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByArmour">
+```go
+func (LightningDamageSource) ReducedByArmour() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByResistance">
+```go
+func (LightningDamageSource) ReducedByResistance() bool
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Living
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Living interface {
+	world.Entity
+	// Health returns the health of the entity.
+	Health() float64
+	// MaxHealth returns the maximum health of the entity.
+	MaxHealth() float64
+	// SetMaxHealth changes the maximum health of the entity to the value passed.
+	SetMaxHealth(v float64)
+	// Dead checks if the entity is considered dead. True is returned if the health of the entity is equal to or
+	// lower than 0.
+	Dead() bool
+	// Hurt hurts the entity for a given amount of damage. The source passed represents the cause of the
+	// damage, for example AttackDamageSource if the entity is attacked by another entity.
+	// If the final damage exceeds the health that the entity currently has, the entity is killed.
+	// Hurt returns the final amount of damage dealt to the Living entity and returns whether the Living entity
+	// was vulnerable to the damage at all.
+	Hurt(damage float64, src world.DamageSource) (n float64, vulnerable bool)
+	// Heal heals the entity for a given amount of health. The source passed represents the cause of the
+	// healing, for example FoodHealingSource if the entity healed by having a full food bar. If the health
+	// added to the original health exceeds the entity's max health, Heal may not add the full amount.
+	Heal(health float64, src world.HealingSource)
+	// KnockBack knocks the entity back with a given force and height. A source is passed which indicates the
+	// source of the velocity, typically the position of an attacking entity. The source is used to calculate
+	// the direction which the entity should be knocked back in.
+	KnockBack(src mgl64.Vec3, force, height float64)
+	// Velocity returns the players current velocity.
+	Velocity() mgl64.Vec3
+	// SetVelocity updates the entity's velocity.
+	SetVelocity(velocity mgl64.Vec3)
+	// AddEffect adds an entity.Effect to the entity. If the effect is instant, it is applied to the entity
+	// immediately. If not, the effect is applied to the entity every time the Tick method is called.
+	// AddEffect will overwrite any effects present if the level of the effect is higher than the existing one, or
+	// if the effects' levels are equal and the new effect has a longer duration.
+	AddEffect(e effect.Effect)
+	// RemoveEffect removes any effect that might currently be active on the entity.
+	RemoveEffect(e effect.Type)
+	// Effects returns any effect currently applied to the entity. The returned effects are guaranteed not to have
+	// expired when returned.
+	Effects() []effect.Effect
+	// Speed returns the current speed of the living entity. The default value is different for each entity.
+	Speed() float64
+	// SetSpeed sets the speed of an entity to a new value.
+	SetSpeed(float64)
+}
+```
+
+
+
+Living represents an entity that is alive and that has health. It is able to take damage and will die upon
+taking fatal damage.
+
+
+
+
+
+
+---
+
+### Movement
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Movement struct {
+	v			[]world.Viewer
+	e			world.Entity
+	pos, vel, dpos, dvel	mgl64.Vec3
+	rot			cube.Rotation
+	onGround		bool
+}
+```
+
+
+
+Movement represents the movement of a world.Entity as a result of a call to MovementComputer.TickMovement. The
+resulting position and velocity can be obtained by calling Position and Velocity. These can be sent to viewers by
+calling Send.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Position">
+```go
+func (*Movement) Position() mgl64.Vec3
+```
+
+Position returns the position as a result of the Movement as an mgl64.Vec3.
+
+</Accordion>
+
+<Accordion title="Rotation">
+```go
+func (*Movement) Rotation() cube.Rotation
+```
+
+Rotation returns the rotation, yaw and pitch, of the entity after the Movement.
+
+</Accordion>
+
+<Accordion title="Send">
+```go
+func (*Movement) Send()
+```
+
+Send sends the Movement to any viewers watching the entity at the time of the movement. If the position/velocity
+changes were negligible, nothing is sent.
+
+</Accordion>
+
+<Accordion title="Velocity">
+```go
+func (*Movement) Velocity() mgl64.Vec3
+```
+
+Velocity returns the velocity after the Movement as an mgl64.Vec3.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### MovementComputer
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type MovementComputer struct {
+	Gravity, Drag		float64
+	DragBeforeGravity	bool
+
+	onGround	bool
+}
+```
+
+
+
+MovementComputer is used to compute movement of an entity. When constructed, the Gravity of the entity
+the movement is computed for must be passed.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Gravity: {
+      description: '',
+      type: 'float64',
+    },
+    Drag: {
+      description: '',
+      type: 'float64',
+    },
+    DragBeforeGravity: {
+      description: '',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="OnGround">
+```go
+func (*MovementComputer) OnGround() bool
+```
+
+OnGround checks if the entity that this computer calculates is currently on the ground.
+
+</Accordion>
+
+<Accordion title="TickMovement">
+```go
+func (*MovementComputer) TickMovement(e world.Entity, pos, vel mgl64.Vec3, rot cube.Rotation, tx *world.Tx) *Movement
+```
+
+TickMovement performs a movement tick on an entity. Velocity is applied and changed according to the values
+of its Drag and Gravity.
+The new position of the entity after movement is returned.
+The resulting Movement can be sent to viewers by calling Movement.Send.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### PassiveBehaviour
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type PassiveBehaviour struct {
+	conf	PassiveBehaviourConfig
+	mc	*MovementComputer
+
+	close		bool
+	fallDistance	float64
+	fuse		time.Duration
+}
+```
+
+
+
+PassiveBehaviour implements Behaviour for entities that act passively. This
+means that they can move, but only under influence of the environment, which
+includes, for example, falling, and flowing water.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Explode">
+```go
+func (*PassiveBehaviour) Explode(e *Ent, src mgl64.Vec3, impact float64, _ block.ExplosionConfig)
+```
+
+Explode adds velocity to a passive entity to blast it away from the
+explosion's source.
+
+</Accordion>
+
+<Accordion title="Fuse">
+```go
+func (*PassiveBehaviour) Fuse() time.Duration
+```
+
+Fuse returns the leftover time until PassiveBehaviourConfig.Expire is called,
+or -1 if this function is not set.
+
+</Accordion>
+
+<Accordion title="Tick">
+```go
+func (*PassiveBehaviour) Tick(e *Ent, tx *world.Tx) *Movement
+```
+
+Tick implements the behaviour for a passive entity. It performs movement and
+updates its state.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### PassiveBehaviourConfig
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type PassiveBehaviourConfig struct {
+	// Gravity is the amount of Y velocity subtracted every tick.
+	Gravity	float64
+	// Drag is used to reduce all axes of the velocity every tick. Velocity is
+	// multiplied with (1-Drag) every tick.
+	Drag	float64
+	// ExistenceDuration is the duration that an entity with this behaviour
+	// should last. Once this time expires, the entity is closed. If
+	// ExistenceDuration is 0, the entity will never expire automatically.
+	ExistenceDuration	time.Duration
+	// Expire is called when the entity expires due to its age reaching the
+	// ExistenceDuration.
+	Expire	func(e *Ent, tx *world.Tx)
+	// Tick is called for every tick that the entity is alive. Tick is called
+	// after the entity moves on a tick.
+	Tick	func(e *Ent, tx *world.Tx)
+}
+```
+
+
+
+PassiveBehaviourConfig holds optional parameters for a PassiveBehaviour.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Gravity: {
+      description: 'Gravity is the amount of Y velocity subtracted every tick.',
+      type: 'float64',
+    },
+    Drag: {
+      description: 'Drag is used to reduce all axes of the velocity every tick. Velocity is multiplied with (1-Drag) every tick.',
+      type: 'float64',
+    },
+    ExistenceDuration: {
+      description: 'ExistenceDuration is the duration that an entity with this behaviour should last. Once this time expires, the entity is closed. If ExistenceDuration is 0, the entity will never expire automatically.',
+      type: 'time.Duration',
+    },
+    Expire: {
+      description: 'Expire is called when the entity expires due to its age reaching the ExistenceDuration.',
+      type: 'func(e *Ent, tx *world.Tx)',
+    },
+    Tick: {
+      description: 'Tick is called for every tick that the entity is alive. Tick is called after the entity moves on a tick.',
+      type: 'func(e *Ent, tx *world.Tx)',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Apply">
+```go
+func (PassiveBehaviourConfig) Apply(data *world.EntityData)
+```
+
+</Accordion>
+
+<Accordion title="New">
+```go
+func (PassiveBehaviourConfig) New() *PassiveBehaviour
+```
+
+New creates a PassiveBehaviour using the parameters in conf.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### PickedUpAction
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type PickedUpAction struct {
+	// Collector is the entity that collected the item.
+	Collector	world.Entity
+
+	action
+}
+```
+
+
+
+PickedUpAction is a world.EntityAction that makes an item get picked up by a collector. After this animation, the
+item disappears from viewers watching it.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Collector: {
+      description: 'Collector is the entity that collected the item.',
+      type: 'world.Entity',
+      typeLink: '../world.mdx#entity',
+    },
+    action: {
+      description: '',
+      type: 'action',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EntityAction">
+```go
+func (PickedUpAction) EntityAction()
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ProjectileBehaviour
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ProjectileBehaviour struct {
+	conf		ProjectileBehaviourConfig
+	mc		*MovementComputer
+	ageCollided	int
+	close		bool
+
+	collisionPos	cube.Pos
+	collided	bool
+}
+```
+
+
+
+ProjectileBehaviour implements the behaviour of projectiles. Its specifics
+may be configured using ProjectileBehaviourConfig.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Critical">
+```go
+func (*ProjectileBehaviour) Critical() bool
+```
+
+Critical returns true if ProjectileBehaviourConfig.Critical was set to true
+and if the projectile has not collided.
+
+</Accordion>
+
+<Accordion title="Explode">
+```go
+func (*ProjectileBehaviour) Explode(e *Ent, src mgl64.Vec3, impact float64, _ block.ExplosionConfig)
+```
+
+Explode adds velocity to a projectile to blast it away from the explosion's
+source.
+
+</Accordion>
+
+<Accordion title="Owner">
+```go
+func (*ProjectileBehaviour) Owner() *world.EntityHandle
+```
+
+Owner returns the owner of the projectile.
+
+</Accordion>
+
+<Accordion title="Potion">
+```go
+func (*ProjectileBehaviour) Potion() potion.Potion
+```
+
+Potion returns the potion.Potion that is applied to an entity if hit by the
+projectile.
+
+</Accordion>
+
+<Accordion title="Tick">
+```go
+func (*ProjectileBehaviour) Tick(e *Ent, tx *world.Tx) *Movement
+```
+
+Tick runs the tick-based behaviour of a ProjectileBehaviour and returns the
+Movement within the tick. Tick handles the movement, collision and hitting
+of a projectile.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ProjectileBehaviourConfig
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ProjectileBehaviourConfig struct {
+	Owner	*world.EntityHandle
+	// Gravity is the amount of Y velocity subtracted every tick.
+	Gravity	float64
+	// Drag is used to reduce all axes of the velocity every tick. Velocity is
+	// multiplied with (1-Drag) every tick.
+	Drag	float64
+	// Damage specifies the base damage dealt by the Projectile. If set to a
+	// negative number, entities hit are not hurt at all and are not knocked
+	// back. The base damage is multiplied with the velocity of the projectile
+	// to calculate the final damage of the projectile.
+	Damage	float64
+	// Potion is the potion effect that is applied to an entity when the
+	// projectile hits it.
+	Potion	potion.Potion
+	// KnockBackForceAddend is the additional horizontal velocity that is
+	// applied to an entity when it is hit by the projectile.
+	KnockBackForceAddend	float64
+	// KnockBackHeightAddend is the additional vertical velocity that is applied
+	// to an entity when it is hit by the projectile.
+	KnockBackHeightAddend	float64
+	// Particle is a particle that is spawned when the projectile hits a
+	// target, either a block or an entity. No particle is spawned if left nil.
+	Particle	world.Particle
+	// ParticleCount is the amount of particles that should be spawned if
+	// Particle is not nil. ParticleCount will be set to 1 if Particle is not
+	// nil and ParticleCount is 0.
+	ParticleCount	int
+	// Sound is a sound that is played when the projectile hits a target, either
+	// a block or an entity. No sound is played if left nil.
+	Sound	world.Sound
+	// Critical specifies if the projectile is critical. This spawns critical
+	// hit particles behind the projectile and causes it to deal up to 50% more
+	// damage.
+	Critical	bool
+	// Hit is a function that is called when the projectile Ent hits a target
+	// (the trace.Result). The target is either of the type trace.EntityResult
+	// or trace.BlockResult. Hit may be set to run additional behaviour when a
+	// projectile hits a target.
+	Hit	func(e *Ent, tx *world.Tx, target trace.Result)
+	// SurviveBlockCollision specifies if a projectile with this
+	// ProjectileBehaviour should survive collision with a block. If set to
+	// false, the projectile will break when hitting a block (like a snowball).
+	// If set to true, the projectile will survive like an arrow does.
+	SurviveBlockCollision	bool
+	// BlockCollisionVelocityMultiplier is the multiplier used to modify the
+	// velocity of a projectile that has SurviveBlockCollision set to true. The
+	// default, 0, will cause the projectile to lose its velocity completely. A
+	// multiplier such as 0.5 will reduce the projectile's velocity, but retain
+	// half of it after inverting the axis on which the projectile collided.
+	BlockCollisionVelocityMultiplier	float64
+	// DisablePickup specifies if picking up the projectile should be disabled,
+	// which is relevant in the case SurviveBlockCollision is set to true. Some
+	// projectiles, such as arrows, cannot be picked up if they are shot by
+	// monsters like skeletons.
+	DisablePickup	bool
+	// PickupItem is the item that is given to a player when it picks up this
+	// projectile. If left as an empty item.Stack, no item is given upon pickup.
+	PickupItem	item.Stack
+	// CollisionPosition specifies the position that the projectile is stuck
+	// in. If non-empty, the entity will not move.
+	CollisionPosition	cube.Pos
+}
+```
+
+
+
+ProjectileBehaviourConfig allows the configuration of projectiles. Calling
+ProjectileBehaviourConfig.New() creates a ProjectileBehaviour using these
+settings.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Owner: {
+      description: '',
+      type: '*world.EntityHandle',
+      typeLink: '../world.mdx#entityhandle',
+    },
+    Gravity: {
+      description: 'Gravity is the amount of Y velocity subtracted every tick.',
+      type: 'float64',
+    },
+    Drag: {
+      description: 'Drag is used to reduce all axes of the velocity every tick. Velocity is multiplied with (1-Drag) every tick.',
+      type: 'float64',
+    },
+    Damage: {
+      description: 'Damage specifies the base damage dealt by the Projectile. If set to a negative number, entities hit are not hurt at all and are not knocked back. The base damage is multiplied with the velocity of the projectile to calculate the final damage of the projectile.',
+      type: 'float64',
+    },
+    Potion: {
+      description: 'Potion is the potion effect that is applied to an entity when the projectile hits it.',
+      type: 'potion.Potion',
+      typeLink: '../item-potion.mdx#potion',
+    },
+    KnockBackForceAddend: {
+      description: 'KnockBackForceAddend is the additional horizontal velocity that is applied to an entity when it is hit by the projectile.',
+      type: 'float64',
+    },
+    KnockBackHeightAddend: {
+      description: 'KnockBackHeightAddend is the additional vertical velocity that is applied to an entity when it is hit by the projectile.',
+      type: 'float64',
+    },
+    Particle: {
+      description: 'Particle is a particle that is spawned when the projectile hits a target, either a block or an entity. No particle is spawned if left nil.',
+      type: 'world.Particle',
+      typeLink: '../world.mdx#particle',
+    },
+    ParticleCount: {
+      description: 'ParticleCount is the amount of particles that should be spawned if Particle is not nil. ParticleCount will be set to 1 if Particle is not nil and ParticleCount is 0.',
+      type: 'int',
+    },
+    Sound: {
+      description: 'Sound is a sound that is played when the projectile hits a target, either a block or an entity. No sound is played if left nil.',
+      type: 'world.Sound',
+      typeLink: '../world.mdx#sound',
+    },
+    Critical: {
+      description: 'Critical specifies if the projectile is critical. This spawns critical hit particles behind the projectile and causes it to deal up to 50% more damage.',
+      type: 'bool',
+    },
+    Hit: {
+      description: 'Hit is a function that is called when the projectile Ent hits a target (the trace.Result). The target is either of the type trace.EntityResult or trace.BlockResult. Hit may be set to run additional behaviour when a projectile hits a target.',
+      type: 'func(e *Ent, tx *world.Tx, target trace.Result)',
+    },
+    SurviveBlockCollision: {
+      description: 'SurviveBlockCollision specifies if a projectile with this ProjectileBehaviour should survive collision with a block. If set to false, the projectile will break when hitting a block (like a snowball). If set to true, the projectile will survive like an arrow does.',
+      type: 'bool',
+    },
+    BlockCollisionVelocityMultiplier: {
+      description: 'BlockCollisionVelocityMultiplier is the multiplier used to modify the velocity of a projectile that has SurviveBlockCollision set to true. The default, 0, will cause the projectile to lose its velocity completely. A multiplier such as 0.5 will reduce the projectile\'s velocity, but retain half of it after inverting the axis on which the projectile collided.',
+      type: 'float64',
+    },
+    DisablePickup: {
+      description: 'DisablePickup specifies if picking up the projectile should be disabled, which is relevant in the case SurviveBlockCollision is set to true. Some projectiles, such as arrows, cannot be picked up if they are shot by monsters like skeletons.',
+      type: 'bool',
+    },
+    PickupItem: {
+      description: 'PickupItem is the item that is given to a player when it picks up this projectile. If left as an empty item.Stack, no item is given upon pickup.',
+      type: 'item.Stack',
+      typeLink: '../item.mdx#stack',
+    },
+    CollisionPosition: {
+      description: 'CollisionPosition specifies the position that the projectile is stuck in. If non-empty, the entity will not move.',
+      type: 'cube.Pos',
+      typeLink: '../block-cube.mdx#pos',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Apply">
+```go
+func (ProjectileBehaviourConfig) Apply(data *world.EntityData)
+```
+
+</Accordion>
+
+<Accordion title="New">
+```go
+func (ProjectileBehaviourConfig) New() *ProjectileBehaviour
+```
+
+New creates a new ProjectileBehaviour using conf. The owner passed may be nil
+if the projectile does not have one.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ProjectileDamageSource
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ProjectileDamageSource struct {
+	// Projectile and Owner are the world.Entity that dealt the damage and
+	// the one that fired the projectile respectively.
+	Projectile, Owner world.Entity
+}
+```
+
+
+
+ProjectileDamageSource is used for damage caused by a projectile.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Projectile: {
+      description: 'Projectile and Owner are the world.Entity that dealt the damage and the one that fired the projectile respectively.',
+      type: 'world.Entity',
+      typeLink: '../world.mdx#entity',
+    },
+    Owner: {
+      description: 'Projectile and Owner are the world.Entity that dealt the damage and the one that fired the projectile respectively.',
+      type: 'world.Entity',
+      typeLink: '../world.mdx#entity',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AffectedByEnchantment">
+```go
+func (ProjectileDamageSource) AffectedByEnchantment(e item.EnchantmentType) bool
+```
+
+</Accordion>
+
+<Accordion title="Fire">
+```go
+func (ProjectileDamageSource) Fire() bool
+```
+
+</Accordion>
+
+<Accordion title="IgnoreTotem">
+```go
+func (ProjectileDamageSource) IgnoreTotem() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByArmour">
+```go
+func (ProjectileDamageSource) ReducedByArmour() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByResistance">
+```go
+func (ProjectileDamageSource) ReducedByResistance() bool
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Solidifiable
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Solidifiable interface {
+	// Solidifies returns whether the falling block can solidify at the position it is currently in. If so,
+	// the block will immediately stop falling.
+	Solidifies(pos cube.Pos, tx *world.Tx) bool
+}
+```
+
+
+
+Solidifiable represents a block that can solidify by specific adjacent blocks. An example is concrete
+powder, which can turn into concrete by touching water.
+
+
+
+
+
+
+---
+
+### SplashableBlock
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type SplashableBlock interface {
+	world.Block
+	// Splash is called when a water bottle splashes onto a block.
+	Splash(tx *world.Tx, pos cube.Pos)
+}
+```
+
+
+
+SplashableBlock is a block that can be splashed with a splash bottle.
+
+
+
+
+
+
+---
+
+### SplashableEntity
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type SplashableEntity interface {
+	world.Entity
+	// Splash is called when a water bottle splashes onto an entity.
+	Splash(tx *world.Tx, pos mgl64.Vec3)
+}
+```
+
+
+
+SplashableEntity is an entity that can be splashed with a splash bottle.
+
+
+
+
+
+
+---
+
+### StationaryBehaviour
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type StationaryBehaviour struct {
+	conf	StationaryBehaviourConfig
+	close	bool
+}
+```
+
+
+
+StationaryBehaviour implements the behaviour of an entity that is unable to
+move, such as a text entity or an area effect cloud. Applying velocity to
+such entities will not move them.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Immobile">
+```go
+func (*StationaryBehaviour) Immobile() bool
+```
+
+Immobile always returns true.
+
+</Accordion>
+
+<Accordion title="Tick">
+```go
+func (*StationaryBehaviour) Tick(e *Ent, tx *world.Tx) *Movement
+```
+
+Tick checks if the entity should be closed and runs whatever additional
+behaviour the entity might require.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### StationaryBehaviourConfig
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type StationaryBehaviourConfig struct {
+	// ExistenceDuration is the duration that an entity with this behaviour
+	// should last. Once this time expires, the entity is closed. If
+	// ExistenceDuration is 0, the entity will never expire automatically.
+	ExistenceDuration	time.Duration
+	// SpawnSounds is a slice of sounds to be played upon the spawning of the
+	// entity.
+	SpawnSounds	[]world.Sound
+	// Tick is a function called every world tick. It may be used to implement
+	// additional behaviour for stationary entities.
+	Tick	func(e *Ent, tx *world.Tx)
+}
+```
+
+
+
+StationaryBehaviourConfig holds settings that influence the way
+StationaryBehaviour operates. StationaryBehaviourConfig.New() may be called
+to create a new behaviour with this config.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    ExistenceDuration: {
+      description: 'ExistenceDuration is the duration that an entity with this behaviour should last. Once this time expires, the entity is closed. If ExistenceDuration is 0, the entity will never expire automatically.',
+      type: 'time.Duration',
+    },
+    SpawnSounds: {
+      description: 'SpawnSounds is a slice of sounds to be played upon the spawning of the entity.',
+      type: '[]world.Sound',
+      typeLink: '../world.mdx#sound',
+    },
+    Tick: {
+      description: 'Tick is a function called every world tick. It may be used to implement additional behaviour for stationary entities.',
+      type: 'func(e *Ent, tx *world.Tx)',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Apply">
+```go
+func (StationaryBehaviourConfig) Apply(data *world.EntityData)
+```
+
+</Accordion>
+
+<Accordion title="New">
+```go
+func (StationaryBehaviourConfig) New() *StationaryBehaviour
+```
+
+New creates a StationaryBehaviour using the settings provided in conf.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### SuffocationDamageSource
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type SuffocationDamageSource struct{}
+```
+
+
+
+SuffocationDamageSource is used for damage caused by an entity
+suffocating in a block.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Fire">
+```go
+func (SuffocationDamageSource) Fire() bool
+```
+
+</Accordion>
+
+<Accordion title="IgnoreTotem">
+```go
+func (SuffocationDamageSource) IgnoreTotem() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByArmour">
+```go
+func (SuffocationDamageSource) ReducedByArmour() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByResistance">
+```go
+func (SuffocationDamageSource) ReducedByResistance() bool
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### SwingArmAction
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type SwingArmAction struct{ action }
+```
+
+
+
+SwingArmAction is a world.EntityAction that makes an entity or player swing its arm.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    action: {
+      description: '',
+      type: 'action',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EntityAction">
+```go
+func (SwingArmAction) EntityAction()
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### TotemUseAction
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type TotemUseAction struct{ action }
+```
+
+
+
+TotemUseAction is a world.EntityAction that displays the totem use particles and animation.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    action: {
+      description: '',
+      type: 'action',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EntityAction">
+```go
+func (TotemUseAction) EntityAction()
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### VoidDamageSource
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type VoidDamageSource struct{}
+```
+
+
+
+VoidDamageSource is used for damage caused by an entity being in the
+void.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Fire">
+```go
+func (VoidDamageSource) Fire() bool
+```
+
+</Accordion>
+
+<Accordion title="IgnoreTotem">
+```go
+func (VoidDamageSource) IgnoreTotem() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByArmour">
+```go
+func (VoidDamageSource) ReducedByArmour() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByResistance">
+```go
+func (VoidDamageSource) ReducedByResistance() bool
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

@@ -1,0 +1,275 @@
+---
+title: "nbtconv"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# nbtconv
+
+
+```go
+import "github.com/df-mc/dragonfly/server/internal/nbtconv"
+```
+
+
+
+
+
+
+
+
+
+## Functions
+
+<Accordions>
+
+<Accordion title="Block">
+```go
+func Block(m map[string]any, k string) world.Block
+```
+
+
+Block decodes the data of a block into a world.Block.
+
+</Accordion>
+
+<Accordion title="Bool">
+```go
+func Bool(m map[string]any, k string) bool
+```
+
+
+Bool reads a uint8 value from a map at key k and returns true if it equals 1.
+
+</Accordion>
+
+<Accordion title="Float32">
+```go
+func Float32(m map[string]any, k string) float32
+```
+
+
+Float32 reads a float32 value from a map at key k.
+
+</Accordion>
+
+<Accordion title="Float64">
+```go
+func Float64(m map[string]any, k string) float64
+```
+
+
+Float64 reads a float64 value from a map at key k.
+
+</Accordion>
+
+<Accordion title="Int16">
+```go
+func Int16(m map[string]any, k string) int16
+```
+
+
+Int16 reads an int16 value from a map at key k.
+
+</Accordion>
+
+<Accordion title="Int32">
+```go
+func Int32(m map[string]any, k string) int32
+```
+
+
+Int32 reads an int32 value from a map at key k.
+
+</Accordion>
+
+<Accordion title="Int32FromRGBA">
+```go
+func Int32FromRGBA(x color.RGBA) int32
+```
+
+
+Int32FromRGBA converts a color.RGBA into an int32. These int32s are present in, for example, signs.
+
+</Accordion>
+
+<Accordion title="Int64">
+```go
+func Int64(m map[string]any, k string) int64
+```
+
+
+Int64 reads an int16 value from a map at key k.
+
+</Accordion>
+
+<Accordion title="InvFromNBT">
+```go
+func InvFromNBT(inv *inventory.Inventory, items []any)
+```
+
+
+InvFromNBT decodes the data of an NBT slice into the inventory passed.
+
+</Accordion>
+
+<Accordion title="InvToNBT">
+```go
+func InvToNBT(inv *inventory.Inventory) []map[string]any
+```
+
+
+InvToNBT encodes an inventory to a data slice which may be encoded as NBT.
+
+</Accordion>
+
+<Accordion title="Item">
+```go
+func Item(data map[string]any, s *item.Stack) item.Stack
+```
+
+
+Item decodes the data of an item into an item stack.
+
+</Accordion>
+
+<Accordion title="MapItem">
+```go
+func MapItem(x map[string]any, k string) item.Stack
+```
+
+
+MapItem converts an item's name, count, damage (and properties when it is a block) in a map obtained by decoding NBT
+to a world.Item.
+
+</Accordion>
+
+<Accordion title="Pos">
+```go
+func Pos(x map[string]any, k string) cube.Pos
+```
+
+
+Pos converts x, y and z values in an NBT map to a cube.Pos.
+
+</Accordion>
+
+<Accordion title="PosToInt32Slice">
+```go
+func PosToInt32Slice(x cube.Pos) []int32
+```
+
+
+PosToInt32Slice converts a cube.Pos to a []int32 with 3 elements.
+
+</Accordion>
+
+<Accordion title="RGBAFromInt32">
+```go
+func RGBAFromInt32(x int32) color.RGBA
+```
+
+
+RGBAFromInt32 converts an int32 into a color.RGBA. These int32s are present in, for example, signs.
+
+</Accordion>
+
+<Accordion title="Rotation">
+```go
+func Rotation(m map[string]any) cube.Rotation
+```
+
+
+Rotation reads a cube.Rotation from the map passed.
+
+</Accordion>
+
+<Accordion title="Slice">
+```go
+func Slice(m map[string]any, k string) []any
+```
+
+
+Slice reads a []any value from a map at key k.
+
+</Accordion>
+
+<Accordion title="String">
+```go
+func String(m map[string]any, k string) string
+```
+
+
+String reads a string value from a map at key k.
+
+</Accordion>
+
+<Accordion title="TickDuration">
+```go
+func TickDuration(m map[string]any, k string) time.Duration
+```
+
+
+TickDuration reads a uint8/int16/in32 value from a map at key k and converts
+it from ticks to a time.Duration.
+
+</Accordion>
+
+<Accordion title="Uint8">
+```go
+func Uint8(m map[string]any, k string) uint8
+```
+
+
+Uint8 reads a uint8 value from a map at key k.
+
+</Accordion>
+
+<Accordion title="Vec3">
+```go
+func Vec3(x map[string]any, k string) mgl64.Vec3
+```
+
+
+Vec3 converts x, y and z values in an NBT map to an mgl64.Vec3.
+
+</Accordion>
+
+<Accordion title="Vec3ToFloat32Slice">
+```go
+func Vec3ToFloat32Slice(x mgl64.Vec3) []float32
+```
+
+
+Vec3ToFloat32Slice converts an mgl64.Vec3 to a []float32 with 3 elements.
+
+</Accordion>
+
+<Accordion title="WriteBlock">
+```go
+func WriteBlock(b world.Block) map[string]any
+```
+
+
+WriteBlock encodes a world.Block into a map that can be encoded using NBT.
+
+</Accordion>
+
+<Accordion title="WriteItem">
+```go
+func WriteItem(s item.Stack, disk bool) map[string]any
+```
+
+
+WriteItem encodes an item stack into a map that can be encoded using NBT.
+
+</Accordion>
+
+</Accordions>
+
+
+

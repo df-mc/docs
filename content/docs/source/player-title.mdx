@@ -1,0 +1,176 @@
+---
+title: "title"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# title
+
+
+```go
+import "github.com/df-mc/dragonfly/server/player/title"
+```
+
+
+
+
+
+
+
+
+
+
+
+## Types
+
+
+### Title
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Title struct {
+	text, subtitle, actionText			string
+	fadeInDuration, fadeOutDuration, duration	time.Duration
+}
+```
+
+
+
+Title represents a title that may be sent to the player. The title will show up as large text in the middle
+of the screen, with optional subtitle and action text.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="ActionText">
+```go
+func (Title) ActionText() string
+```
+
+ActionText returns the action text added to the title. This text is roughly the same as sending a tip, but
+will synchronise with the title. By default, the action text is empty.
+
+</Accordion>
+
+<Accordion title="Duration">
+```go
+func (Title) Duration() time.Duration
+```
+
+Duration returns the duration that the title will be visible for, without fading in or out. By default,
+this is two seconds.
+
+</Accordion>
+
+<Accordion title="FadeInDuration">
+```go
+func (Title) FadeInDuration() time.Duration
+```
+
+FadeInDuration returns the duration that the fade-in of the title takes. By default, this is a quarter of
+a second.
+
+</Accordion>
+
+<Accordion title="FadeOutDuration">
+```go
+func (Title) FadeOutDuration() time.Duration
+```
+
+FadeOutDuration returns the duration that the fade-out of the title takes.By default, this is a quarter of
+a second.
+
+</Accordion>
+
+<Accordion title="Subtitle">
+```go
+func (Title) Subtitle() string
+```
+
+Subtitle returns the subtitle of the title, as passed to SetSubtitle. Subtitle returns an empty string if
+no subtitle was previously set.
+
+</Accordion>
+
+<Accordion title="Text">
+```go
+func (Title) Text() string
+```
+
+Text returns the text of the title, as passed to New when created.
+
+</Accordion>
+
+<Accordion title="WithActionText">
+```go
+func (Title) WithActionText(text ...any) Title
+```
+
+WithActionText sets the action text of the title. This text is roughly the same as sending a tip/popup, but
+will synchronise with the title.
+SetActionText will format the text passed using the formatting rules of fmt.Sprintln, but without newline.
+The new Title with the action text is returned.
+
+</Accordion>
+
+<Accordion title="WithDuration">
+```go
+func (Title) WithDuration(d time.Duration) Title
+```
+
+WithDuration sets the duration that the title will be visible for without fading in or fading out.
+The new Title with the duration is returned.
+
+</Accordion>
+
+<Accordion title="WithFadeInDuration">
+```go
+func (Title) WithFadeInDuration(d time.Duration) Title
+```
+
+WithFadeInDuration sets the duration that the title takes to fade in on the screen.
+The new Title with the fade-in duration is returned.
+
+</Accordion>
+
+<Accordion title="WithFadeOutDuration">
+```go
+func (Title) WithFadeOutDuration(d time.Duration) Title
+```
+
+WithFadeOutDuration sets the duration that the title takes to fade out of the screen.
+The new Title with the fade-out duration is returned.
+
+</Accordion>
+
+<Accordion title="WithSubtitle">
+```go
+func (Title) WithSubtitle(text ...any) Title
+```
+
+WithSubtitle sets the subtitle of the title. The text passed will be formatted according to the formatting
+rules of fmt.Sprintln, but without the newline.
+The subtitle is shown under the title in a somewhat smaller font.
+The new Title with the subtitle is returned.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

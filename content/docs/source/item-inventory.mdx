@@ -1,0 +1,745 @@
+---
+title: "inventory"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# inventory
+
+
+```go
+import "github.com/df-mc/dragonfly/server/item/inventory"
+```
+
+
+
+
+
+
+
+## Variables
+
+<Accordions>
+
+<Accordion title="ErrSlotOutOfRange">
+```go
+var ErrSlotOutOfRange 
+```
+
+ErrSlotOutOfRange is returned by any methods on inventory when a slot is passed which is not within the
+range of valid values for the inventory.
+
+</Accordion>
+
+</Accordions>
+
+
+
+
+
+## Types
+
+
+### Armour
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Armour struct {
+	inv *Inventory
+}
+```
+
+
+
+Armour represents an inventory for armour. It has 4 slots, one for a helmet, chestplate, leggings and
+boots respectively. NewArmour() must be used to create a valid armour inventory.
+Armour inventories, like normal Inventories, are safe for concurrent usage.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Boots">
+```go
+func (*Armour) Boots() item.Stack
+```
+
+Boots returns the item stack set as boots in the inventory.
+
+</Accordion>
+
+<Accordion title="Chestplate">
+```go
+func (*Armour) Chestplate() item.Stack
+```
+
+Chestplate returns the item stack set as chestplate in the inventory.
+
+</Accordion>
+
+<Accordion title="Clear">
+```go
+func (*Armour) Clear() []item.Stack
+```
+
+Clear clears the armour inventory, removing all items currently present.
+
+</Accordion>
+
+<Accordion title="Close">
+```go
+func (*Armour) Close() error
+```
+
+Close closes the armour inventory, removing the slot change function.
+
+</Accordion>
+
+<Accordion title="Damage">
+```go
+func (*Armour) Damage(dmg float64, f DamageFunc)
+```
+
+Damage deals damage (hearts) to Armour. The resulting item damage depends on the
+dmg passed and the DamageFunc used.
+
+</Accordion>
+
+<Accordion title="DamageReduction">
+```go
+func (*Armour) DamageReduction(dmg float64, src world.DamageSource) float64
+```
+
+DamageReduction returns the amount of damage that is reduced by the Armour for
+an amount of damage and damage source. The value returned takes into account
+the armour itself and its enchantments.
+
+</Accordion>
+
+<Accordion title="Handle">
+```go
+func (*Armour) Handle(h Handler)
+```
+
+Handle assigns a Handler to an Armour inventory so that its methods are called for the respective events. Nil may be
+passed to set the default NopHandler.
+Handle is the equivalent of calling (*Armour).Inventory().H.
+
+</Accordion>
+
+<Accordion title="Helmet">
+```go
+func (*Armour) Helmet() item.Stack
+```
+
+Helmet returns the item stack set as helmet in the inventory.
+
+</Accordion>
+
+<Accordion title="HighestEnchantmentLevel">
+```go
+func (*Armour) HighestEnchantmentLevel(t item.EnchantmentType) int
+```
+
+HighestEnchantmentLevel looks up the highest level of an item.EnchantmentType
+that any of the Armour items have and returns it, or 0 if none of the items
+have the enchantment.
+
+</Accordion>
+
+<Accordion title="Inventory">
+```go
+func (*Armour) Inventory() *Inventory
+```
+
+Inventory returns the underlying Inventory instance.
+
+</Accordion>
+
+<Accordion title="Items">
+```go
+func (*Armour) Items() []item.Stack
+```
+
+Items returns a slice of all non-empty armour items equipped.
+
+</Accordion>
+
+<Accordion title="KnockBackResistance">
+```go
+func (*Armour) KnockBackResistance() float64
+```
+
+KnockBackResistance returns the combined knock back resistance of all Armour
+items. A value of 0 means normal knock back force, while a value of 1 means
+all knock back is ignored.
+
+</Accordion>
+
+<Accordion title="Leggings">
+```go
+func (*Armour) Leggings() item.Stack
+```
+
+Leggings returns the item stack set as leggings in the inventory.
+
+</Accordion>
+
+<Accordion title="Set">
+```go
+func (*Armour) Set(helmet, chestplate, leggings, boots item.Stack)
+```
+
+Set sets all individual pieces of armour in one go. It is equivalent to calling SetHelmet, SetChestplate, SetLeggings
+and SetBoots sequentially.
+
+</Accordion>
+
+<Accordion title="SetBoots">
+```go
+func (*Armour) SetBoots(boots item.Stack)
+```
+
+SetBoots sets the item stack passed as the boots in the inventory.
+
+</Accordion>
+
+<Accordion title="SetChestplate">
+```go
+func (*Armour) SetChestplate(chestplate item.Stack)
+```
+
+SetChestplate sets the item stack passed as the chestplate in the inventory.
+
+</Accordion>
+
+<Accordion title="SetHelmet">
+```go
+func (*Armour) SetHelmet(helmet item.Stack)
+```
+
+SetHelmet sets the item stack passed as the helmet in the inventory.
+
+</Accordion>
+
+<Accordion title="SetLeggings">
+```go
+func (*Armour) SetLeggings(leggings item.Stack)
+```
+
+SetLeggings sets the item stack passed as the leggings in the inventory.
+
+</Accordion>
+
+<Accordion title="Slots">
+```go
+func (*Armour) Slots() []item.Stack
+```
+
+Slots returns all items (including) air of the armour inventory in the order of helmet, chestplate, leggings,
+boots.
+
+</Accordion>
+
+<Accordion title="String">
+```go
+func (*Armour) String() string
+```
+
+String converts the armour to a readable string representation.
+
+</Accordion>
+
+<Accordion title="ThornsDamage">
+```go
+func (*Armour) ThornsDamage(f DamageFunc) float64
+```
+
+ThornsDamage checks if any of the Armour items are enchanted with thorns. If
+this is the case and the thorns enchantment activates (15% chance per level),
+a random Armour piece is damaged. The damage to be dealt to the attacker is
+returned.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Context
+
+
+
+
+```go
+type Context = event.Context[Holder]
+```
+
+
+
+
+
+
+
+
+---
+
+### DamageFunc
+
+
+
+
+```go
+type DamageFunc func(s item.Stack, d int) item.Stack
+```
+
+
+
+DamageFunc is a function that deals d damage points to an item stack s. The
+resulting item.Stack is returned. Depending on the game mode of a player,
+damage may not be dealt at all.
+
+
+
+
+
+
+---
+
+### Handler
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Handler interface {
+	// HandleTake handles an item.Stack being taken from a slot in the inventory. This item might be the whole stack or
+	// part of the stack currently present in that slot.
+	HandleTake(ctx *Context, slot int, it item.Stack)
+	// HandlePlace handles an item.Stack being placed in a slot of the inventory. It might either be added to an empty
+	// slot or a slot that contains an item of the same type.
+	HandlePlace(ctx *Context, slot int, it item.Stack)
+	// HandleDrop handles the dropping of an item.Stack in a slot out of the inventory.
+	HandleDrop(ctx *Context, slot int, it item.Stack)
+}
+```
+
+
+
+Handler is a type that may be used to handle actions performed on an inventory by a player.
+
+
+
+
+
+
+---
+
+### Holder
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Holder interface{}
+```
+
+
+
+
+
+
+
+
+---
+
+### Inventory
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Inventory struct {
+	mu	sync.RWMutex
+	h	Handler
+	slots	[]item.Stack
+
+	f		SlotFunc
+	validator	SlotValidatorFunc
+}
+```
+
+
+
+Inventory represents an inventory containing items. These inventories may be carried by entities or may be
+held by blocks such as chests.
+The size of an inventory may be specified upon construction, but cannot be changed after. The zero value of
+an inventory is invalid. Use New() to obtain a new inventory.
+Inventory is safe for concurrent usage: Its values are protected by a mutex.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AddItem">
+```go
+func (*Inventory) AddItem(it item.Stack) (n int, err error)
+```
+
+AddItem attempts to add an item to the inventory. It does so in a couple of steps: It first iterates over
+the inventory to make sure no existing stacks of the same type exist. If these stacks do exist, the item
+added is first added on top of those stacks to make sure they are fully filled.
+If no existing stacks with leftover space are left, empty slots will be filled up with the remainder of the
+item added.
+If the item could not be fully added to the inventory, an error is returned along with the count that was
+added to the inventory.
+
+</Accordion>
+
+<Accordion title="Clear">
+```go
+func (*Inventory) Clear() []item.Stack
+```
+
+Clear clears the entire inventory. All non-zero items are returned.
+
+</Accordion>
+
+<Accordion title="Clone">
+```go
+func (*Inventory) Clone(f SlotFunc) *Inventory
+```
+
+Clone copies an Inventory and returns it, calling the SlotFunc passed for any
+slots changed in the new inventory.
+
+</Accordion>
+
+<Accordion title="Close">
+```go
+func (*Inventory) Close() error
+```
+
+Close closes the inventory, freeing the function called for every slot change. It also clears any items
+that may currently be in the inventory.
+The returned error is always nil.
+
+</Accordion>
+
+<Accordion title="ContainsItem">
+```go
+func (*Inventory) ContainsItem(it item.Stack) bool
+```
+
+ContainsItem checks if the Inventory contains an item.Stack. It will visit all slots in the Inventory until it finds
+at enough items. If enough were found, true is returned.
+
+</Accordion>
+
+<Accordion title="ContainsItemFunc">
+```go
+func (*Inventory) ContainsItemFunc(n int, comparable func(stack item.Stack) bool) bool
+```
+
+ContainsItemFunc checks if the Inventory contains at least n items. It will visit all slots in the Inventory until it
+finds n items on which the comparable function returns true. ContainsItemFunc returns true if this is the case.
+
+</Accordion>
+
+<Accordion title="Empty">
+```go
+func (*Inventory) Empty() bool
+```
+
+Empty checks if the inventory is fully empty: It iterates over the inventory and makes sure every stack in
+it is empty.
+
+</Accordion>
+
+<Accordion title="First">
+```go
+func (*Inventory) First(item item.Stack) (int, bool)
+```
+
+First returns the first slot with an item if found. Second return value describes whether the item was found.
+
+</Accordion>
+
+<Accordion title="FirstEmpty">
+```go
+func (*Inventory) FirstEmpty() (int, bool)
+```
+
+FirstEmpty returns the first empty slot if found. Second return value describes whether an empty slot was found.
+
+</Accordion>
+
+<Accordion title="FirstFunc">
+```go
+func (*Inventory) FirstFunc(comparable func(stack item.Stack) bool) (int, bool)
+```
+
+FirstFunc finds the first slot with an item.Stack that results in the comparable function passed returning true. The
+function returns false if no such item was found.
+
+</Accordion>
+
+<Accordion title="Handle">
+```go
+func (*Inventory) Handle(h Handler)
+```
+
+Handle assigns a Handler to an Inventory so that its methods are called for the respective events. Nil may be passed
+to set the default NopHandler.
+
+</Accordion>
+
+<Accordion title="Handler">
+```go
+func (*Inventory) Handler() Handler
+```
+
+Handler returns the Handler currently assigned to the Inventory. This is the NopHandler by default.
+
+</Accordion>
+
+<Accordion title="Item">
+```go
+func (*Inventory) Item(slot int) (item.Stack, error)
+```
+
+Item attempts to obtain an item from a specific slot in the inventory. If an item was present in that slot,
+the item is returned and the error is nil. If no item was present in the slot, a Stack with air as its item
+and a count of 0 is returned. Stack.Empty() may be called to check if this is the case.
+Item only returns an error if the slot passed is out of range. (0 &lt;= slot &lt; inventory.Size())
+
+</Accordion>
+
+<Accordion title="Items">
+```go
+func (*Inventory) Items() []item.Stack
+```
+
+Items returns a list of all contents of the inventory. This method excludes air items, so the method
+only ever returns item stacks which actually represent an item.
+
+</Accordion>
+
+<Accordion title="Merge">
+```go
+func (*Inventory) Merge(inv2 *Inventory, f func(int, item.Stack, item.Stack)) *Inventory
+```
+
+Merge merges two inventories into one. The function passed is called for every slot change in the new inventory.
+
+</Accordion>
+
+<Accordion title="RemoveItem">
+```go
+func (*Inventory) RemoveItem(it item.Stack) error
+```
+
+RemoveItem attempts to remove an item from the inventory. It will visit all slots in the inventory and
+empties them until it.Count() items have been removed from the inventory.
+If less than it.Count() items were removed from the inventory, an error is returned.
+
+</Accordion>
+
+<Accordion title="RemoveItemFunc">
+```go
+func (*Inventory) RemoveItemFunc(n int, comparable func(stack item.Stack) bool) error
+```
+
+RemoveItemFunc removes up to n items from the Inventory. It will visit all slots in the inventory and empties them
+until n items have been removed from the inventory, assuming the comparable function returns true for the slots
+visited. No items will be deducted from slots if the comparable function returns false.
+If less than n items were removed, an error is returned.
+
+</Accordion>
+
+<Accordion title="SetItem">
+```go
+func (*Inventory) SetItem(slot int, item item.Stack) error
+```
+
+SetItem sets a stack of items to a specific slot in the inventory. If an item is already present in the
+slot, that item will be overwritten.
+SetItem will return an error if the slot passed is out of range. (0 &lt;= slot &lt; inventory.Size())
+
+</Accordion>
+
+<Accordion title="Size">
+```go
+func (*Inventory) Size() int
+```
+
+Size returns the size of the inventory. It is always the same value as that passed in the call to New() and
+is always at least 1.
+
+</Accordion>
+
+<Accordion title="SlotFunc">
+```go
+func (*Inventory) SlotFunc(f SlotFunc)
+```
+
+SlotFunc changes the function called when a slot in the inventory is changed.
+
+</Accordion>
+
+<Accordion title="SlotValidatorFunc">
+```go
+func (*Inventory) SlotValidatorFunc(f SlotValidatorFunc)
+```
+
+SlotValidatorFunc changes the function that limits item placement in the inventory slot.
+
+</Accordion>
+
+<Accordion title="Slots">
+```go
+func (*Inventory) Slots() []item.Stack
+```
+
+Slots returns the all slots in the inventory as a slice. The index in the slice is the slot of the inventory that a
+specific item.Stack is in. Note that this item.Stack might be empty.
+
+</Accordion>
+
+<Accordion title="String">
+```go
+func (*Inventory) String() string
+```
+
+String implements the fmt.Stringer interface.
+
+</Accordion>
+
+<Accordion title="Swap">
+```go
+func (*Inventory) Swap(slotA, slotB int) error
+```
+
+Swap swaps the items between two slots. Returns an error if either slot A or B are invalid.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### NopHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type NopHandler struct{}
+```
+
+
+
+NopHandler is an implementation of Handler that does not run any code in any of its methods. It is the default
+Handler of an Inventory.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="HandleDrop">
+```go
+func (NopHandler) HandleDrop(*Context, int, item.Stack)
+```
+
+</Accordion>
+
+<Accordion title="HandlePlace">
+```go
+func (NopHandler) HandlePlace(*Context, int, item.Stack)
+```
+
+</Accordion>
+
+<Accordion title="HandleTake">
+```go
+func (NopHandler) HandleTake(*Context, int, item.Stack)
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### SlotFunc
+
+
+
+
+```go
+type SlotFunc func(slot int, before, after item.Stack)
+```
+
+
+
+SlotFunc is a function called for each item changed in an Inventory.
+
+
+
+
+
+
+---
+
+### SlotValidatorFunc
+
+
+
+
+```go
+type SlotValidatorFunc func(s item.Stack, slot int) bool
+```
+
+
+
+SlotValidatorFunc is a function that limits changes in the Inventory slot.
+
+
+
+
+
+
+---
+
+

@@ -1,0 +1,305 @@
+---
+title: Concurrency Basics
+icon: Cpu
+---
+
+Go is built for concurrency. Dragonfly takes full advantage of this—things that would block your server in PocketMine-MP can run in parallel without you even thinking about it.
+
+If you've never used goroutines, this section is critical. PM/Nukkit developers aren't used to this model, and it's one of the biggest differences.
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+## The Problem with PM/Nukkit vs Goroutines
+
+PocketMine-MP runs on a single thread. To avoid freezing the server, you have to use complex `AsyncTask` classes. In Go, you just use `go func()`.
+
+<Tabs items={["PocketMine (PHP)", "Dragonfly (Go)"]}>
+  <Tab value="PocketMine (PHP)">
+    You have to create a separate class, manage state manually, and serialize data.
+
+    ```php title="DatabaseQueryTask.php"
+    class DatabaseQueryTask extends AsyncTask {
+        private string $uuid;
+
+        public function __construct(string $uuid) {
+            $this->uuid = $uuid;
+        }
+
+        public function onRun(): void {
+            // Runs on a background thread
+            $this->setResult($this->queryDatabase($this->uuid));
+        }
+
+        public function onCompletion(): void {
+            // Runs on the main thread
+            $player = Server::getInstance()->getPlayerExact($this->uuid);
+            if ($player !== null) {
+                $player->sendMessage("Your data: " . $this->getResult());
+            }
+        }
+    }
+
+    // Schedule it
+    $server->getAsyncPool()->submitTask(new DatabaseQueryTask($player->getUniqueId()));
+    ```
+  </Tab>
+  <Tab value="Dragonfly (Go)">
+    You use a goroutine. It's just a function that runs concurrently.
+
+    ```go title="handler.go"
+    func (h *LobbyHandler) HandleJoin() {
+        p := h.player
+        
+        go func() {
+            // This runs concurrently
+            data := queryDatabase(p.UUID())
+            
+            // You can use the player directly (mostly safe in Dragonfly)
+            p.SendMessage("Your data: " + data)
+        }()
+    }
+    ```
+    
+    Two lines. No serialization, no splitting logic. You just write linear code.
+  </Tab>
+</Tabs>
+
+## Why This Matters for Dragonfly
+
+Dragonfly runs many things concurrently by default:
+- Each player's handler runs in its own goroutine
+- World ticking happens in parallel for different chunks
+- Packet handling is concurrent
+
+This means you can write blocking code without freezing the server. Need to query a database when a player joins? Just do it:
+
+```go title="blocking_example.go"
+func (h *LobbyHandler) HandleJoin() {
+    p := h.player
+
+    // This blocks, but only for this goroutine
+    data := database.LoadPlayer(p.UUID())
+
+    p.SendMessage(fmt.Sprintf("Welcome back! You have %d coins.", data.Coins))
+}
+```
+
+In PM/Nukkit, this would freeze the server. In Dragonfly, it only blocks this player's handler. Everyone else keeps playing.
+
+## When to Use Goroutines
+
+You should use goroutines when:
+- You're doing I/O (database, HTTP, files)
+- You're running a long computation
+- You're implementing a repeating task (see Tasks section)
+
+You *don't* need goroutines for:
+- Event handlers (they already run concurrently per-player)
+- Command handlers (same)
+
+## Channels
+
+Goroutines communicate through channels. A channel is a typed pipe that goroutines can send and receive values through.
+
+Here's a simple example:
+
+```go title="channel.go"
+ch := make(chan string)
+
+go func() {
+    time.Sleep(time.Second)
+    ch <- "Hello!"  // Send to channel
+}()
+
+msg := <-ch  // Receive from channel (blocks until available)
+fmt.Println(msg)  // "Hello!"
+```
+
+Channels are how you safely share data between goroutines without race conditions.
+
+### Practical Example: Arena Countdown
+
+In PM/Nukkit, you'd use a repeating task and check the arena state every tick. In Go, you'd use a goroutine with a ticker:
+
+```go title="arena.go"
+func (a *Arena) StartCountdown() {
+    go func() {
+        ticker := time.NewTicker(time.Second)
+        defer ticker.Stop()
+
+        countdown := 10
+        for range ticker.C {
+            if countdown == 0 {
+                a.Start()
+                return
+            }
+
+            a.Broadcast(fmt.Sprintf("Game starting in %d...", countdown))
+            countdown--
+        }
+    }()
+}
+```
+
+The countdown runs in the background. The rest of the server keeps running normally.
+
+### Practical Example: Cancelling a Task
+
+In PM/Nukkit, you'd cancel a task by calling `cancel()` on the task handler. In Go, you'd use a channel:
+
+```go title="arena_cancel.go"
+type Arena struct {
+    players     []*player.Player
+    stopCountdown chan struct{}
+}
+
+func (a *Arena) StartCountdown() {
+    a.stopCountdown = make(chan struct{})
+
+    go func() {
+        ticker := time.NewTicker(time.Second)
+        defer ticker.Stop()
+
+        countdown := 10
+        for {
+            select {
+            case <-ticker.C:
+                if countdown == 0 {
+                    a.Start()
+                    return
+                }
+                a.Broadcast(fmt.Sprintf("Game starting in %d...", countdown))
+                countdown--
+
+            case <-a.stopCountdown:
+                // Countdown cancelled
+                a.Broadcast("Countdown cancelled!")
+                return
+            }
+        }
+    }()
+}
+
+func (a *Arena) CancelCountdown() {
+    close(a.stopCountdown)
+}
+```
+
+The `select` statement waits on multiple channels. Whichever receives first "wins". This pattern is idiomatic Go.
+
+## Race Conditions
+
+When multiple goroutines access the same data, you can get race conditions. Go has tools to prevent this.
+
+### Mutexes
+
+Use a mutex to protect shared state:
+
+```go title="mutex.go"
+import "sync"
+
+type Arena struct {
+    mu      sync.Mutex
+    players []*player.Player
+}
+
+func (a *Arena) AddPlayer(p *player.Player) {
+    a.mu.Lock()
+    defer a.mu.Unlock()
+
+    a.players = append(a.players, p)
+}
+
+func (a *Arena) PlayerCount() int {
+    a.mu.Lock()
+    defer a.mu.Unlock()
+
+    return len(a.players)
+}
+```
+
+The `mu.Lock()` call blocks until the mutex is available. `defer mu.Unlock()` ensures it's released when the function returns, even if there's an error.
+
+### Atomic Operations
+
+For simple counters, use `sync/atomic`:
+
+```go title="atomic.go"
+import "sync/atomic"
+
+type Arena struct {
+    playerCount int64
+}
+
+func (a *Arena) AddPlayer(p *player.Player) {
+    atomic.AddInt64(&a.playerCount, 1)
+}
+
+func (a *Arena) PlayerCount() int64 {
+    return atomic.LoadInt64(&a.playerCount)
+}
+```
+
+This is faster than a mutex for simple operations.
+
+## Common Patterns
+
+### Worker Pool
+
+Database queries for multiple players:
+
+```go title="worker_pool.go"
+results := make(chan PlayerData, len(players))
+
+for _, p := range players {
+    go func(p *player.Player) {
+        data := database.LoadPlayer(p.UUID())
+        results <- data
+    }(p)
+}
+
+// Collect results
+for i := 0; i < len(players); i++ {
+    data := <-results
+    fmt.Println(data)
+}
+```
+
+### Timeout
+
+Don't wait forever for a slow operation:
+
+```go title="timeout.go"
+ch := make(chan string)
+
+go func() {
+    ch <- querySlowAPI()
+}()
+
+select {
+case result := <-ch:
+    fmt.Println("Got result:", result)
+case <-time.After(5 * time.Second):
+    fmt.Println("Timeout!")
+}
+```
+
+## Debugging Concurrency
+
+Go has a built-in race detector. Run your server with:
+
+```bash
+go run -race main.go
+```
+
+It'll catch race conditions and print detailed reports. Use this during development.
+
+## Key Takeaways
+
+- Goroutines are lightweight threads. Use `go func() { ... }()` to create one.
+- Dragonfly already runs many things concurrently. You can write blocking I/O in handlers without freezing the server.
+- Use channels to communicate between goroutines.
+- Use mutexes or atomic operations to protect shared state.
+- The `-race` flag is your friend. Use it.
+
+Concurrency is one of Go's killer features. It makes Dragonfly fast, scalable, and simple to write. Embrace it.

@@ -1,0 +1,177 @@
+---
+title: "enchantment"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# enchantment
+
+
+```go
+import "github.com/df-mc/dragonfly/server/item/enchantment"
+```
+
+
+
+
+
+
+
+
+
+## Functions
+
+<Accordions>
+
+<Accordion title="ProtectionFactor">
+```go
+func ProtectionFactor(src world.DamageSource, enchantments []item.Enchantment) float64
+```
+
+
+ProtectionFactor calculates the combined protection factor for a slice of
+item.Enchantment. The factor depends on the world.DamageSource passed and is
+in a range of [0, 0.8], where 0.8 means incoming damage would be reduced by
+80%.
+
+</Accordion>
+
+</Accordions>
+
+
+
+## Types
+
+
+### AffectedDamageSource
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type AffectedDamageSource interface {
+	world.DamageSource
+	// AffectedByEnchantment specifies if a world.DamageSource is affected by
+	// the item.EnchantmentType passed.
+	AffectedByEnchantment(e item.EnchantmentType) bool
+}
+```
+
+
+
+AffectedDamageSource represents a world.DamageSource whose damage may be
+affected by an enchantment. A world.DamageSource does not need to implement
+AffectedDamageSource to let protection affect the damage. This happens
+depending on the (world.DamageSource).ReducedByResistance() method.
+
+
+
+
+
+
+---
+
+### DamageModifier
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type DamageModifier interface {
+	Modifier() float64
+}
+```
+
+
+
+DamageModifier is an item.EnchantmentType that can reduce damage through a
+modifier if an AffectedDamageSource returns true for it.
+
+
+
+
+
+
+---
+
+### ThornsDamageSource
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ThornsDamageSource struct {
+	// Owner is the owner of the armour with the thorns enchantment.
+	Owner world.Entity
+}
+```
+
+
+
+ThornsDamageSource is used for damage caused by thorns.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Owner: {
+      description: 'Owner is the owner of the armour with the thorns enchantment.',
+      type: 'world.Entity',
+      typeLink: '../world.mdx#entity',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Fire">
+```go
+func (ThornsDamageSource) Fire() bool
+```
+
+</Accordion>
+
+<Accordion title="IgnoreTotem">
+```go
+func (ThornsDamageSource) IgnoreTotem() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByArmour">
+```go
+func (ThornsDamageSource) ReducedByArmour() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByResistance">
+```go
+func (ThornsDamageSource) ReducedByResistance() bool
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

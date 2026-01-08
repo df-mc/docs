@@ -1,0 +1,159 @@
+---
+title: "bossbar"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# bossbar
+
+
+```go
+import "github.com/df-mc/dragonfly/server/player/bossbar"
+```
+
+
+
+
+
+
+
+
+
+
+
+## Types
+
+
+### BossBar
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BossBar struct {
+	text	string
+	health	float64
+	c	Colour
+}
+```
+
+
+
+BossBar represents a boss bar that may be sent to a player. It is shown as a purple bar with text above
+it. The health shown by the bar may be changed.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Colour">
+```go
+func (BossBar) Colour() Colour
+```
+
+Colour returns the colour of the BossBar.
+
+</Accordion>
+
+<Accordion title="HealthPercentage">
+```go
+func (BossBar) HealthPercentage() float64
+```
+
+HealthPercentage returns the health percentage of the boss bar. The number returned is a value between 0
+and 1, with 0 being an empty boss bar and 1 being a full one.
+
+</Accordion>
+
+<Accordion title="Text">
+```go
+func (BossBar) Text() string
+```
+
+Text returns the text of the boss bar: The text passed when creating the bar using New().
+
+</Accordion>
+
+<Accordion title="WithColour">
+```go
+func (BossBar) WithColour(c Colour) BossBar
+```
+
+WithColour returns a copy of the BossBar with the Colour passed.
+
+</Accordion>
+
+<Accordion title="WithHealthPercentage">
+```go
+func (BossBar) WithHealthPercentage(v float64) BossBar
+```
+
+WithHealthPercentage sets the health percentage of the boss bar. The value passed must be between 0 and 1.
+If a value out of that range is passed, WithHealthPercentage panics.
+The new BossBar with the changed health percentage is returned.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Colour
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Colour struct{ colour }
+```
+
+
+
+Colour is the colour of a BossBar.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    colour: {
+      description: '',
+      type: 'colour',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Uint8">
+```go
+func (Colour) Uint8() uint8
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

@@ -1,0 +1,368 @@
+---
+title: "mcdb"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# mcdb
+
+
+```go
+import "github.com/df-mc/dragonfly/server/world/mcdb"
+```
+
+
+
+
+
+
+
+
+
+
+
+## Types
+
+
+### ColumnIterator
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ColumnIterator struct {
+	dbIter	iterator.Iterator
+	db	*DB
+	r	*IteratorRange
+
+	err	error
+
+	current	*chunk.Column
+	pos	world.ChunkPos
+	dim	world.Dimension
+	seen	map[dbKey]struct{}
+}
+```
+
+
+
+ColumnIterator iterates over a DB's position/column pairs in key order.
+
+When an error is encountered, any call to Next will return false and will
+yield no position/chunk pairs. The error can be queried by calling the Error
+method. Calling Release is still necessary.
+
+An iterator must be released after use, but it is not necessary to read
+an iterator until exhaustion.
+Also, an iterator is not necessarily safe for concurrent use, but it is
+safe to use multiple iterators concurrently, with each in a dedicated
+goroutine.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Column">
+```go
+func (*ColumnIterator) Column() *chunk.Column
+```
+
+Column returns the value of the current position/column pair, or nil if none.
+
+</Accordion>
+
+<Accordion title="Dimension">
+```go
+func (*ColumnIterator) Dimension() world.Dimension
+```
+
+Dimension returns the dimension of the current position/column pair, or nil
+if none.
+
+</Accordion>
+
+<Accordion title="Error">
+```go
+func (*ColumnIterator) Error() error
+```
+
+Error returns any accumulated error. Exhausting all the key/value pairs
+is not considered to be an error.
+
+</Accordion>
+
+<Accordion title="Next">
+```go
+func (*ColumnIterator) Next() bool
+```
+
+Next moves the iterator to the next key/value pair.
+It returns false if the iterator is exhausted.
+
+</Accordion>
+
+<Accordion title="Position">
+```go
+func (*ColumnIterator) Position() world.ChunkPos
+```
+
+Position returns the position of the current position/column pair.
+
+</Accordion>
+
+<Accordion title="Release">
+```go
+func (*ColumnIterator) Release()
+```
+
+Release releases associated resources. Release should always success
+and can be called multiple times without causing error.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Config
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Config struct {
+	// Log is the Logger that will be used to log errors and debug messages to.
+	// If set to nil, Log is set to slog.Default().
+	Log	*slog.Logger
+	// LDBOptions holds LevelDB specific default options, such as the block size
+	// or compression used in the database.
+	LDBOptions	*opt.Options
+}
+```
+
+
+
+Config holds the optional parameters of a DB.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Log: {
+      description: 'Log is the Logger that will be used to log errors and debug messages to. If set to nil, Log is set to slog.Default().',
+      type: '*slog.Logger',
+    },
+    LDBOptions: {
+      description: 'LDBOptions holds LevelDB specific default options, such as the block size or compression used in the database.',
+      type: '*opt.Options',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Open">
+```go
+func (Config) Open(dir string) (*DB, error)
+```
+
+Open creates a new DB reading and writing from/to files under the path
+passed. If a world is present at the path, Open will parse its data and
+initialise the world with it. If the data cannot be parsed, an error is
+returned.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### DB
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type DB struct {
+	conf	Config
+	ldb	*leveldb.DB
+	dir	string
+	ldat	*leveldat.Data
+	set	*world.Settings
+}
+```
+
+
+
+DB implements a world provider for the Minecraft world format, which
+is based on a leveldb database.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Close">
+```go
+func (*DB) Close() error
+```
+
+Close closes the provider, saving any file that might need to be saved, such as the level.dat.
+
+</Accordion>
+
+<Accordion title="LoadColumn">
+```go
+func (*DB) LoadColumn(pos world.ChunkPos, dim world.Dimension) (*chunk.Column, error)
+```
+
+LoadColumn reads a world.Column from the DB at a position and dimension in
+the DB. If no column at that position exists, errors.Is(err,
+leveldb.ErrNotFound) equals true.
+
+</Accordion>
+
+<Accordion title="LoadPlayerSpawnPosition">
+```go
+func (*DB) LoadPlayerSpawnPosition(id uuid.UUID) (pos cube.Pos, exists bool, err error)
+```
+
+LoadPlayerSpawnPosition loads the players spawn position stored in the level.dat from their UUID.
+
+</Accordion>
+
+<Accordion title="NewColumnIterator">
+```go
+func (*DB) NewColumnIterator(r *IteratorRange) *ColumnIterator
+```
+
+NewColumnIterator returns a ColumnIterator that may be used to iterate over all
+position/chunk pairs in a database.
+An IteratorRange r may be passed to specify limits in terms of what chunks
+should be read. r may be set to nil to read all chunks from the DB.
+
+</Accordion>
+
+<Accordion title="SavePlayerSpawnPosition">
+```go
+func (*DB) SavePlayerSpawnPosition(id uuid.UUID, pos cube.Pos) error
+```
+
+SavePlayerSpawnPosition saves the player spawn position passed to the levelDB database.
+
+</Accordion>
+
+<Accordion title="SaveSettings">
+```go
+func (*DB) SaveSettings(s *world.Settings)
+```
+
+SaveSettings saves the world.Settings passed to the level.dat.
+
+</Accordion>
+
+<Accordion title="Settings">
+```go
+func (*DB) Settings() *world.Settings
+```
+
+Settings returns the world.Settings of the world loaded by the DB.
+
+</Accordion>
+
+<Accordion title="StoreColumn">
+```go
+func (*DB) StoreColumn(pos world.ChunkPos, dim world.Dimension, col *chunk.Column) error
+```
+
+StoreColumn stores a world.Column at a position and dimension in the DB. An
+error is returned if storing was unsuccessful.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### IteratorRange
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type IteratorRange struct {
+	// Min and Max limit what chunk positions are returned by a ColumnIterator.
+	// A zero value for both Min and Max causes all positions to be within the
+	// range.
+	Min, Max	world.ChunkPos
+	// Dimension specifies what world.Dimension chunks should be accumulated
+	// from. If nil, all dimensions will be read from.
+	Dimension	world.Dimension
+}
+```
+
+
+
+IteratorRange is a range used to limit what columns are accumulated by a
+ColumnIterator.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Min: {
+      description: 'Min and Max limit what chunk positions are returned by a ColumnIterator. A zero value for both Min and Max causes all positions to be within the range.',
+      type: 'world.ChunkPos',
+      typeLink: '../world.mdx#chunkpos',
+    },
+    Max: {
+      description: 'Min and Max limit what chunk positions are returned by a ColumnIterator. A zero value for both Min and Max causes all positions to be within the range.',
+      type: 'world.ChunkPos',
+      typeLink: '../world.mdx#chunkpos',
+    },
+    Dimension: {
+      description: 'Dimension specifies what world.Dimension chunks should be accumulated from. If nil, all dimensions will be read from.',
+      type: 'world.Dimension',
+      typeLink: '../world.mdx#dimension',
+    },
+  }}
+/>
+
+
+
+
+
+---
+
+

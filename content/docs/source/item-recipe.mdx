@@ -1,0 +1,896 @@
+---
+title: "recipe"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# recipe
+
+
+```go
+import "github.com/df-mc/dragonfly/server/item/recipe"
+```
+
+
+
+
+
+
+
+
+
+## Functions
+
+<Accordions>
+
+<Accordion title="Perform">
+```go
+func Perform(block string, input ...world.Item) (output []item.Stack, ok bool)
+```
+
+
+Perform performs the recipe with the given block and inputs and returns the outputs. If the inputs do not map to
+any outputs, false is returned for the second return value.
+
+</Accordion>
+
+<Accordion title="Register">
+```go
+func Register(recipe Recipe)
+```
+
+
+Register registers a new recipe.
+
+</Accordion>
+
+<Accordion title="RegisterDynamic">
+```go
+func RegisterDynamic(recipe DynamicRecipe)
+```
+
+
+RegisterDynamic registers a new dynamic recipe. Dynamic recipes are not sent to the client
+and are validated server-side.
+
+</Accordion>
+
+<Accordion title="ValidBrewingReagent">
+```go
+func ValidBrewingReagent(i world.Item) bool
+```
+
+
+ValidBrewingReagent checks if the world.Item is a brewing reagent.
+
+</Accordion>
+
+</Accordions>
+
+
+
+## Types
+
+
+### DecoratedPotRecipe
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type DecoratedPotRecipe struct {
+	block string
+}
+```
+
+
+
+DecoratedPotRecipe is a dynamic recipe for crafting decorated pots. The output depends on which
+pottery sherds or bricks are used in the crafting grid.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Block">
+```go
+func (DecoratedPotRecipe) Block() string
+```
+
+Block returns the block used to craft this recipe.
+
+</Accordion>
+
+<Accordion title="Match">
+```go
+func (DecoratedPotRecipe) Match(input []Item) (output []item.Stack, ok bool)
+```
+
+Match checks if the given input items match the decorated pot recipe pattern.
+The pattern requires exactly 4 PotDecoration items (bricks or pottery sherds) in a diamond/plus shape:
+- Slot 1 (top centre)
+- Slot 3 (middle left)
+- Slot 5 (middle right)
+- Slot 7 (bottom centre)
+All other slots must be empty.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### DynamicRecipe
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type DynamicRecipe interface {
+	// Match checks if the given input items match this dynamic recipe pattern.
+	// It returns true if the pattern matches, along with the computed output items.
+	Match(input []Item) (output []item.Stack, ok bool)
+	// Block returns the block that is used to craft the recipe.
+	Block() string
+}
+```
+
+
+
+DynamicRecipe represents a recipe whose output depends on the specific items used in crafting.
+These recipes are not sent to the client and are validated server-side.
+
+
+
+
+
+
+---
+
+### Furnace
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Furnace struct {
+	recipe
+}
+```
+
+
+
+Furnace represents a recipe only craftable in a furnace.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    recipe: {
+      description: '',
+      type: 'recipe',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Block">
+```go
+func (Furnace) Block() string
+```
+
+Block ...
+
+</Accordion>
+
+<Accordion title="Input">
+```go
+func (Furnace) Input() []Item
+```
+
+Input ...
+
+</Accordion>
+
+<Accordion title="Output">
+```go
+func (Furnace) Output() []item.Stack
+```
+
+Output ...
+
+</Accordion>
+
+<Accordion title="Priority">
+```go
+func (Furnace) Priority() uint32
+```
+
+Priority ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Item
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Item interface {
+	// Count returns the amount of items that is present on the stack. The count is guaranteed never to be
+	// negative.
+	Count() int
+	// Empty checks if the stack is empty (has a count of 0).
+	Empty() bool
+}
+```
+
+
+
+Item represents an item that can be used as either the input or output of an item. These do not
+necessarily resolve to an actual item, but can be just as simple as a tag etc.
+
+
+
+
+
+
+---
+
+### ItemTag
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ItemTag struct {
+	tag	string
+	count	int
+
+	items	[]string
+}
+```
+
+
+
+ItemTag represents a recipe item that is identified by a tag, such as "minecraft:planks" or
+"minecraft:digger" and so on.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Contains">
+```go
+func (ItemTag) Contains(name string) bool
+```
+
+Contains returns true if the item tag contains the item with the name passed.
+
+</Accordion>
+
+<Accordion title="Count">
+```go
+func (ItemTag) Count() int
+```
+
+Count ...
+
+</Accordion>
+
+<Accordion title="Empty">
+```go
+func (ItemTag) Empty() bool
+```
+
+Empty ...
+
+</Accordion>
+
+<Accordion title="Tag">
+```go
+func (ItemTag) Tag() string
+```
+
+Tag returns the tag of the item.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Potion
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Potion struct {
+	recipe
+}
+```
+
+
+
+Potion is a potion mixing recipe which may be used in the brewing stand.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    recipe: {
+      description: '',
+      type: 'recipe',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Block">
+```go
+func (Potion) Block() string
+```
+
+Block ...
+
+</Accordion>
+
+<Accordion title="Input">
+```go
+func (Potion) Input() []Item
+```
+
+Input ...
+
+</Accordion>
+
+<Accordion title="Output">
+```go
+func (Potion) Output() []item.Stack
+```
+
+Output ...
+
+</Accordion>
+
+<Accordion title="Priority">
+```go
+func (Potion) Priority() uint32
+```
+
+Priority ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### PotionContainerChange
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type PotionContainerChange struct {
+	recipe
+}
+```
+
+
+
+PotionContainerChange is a recipe to convert a potion from one type to another, such as from a drinkable potion to a
+splash potion, or from a splash potion to a lingering potion.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    recipe: {
+      description: '',
+      type: 'recipe',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Block">
+```go
+func (PotionContainerChange) Block() string
+```
+
+Block ...
+
+</Accordion>
+
+<Accordion title="Input">
+```go
+func (PotionContainerChange) Input() []Item
+```
+
+Input ...
+
+</Accordion>
+
+<Accordion title="Output">
+```go
+func (PotionContainerChange) Output() []item.Stack
+```
+
+Output ...
+
+</Accordion>
+
+<Accordion title="Priority">
+```go
+func (PotionContainerChange) Priority() uint32
+```
+
+Priority ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Recipe
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Recipe interface {
+	// Input returns the items required to craft the recipe.
+	Input() []Item
+	// Output returns the items that are produced when the recipe is crafted.
+	Output() []item.Stack
+	// Block returns the block that is used to craft the recipe.
+	Block() string
+	// Priority returns the priority of the recipe. Recipes with lower priority are preferred compared to recipes with
+	// higher priority.
+	Priority() uint32
+}
+```
+
+
+
+Recipe is implemented by all recipe types.
+
+
+
+
+
+
+---
+
+### Shape
+
+
+
+
+```go
+type Shape [2]int
+```
+
+
+
+Shape make up the shape of a shaped recipe. It consists of a width and a height.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Height">
+```go
+func (Shape) Height() int
+```
+
+Height returns the height of the shape.
+
+</Accordion>
+
+<Accordion title="Width">
+```go
+func (Shape) Width() int
+```
+
+Width returns the width of the shape.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Shaped
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Shaped struct {
+	recipe
+	// shape contains the width and height of the shaped recipe.
+	shape	Shape
+}
+```
+
+
+
+Shaped is a recipe that has a specific shape that must be used to craft the output of the recipe.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    recipe: {
+      description: '',
+      type: 'recipe',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Block">
+```go
+func (Shaped) Block() string
+```
+
+Block ...
+
+</Accordion>
+
+<Accordion title="Input">
+```go
+func (Shaped) Input() []Item
+```
+
+Input ...
+
+</Accordion>
+
+<Accordion title="Output">
+```go
+func (Shaped) Output() []item.Stack
+```
+
+Output ...
+
+</Accordion>
+
+<Accordion title="Priority">
+```go
+func (Shaped) Priority() uint32
+```
+
+Priority ...
+
+</Accordion>
+
+<Accordion title="Shape">
+```go
+func (Shaped) Shape() Shape
+```
+
+Shape returns the shape of the recipe.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Shapeless
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Shapeless struct {
+	recipe
+}
+```
+
+
+
+Shapeless is a recipe that has no particular shape.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    recipe: {
+      description: '',
+      type: 'recipe',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Block">
+```go
+func (Shapeless) Block() string
+```
+
+Block ...
+
+</Accordion>
+
+<Accordion title="Input">
+```go
+func (Shapeless) Input() []Item
+```
+
+Input ...
+
+</Accordion>
+
+<Accordion title="Output">
+```go
+func (Shapeless) Output() []item.Stack
+```
+
+Output ...
+
+</Accordion>
+
+<Accordion title="Priority">
+```go
+func (Shapeless) Priority() uint32
+```
+
+Priority ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### SmithingTransform
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type SmithingTransform struct {
+	recipe
+}
+```
+
+
+
+SmithingTransform represents a recipe only craftable on a smithing table.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    recipe: {
+      description: '',
+      type: 'recipe',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Block">
+```go
+func (SmithingTransform) Block() string
+```
+
+Block ...
+
+</Accordion>
+
+<Accordion title="Input">
+```go
+func (SmithingTransform) Input() []Item
+```
+
+Input ...
+
+</Accordion>
+
+<Accordion title="Output">
+```go
+func (SmithingTransform) Output() []item.Stack
+```
+
+Output ...
+
+</Accordion>
+
+<Accordion title="Priority">
+```go
+func (SmithingTransform) Priority() uint32
+```
+
+Priority ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### SmithingTrim
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type SmithingTrim struct {
+	recipe
+}
+```
+
+
+
+SmithingTrim represents a recipe only craftable on a smithing table using an armour trim.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    recipe: {
+      description: '',
+      type: 'recipe',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Block">
+```go
+func (SmithingTrim) Block() string
+```
+
+Block ...
+
+</Accordion>
+
+<Accordion title="Input">
+```go
+func (SmithingTrim) Input() []Item
+```
+
+Input ...
+
+</Accordion>
+
+<Accordion title="Output">
+```go
+func (SmithingTrim) Output() []item.Stack
+```
+
+Output ...
+
+</Accordion>
+
+<Accordion title="Priority">
+```go
+func (SmithingTrim) Priority() uint32
+```
+
+Priority ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

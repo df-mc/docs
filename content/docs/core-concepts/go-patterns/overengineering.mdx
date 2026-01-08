@@ -1,0 +1,186 @@
+---
+title: Overengineering
+icon: SquareTerminal
+---
+
+Overengineering is when you build more than you need. It's tempting to add abstractions, configuration options, and "flexibility" for hypothetical future requirements. Don't.
+
+## Signs You're Overengineering
+
+### Abstractions for One Implementation
+
+```go title="overengineered_database.go"
+// Overengineered
+type DatabaseProvider interface {
+    GetPlayer(uuid string) (*PlayerData, error)
+    SavePlayer(data *PlayerData) error
+}
+
+type MySQLProvider struct { ... }
+
+func NewMySQLProvider() DatabaseProvider {
+    return &MySQLProvider{}
+}
+```
+
+If you only have MySQL and no plans for anything else, you don't need the interface. Just use the struct directly:
+
+```go title="simple_database.go"
+// Simple
+type Database struct { ... }
+
+func (d *Database) GetPlayer(uuid string) (*PlayerData, error) { ... }
+func (d *Database) SavePlayer(data *PlayerData) error { ... }
+```
+
+You can always add an interface later if you actually need it. Go makes refactoring easy.
+
+### Configuration for Everything
+
+```go title="overengineered_config.go"
+// Overengineered
+type ArenaConfig struct {
+    MaxPlayers           int
+    MinPlayers           int
+    CountdownSeconds     int
+    RespawnDelayTicks    int
+    EnableFriendlyFire   bool
+    AllowSpectators      bool
+    SpectatorFlySpeed    float64
+    KitSelectionTimeout  time.Duration
+    // 30 more fields...
+}
+```
+
+Most of these will never be changed. Start with hardcoded values:
+
+```go title="simple_config.go"
+// Simple
+const (
+    maxPlayers = 16
+    minPlayers = 2
+    countdown  = 10 * time.Second
+)
+
+type Arena struct {
+    players []*player.Player
+}
+```
+
+Add configuration when you actually need to change values at runtime or between deployments.
+
+### Generic Solutions to Specific Problems
+
+```go title="overengineered_events.go"
+// Overengineered
+type EventBus[T any] struct {
+    subscribers map[string][]func(T)
+}
+
+func (b *EventBus[T]) Subscribe(event string, handler func(T)) { ... }
+func (b *EventBus[T]) Publish(event string, data T) { ... }
+```
+
+If you just need to notify some code when a player joins:
+
+```go title="simple_events.go"
+// Simple
+type Arena struct {
+    onJoin func(*player.Player)
+}
+
+func (a *Arena) AddPlayer(p *player.Player) {
+    a.players = append(a.players, p)
+    if a.onJoin != nil {
+        a.onJoin(p)
+    }
+}
+```
+
+## Why It Matters
+
+Every abstraction has a cost:
+- More code to read and understand
+- More places for bugs to hide
+- Harder to change (despite the intention of "flexibility")
+- Slower to develop
+
+A simple, direct solution that works is better than an elegant, abstract solution that takes twice as long to build.
+
+## The Dragonfly Philosophy
+
+Look at Dragonfly's codebase. It's pragmatic, not clever. Handlers are simple interfaces. Blocks are simple structs. There's no AbstractBlockFactoryProvider.
+
+When you're building on Dragonfly, follow the same approach:
+
+1. **Solve the problem you have, not the problem you might have**
+2. **Start concrete, abstract later** - Write the specific solution first. If you need to generalize it, you'll know what to generalize.
+3. **Three strikes rule** - Don't abstract until you've written similar code three times. Then you know what the actual pattern is.
+
+## Real Example: Kit System
+
+Overengineered approach:
+```go title="overengineered_kit_system.go"
+type KitManager interface {
+    RegisterKit(kit Kit)
+    GetKit(name string) Kit
+    ApplyKit(p *player.Player, kit Kit)
+}
+
+type Kit interface {
+    Name() string
+    Items() []KitItem
+    Effects() []KitEffect
+    Cooldown() time.Duration
+}
+
+type KitItem interface {
+    Stack() item.Stack
+    Slot() int
+}
+
+type KitEffect interface {
+    Effect() effect.Effect
+    Duration() time.Duration
+}
+
+type KitFactory interface {
+    CreateKit(config KitConfig) Kit
+}
+```
+
+What you probably actually need:
+```go title="pragmatic_kit_system.go"
+type Kit struct {
+    Name  string
+    Items []item.Stack
+}
+
+func (k Kit) Apply(p *player.Player) {
+    for i, stack := range k.Items {
+        p.Inventory().SetItem(i, stack)
+    }
+}
+
+var kits = map[string]Kit{
+    "warrior": {
+        Name: "Warrior",
+        Items: []item.Stack{
+            item.NewStack(item.Sword{Tier: item.ToolTierIron}, 1),
+            item.NewStack(item.Apple{}, 16),
+        },
+    },
+}
+```
+
+The second version does everything the first one does for 90% of servers, in a fraction of the code.
+
+## When Abstraction Makes Sense
+
+Abstractions aren't always bad. They make sense when:
+- You have multiple concrete implementations right now
+- You need to swap implementations at runtime
+- You're building a library for others to extend
+- Testing requires mocking external dependencies
+
+But even then, keep them minimal. The best abstraction is the smallest one that solves your problem.

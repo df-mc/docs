@@ -1,0 +1,146 @@
+---
+title: Setup
+icon: Flame
+---
+
+import { Steps, Step } from 'fumadocs-ui/components/steps'
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs'
+import { Callout } from 'fumadocs-ui/components/callout'
+
+The following guides will help you set up a server from scratch using Dragonfly.
+
+Dragonfly is a bit daunting, with essentially all of the organization and file system needed to be done by the user. Furthermore, with no large ecosystem of previous code to reuse, it's hard to even know where to begin. This setup tutorial will allow you to get the typical base-code that's been used for quite some time on older Dragonfly projects and should be fairly beginner friendly.
+
+<Steps>
+
+<Step>
+### Install Go & Dragonfly
+
+If you have not already done so, please install both Go and Dragonfly. You can refer to the **Getting Started** section to do so:
+
+[Getting Started](/docs/getting-started)
+</Step>
+
+<Step>
+### Install MongoDB
+
+Most servers require the persistence of data, which is what a database is for. In this example, we will be using MongoDB. Coming from other software, you may be more familiar with SQL databases like SQLite, MySQL, or PostgreSQL. The Go MongoDB library delivers an extremely beginner-friendly API (which is type-safe and provides autocomplete) as well as a performant database driver.
+
+<Tabs items={["Windows", "Linux", "MacOS"]}>
+    <Tab value="Windows">
+    [Install MongoDB on Windows](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-windows/)
+    </Tab>
+    <Tab value="Linux">
+    [Install MongoDB on Linux](https://www.mongodb.com/docs/manual/administration/install-on-linux/)
+    </Tab>
+    <Tab value="MacOS">
+    [Install MongoDB on MacOS](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-os-x/)
+    </Tab>
+</Tabs>
+
+You will also have to install the Go package for MongoDB:
+
+```bash title="Terminal"
+go get go.mongodb.org/mongo-driver/v2/mongo
+```
+
+```bash title="Terminal"
+go get github.com/restartfu/gophig
+```
+
+```go title="main.go"
+package main
+
+import (
+	"log/slog"
+	"os"
+
+	"github.com/df-mc/dragonfly/server"
+	"github.com/df-mc/dragonfly/server/block/cube"
+	"github.com/df-mc/dragonfly/server/player/chat"
+	"github.com/df-mc/dragonfly/server/world"
+
+	"github.com/restartfu/gophig"
+)
+
+func main() {
+	log := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
+	slog.SetLogLoggerLevel(slog.LevelDebug)
+	chat.Global.Subscribe(chat.StdoutSubscriber{})
+
+	conf, err := readConfig(log)
+	if err != nil {
+		panic(err)
+	}
+
+	srv := conf.New()
+	w := srv.World()
+
+	w.SetDefaultGameMode(world.GameModeAdventure)
+	w.SetSpawn(cube.Pos{0, 170, 0})
+	w.SetTime(60100)
+	w.StopTime()
+	w.SetTickRange(0)
+	w.StopThundering()
+	w.StopRaining()
+
+	srv.Listen()
+	srv.CloseOnProgramEnd()
+
+	for p := range srv.Accept() {
+		log.Debug("Player joined", "name", p.Name())
+	}
+}
+
+func readConfig(log *slog.Logger) (server.Config, error) {
+	defaultCfg := server.DefaultConfig()
+	g := gophig.NewGophig[server.UserConfig]("config.toml", gophig.TOMLMarshaler{}, 0777)
+
+	cfg, err := g.LoadConf()
+	if os.IsNotExist(err) {
+		if err = g.SaveConf(defaultCfg); err != nil {
+			return server.Config{}, err
+		}
+		return defaultCfg.Config(log)
+	}
+	return cfg.Config(log)
+}
+```
+
+```go title="minecraft/config.go"
+package minecraft
+
+import (
+	"github.com/df-mc/dragonfly/server"
+)
+
+type Config struct {
+	server.UserConfig
+
+	Practice struct {
+		Tebex       string
+		Whitelisted bool
+	}
+}
+
+func DefaultConfig() Config {
+	c := Config{
+		UserConfig: server.DefaultConfig(),
+	}
+	c.Resources.Folder = "resources"
+	return c
+}
+```
+</Step>
+
+<Step>
+### Start Server
+
+Now that your entry point and custom configuration struct are ready, simply run your server. Add a server in Minecraft with address `127.0.0.1` and port `19132` (or what you set in `config.toml`) and you should be able to join.
+
+<Callout type="info" title="Congratulations!">
+You just made your first basic Dragonfly server! You can now explore further tutorials on server organization and gamemode programming.
+</Callout>
+</Step>
+
+</Steps>

@@ -1,0 +1,723 @@
+---
+title: "server"
+description: "Package server implements a high-level implementation of a Minecraft server."
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# server
+
+
+```go
+import "github.com/df-mc/dragonfly/server"
+```
+
+
+
+Package server implements a high-level implementation of a Minecraft server.
+Creating such a server may be done using the `server.New()` function.
+Additional configuration may be passed by using server.Config\{...\}.New().
+`Server.Listen()` may be called to start and run the server. It should be
+followed up by a loop as such:
+
+	for p := range srv.Accept() {
+	  // Use p
+	}
+
+`Server.Accept()` blocks until a new player connects to the server and
+spawns in the default world.
+
+
+
+
+
+
+
+
+
+## Types
+
+
+### Allower
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Allower interface {
+	// Allow filters what connections are allowed to connect to the Server. The
+	// address, identity data, and client data of the connection are passed. If
+	// Admit returns false, the connection is closed with the string returned as
+	// the disconnect message. WARNING: Use the client data at your own risk, it
+	// cannot be trusted because it can be freely changed by the player
+	// connecting.
+	Allow(addr net.Addr, d login.IdentityData, c login.ClientData) (string, bool)
+}
+```
+
+
+
+Allower may be implemented to specifically allow or disallow players from
+joining a Server, by setting the specific Allower implementation through a
+call to Server.Allow.
+
+
+
+
+
+
+---
+
+### Config
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Config struct {
+	// Log is the Logger to use for logging information. If nil, Log is set to
+	// slog.Default(). Errors reported by the underlying network are only logged
+	// if Log has at least debug level.
+	Log	*slog.Logger
+	// Listeners is a list of functions to create a Listener using a Config, one
+	// for each Listener to be added to the Server. If left empty, no players
+	// will be able to connect to the Server.
+	Listeners	[]func(conf Config) (Listener, error)
+	// Name is the name of the server. By default, it is shown to users in the
+	// server list before joining the server and when opening the in-game menu.
+	Name	string
+	// Resources is a slice of resource packs to use on the server. When joining
+	// the server, the player will then first be requested to download these
+	// resource packs.
+	Resources	[]*resource.Pack
+	// ResourcesRequires specifies if the downloading of resource packs is
+	// required to join the server. If set to true, players will not be able to
+	// join without first downloading and applying the Resources above.
+	ResourcesRequired	bool
+	// DisableResourceBuilding specifies if automatic resource pack building for
+	// custom items should be disabled. Dragonfly, by default, automatically
+	// produces a resource pack for custom items. If this is not desired (for
+	// example if a resource pack already exists), this can be set to false.
+	DisableResourceBuilding	bool
+	// Allower may be used to specify what players can join the server and what
+	// players cannot. By returning false in the Allow method, for example if
+	// the player has been banned, will prevent the player from joining.
+	Allower	Allower
+	// AuthDisabled specifies if XBOX Live authentication should be disabled.
+	// Note that this should generally only be done for testing purposes or for
+	// local games. Allowing players to join without authentication is generally
+	// a security hazard.
+	AuthDisabled	bool
+	// MuteEmoteChat specifies if the player emote chat should be muted or not.
+	MuteEmoteChat	bool
+	// MaxPlayers is the maximum amount of players allowed to join the server at
+	// once.
+	MaxPlayers	int
+	// MaxChunkRadius is the maximum view distance that each player may have,
+	// measured in chunks. A chunk radius generally leads to more memory usage.
+	MaxChunkRadius	int
+	// JoinMessage, QuitMessage and ShutdownMessage are the messages to send for
+	// when a player joins or quits the server and when the server shuts down,
+	// kicking all online players. If set, JoinMessage and QuitMessage must have
+	// exactly 1 argument, which will be replaced with the name of the player
+	// joining or quitting.
+	// ShutdownMessage is set to chat.MessageServerDisconnect if empty.
+	JoinMessage, QuitMessage, ShutdownMessage	chat.Translation
+	// StatusProvider provides the server status shown to players in the server
+	// list. By default, StatusProvider will show the server name from the Name
+	// field and the current player count and maximum players.
+	StatusProvider	minecraft.ServerStatusProvider
+	// PlayerProvider is the player.Provider used for storing and loading player
+	// data. If left as nil, player data will be newly created every time a
+	// player joins the server and no data will be stored.
+	PlayerProvider	player.Provider
+	// WorldProvider is the world.Provider used for storing and loading world
+	// data. If left as nil, world data will be newly created every time and
+	// chunks will always be newly generated when loaded. The world provider
+	// will be used for storing/loading the default overworld, nether and end.
+	WorldProvider	world.Provider
+	// ReadOnlyWorld specifies if the standard worlds should be read only. If
+	// set to true, the WorldProvider won't be saved to at all.
+	ReadOnlyWorld	bool
+	// Generator should return a function that specifies the world.Generator to
+	// use for every world.Dimension (world.Overworld, world.Nether and
+	// world.End). If left empty, Generator will be set to a flat world for each
+	// of the dimensions (with netherrack and end stone for nether/end
+	// respectively).
+	Generator	func(dim world.Dimension) world.Generator
+	// RandomTickSpeed specifies the rate at which blocks should be ticked in
+	// the default worlds. Setting this value to -1 or lower will stop random
+	// ticking altogether, while setting it higher results in faster ticking. If
+	// left as 0, the RandomTickSpeed will default to a speed of 3 blocks per
+	// sub chunk per tick (normal ticking speed).
+	RandomTickSpeed	int
+	// Entities is a world.EntityRegistry with all entity types registered that
+	// may be added to the Server's worlds. If no entity types are registered,
+	// Entities will be set to entity.DefaultRegistry.
+	Entities	world.EntityRegistry
+}
+```
+
+
+
+Config contains options for starting a Minecraft server.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Log: {
+      description: 'Log is the Logger to use for logging information. If nil, Log is set to slog.Default(). Errors reported by the underlying network are only logged if Log has at least debug level.',
+      type: '*slog.Logger',
+    },
+    Listeners: {
+      description: 'Listeners is a list of functions to create a Listener using a Config, one for each Listener to be added to the Server. If left empty, no players will be able to connect to the Server.',
+      type: '[]func(conf Config) (Listener, error)',
+    },
+    Name: {
+      description: 'Name is the name of the server. By default, it is shown to users in the server list before joining the server and when opening the in-game menu.',
+      type: 'string',
+    },
+    Resources: {
+      description: 'Resources is a slice of resource packs to use on the server. When joining the server, the player will then first be requested to download these resource packs.',
+      type: '[]*resource.Pack',
+    },
+    ResourcesRequired: {
+      description: 'ResourcesRequires specifies if the downloading of resource packs is required to join the server. If set to true, players will not be able to join without first downloading and applying the Resources above.',
+      type: 'bool',
+    },
+    DisableResourceBuilding: {
+      description: 'DisableResourceBuilding specifies if automatic resource pack building for custom items should be disabled. Dragonfly, by default, automatically produces a resource pack for custom items. If this is not desired (for example if a resource pack already exists), this can be set to false.',
+      type: 'bool',
+    },
+    Allower: {
+      description: 'Allower may be used to specify what players can join the server and what players cannot. By returning false in the Allow method, for example if the player has been banned, will prevent the player from joining.',
+      type: 'Allower',
+      typeLink: '../..mdx#allower',
+    },
+    AuthDisabled: {
+      description: 'AuthDisabled specifies if XBOX Live authentication should be disabled. Note that this should generally only be done for testing purposes or for local games. Allowing players to join without authentication is generally a security hazard.',
+      type: 'bool',
+    },
+    MuteEmoteChat: {
+      description: 'MuteEmoteChat specifies if the player emote chat should be muted or not.',
+      type: 'bool',
+    },
+    MaxPlayers: {
+      description: 'MaxPlayers is the maximum amount of players allowed to join the server at once.',
+      type: 'int',
+    },
+    MaxChunkRadius: {
+      description: 'MaxChunkRadius is the maximum view distance that each player may have, measured in chunks. A chunk radius generally leads to more memory usage.',
+      type: 'int',
+    },
+    JoinMessage: {
+      description: 'JoinMessage, QuitMessage and ShutdownMessage are the messages to send for when a player joins or quits the server and when the server shuts down, kicking all online players. If set, JoinMessage and QuitMessage must have exactly 1 argument, which will be replaced with the name of the player joining or quitting. ShutdownMessage is set to chat.MessageServerDisconnect if empty.',
+      type: 'chat.Translation',
+      typeLink: '../player-chat.mdx#translation',
+    },
+    QuitMessage: {
+      description: 'JoinMessage, QuitMessage and ShutdownMessage are the messages to send for when a player joins or quits the server and when the server shuts down, kicking all online players. If set, JoinMessage and QuitMessage must have exactly 1 argument, which will be replaced with the name of the player joining or quitting. ShutdownMessage is set to chat.MessageServerDisconnect if empty.',
+      type: 'chat.Translation',
+      typeLink: '../player-chat.mdx#translation',
+    },
+    ShutdownMessage: {
+      description: 'JoinMessage, QuitMessage and ShutdownMessage are the messages to send for when a player joins or quits the server and when the server shuts down, kicking all online players. If set, JoinMessage and QuitMessage must have exactly 1 argument, which will be replaced with the name of the player joining or quitting. ShutdownMessage is set to chat.MessageServerDisconnect if empty.',
+      type: 'chat.Translation',
+      typeLink: '../player-chat.mdx#translation',
+    },
+    StatusProvider: {
+      description: 'StatusProvider provides the server status shown to players in the server list. By default, StatusProvider will show the server name from the Name field and the current player count and maximum players.',
+      type: 'minecraft.ServerStatusProvider',
+    },
+    PlayerProvider: {
+      description: 'PlayerProvider is the player.Provider used for storing and loading player data. If left as nil, player data will be newly created every time a player joins the server and no data will be stored.',
+      type: 'player.Provider',
+      typeLink: '../player.mdx#provider',
+    },
+    WorldProvider: {
+      description: 'WorldProvider is the world.Provider used for storing and loading world data. If left as nil, world data will be newly created every time and chunks will always be newly generated when loaded. The world provider will be used for storing/loading the default overworld, nether and end.',
+      type: 'world.Provider',
+      typeLink: '../world.mdx#provider',
+    },
+    ReadOnlyWorld: {
+      description: 'ReadOnlyWorld specifies if the standard worlds should be read only. If set to true, the WorldProvider won\'t be saved to at all.',
+      type: 'bool',
+    },
+    Generator: {
+      description: 'Generator should return a function that specifies the world.Generator to use for every world.Dimension (world.Overworld, world.Nether and world.End). If left empty, Generator will be set to a flat world for each of the dimensions (with netherrack and end stone for nether/end respectively).',
+      type: 'func(dim world.Dimension) world.Generator',
+    },
+    RandomTickSpeed: {
+      description: 'RandomTickSpeed specifies the rate at which blocks should be ticked in the default worlds. Setting this value to -1 or lower will stop random ticking altogether, while setting it higher results in faster ticking. If left as 0, the RandomTickSpeed will default to a speed of 3 blocks per sub chunk per tick (normal ticking speed).',
+      type: 'int',
+    },
+    Entities: {
+      description: 'Entities is a world.EntityRegistry with all entity types registered that may be added to the Server\'s worlds. If no entity types are registered, Entities will be set to entity.DefaultRegistry.',
+      type: 'world.EntityRegistry',
+      typeLink: '../world.mdx#entityregistry',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="New">
+```go
+func (Config) New() *Server
+```
+
+New creates a Server using fields of conf. The Server's worlds are created
+and connections from the Server's listeners may be accepted by calling
+Server.Listen() and Server.Accept() afterwards.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Listener
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Listener interface {
+	// Accept blocks until the next connection is established and returns it. An error is returned if the Listener was
+	// closed using Close.
+	Accept() (session.Conn, error)
+	// Disconnect disconnects a connection from the Listener with a reason.
+	Disconnect(conn session.Conn, reason string) error
+	io.Closer
+}
+```
+
+
+
+Listener is a source for connections that may be listened on by a Server using Server.listen. Proxies can use this to
+provide players from a different source.
+
+
+
+
+
+
+---
+
+### Server
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Server struct {
+	conf	Config
+
+	once	sync.Once
+	started	atomic.Pointer[time.Time]
+
+	world, nether, end	*world.World
+
+	customBlocks	[]protocol.BlockEntry
+	customItems	[]protocol.ItemEntry
+
+	listeners	[]Listener
+	incoming	chan incoming
+
+	pmu	sync.RWMutex
+	// p holds a map of all players currently connected to the server. When they
+	// leave, they are removed from the map.
+	p	map[uuid.UUID]*onlinePlayer
+	// pwg is a sync.WaitGroup used to wait for all players to be disconnected
+	// before server shutdown, so that their data is saved properly.
+	pwg	sync.WaitGroup
+	// wg is used to wait for all Listeners to be closed and their respective
+	// goroutines to be finished.
+	wg	sync.WaitGroup
+}
+```
+
+
+
+Server implements a Dragonfly server. It runs the main server loop and
+handles the connections of players trying to join the server.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Accept">
+```go
+func (*Server) Accept() iter.Seq[*player.Player]
+```
+
+Accept accepts incoming players into the server, returning an iterator that
+yields players that join the server while blocking otherwise. The iterator
+returned ends when the Server is closed using a call to Close. Players
+returned are only valid within the block of the for loop used to iterate over
+them:
+
+```go
+	for p := range srv.Accept() {
+	  // p is valid here
+	  go func() {
+	    // p is no longer valid here
+	  }()
+	}
+	// p is no longer valid here
+```
+
+</Accordion>
+
+<Accordion title="Close">
+```go
+func (*Server) Close() error
+```
+
+Close closes the server, making any call to Run/Accept cancel immediately.
+
+</Accordion>
+
+<Accordion title="CloseOnProgramEnd">
+```go
+func (*Server) CloseOnProgramEnd()
+```
+
+CloseOnProgramEnd closes the server right before the program ends, so that
+all data of the server are saved properly.
+
+</Accordion>
+
+<Accordion title="End">
+```go
+func (*Server) End() *world.World
+```
+
+End returns the end world of the server. Players are transported to it when
+entering an end portal in the world returned by the World method.
+
+</Accordion>
+
+<Accordion title="Listen">
+```go
+func (*Server) Listen()
+```
+
+Listen starts running the server's listeners. Connections will be accepted
+until the listeners are closed using a call to Close. Once Listen is called,
+players may be accepted using Server.Accept().
+
+</Accordion>
+
+<Accordion title="MaxPlayerCount">
+```go
+func (*Server) MaxPlayerCount() int
+```
+
+MaxPlayerCount returns the maximum amount of players that are allowed to
+play on the server at the same time. Players trying to join when the server
+is full will be refused to enter. If the config has a maximum player count
+set to 0, MaxPlayerCount will return Server.PlayerCount + 1.
+
+</Accordion>
+
+<Accordion title="Nether">
+```go
+func (*Server) Nether() *world.World
+```
+
+Nether returns the nether world of the server. Players are transported to it
+when entering a nether portal in the world returned by the World method.
+
+</Accordion>
+
+<Accordion title="Player">
+```go
+func (*Server) Player(uuid uuid.UUID) (*world.EntityHandle, bool)
+```
+
+Player looks for a player on the server with the UUID passed. If found, the
+entity handle is returned and the bool returns holds a true value. If not,
+the bool returned is false and the handle is nil.
+
+</Accordion>
+
+<Accordion title="PlayerByName">
+```go
+func (*Server) PlayerByName(name string) (*world.EntityHandle, bool)
+```
+
+PlayerByName looks for a player on the server with the name passed. If
+found, the entity handle is returned and the bool returned holds a true
+value. If not, the bool is false and the handle is nil
+
+</Accordion>
+
+<Accordion title="PlayerByXUID">
+```go
+func (*Server) PlayerByXUID(xuid string) (*world.EntityHandle, bool)
+```
+
+PlayerByXUID looks for a player on the server with the XUID passed. If
+found, the entity handle is returned and the bool returned is true. If no
+player with the XUID was found, nil and false are returned.
+
+</Accordion>
+
+<Accordion title="PlayerCount">
+```go
+func (*Server) PlayerCount() int
+```
+
+PlayerCount returns the total number of players connected to the Server.
+
+</Accordion>
+
+<Accordion title="Players">
+```go
+func (*Server) Players(tx *world.Tx) iter.Seq[*player.Player]
+```
+
+Players returns an iterator that yields players currently online. If Players
+is called from within a transaction, the respective transaction should be
+passed. Passing nil is otherwise valid. Players returned are only valid
+within the block of the for loop used to iterate over them:
+
+```go
+	for p := range srv.Players(nil) {
+	  // p is valid here
+	  go func() {
+	    // p is no longer valid here
+	  }()
+	}
+	// p is no longer valid here
+```
+
+Collecting all values from the iterator using a function such as
+slices.Collect immediately invalidates the players because their transactions
+will be finished.
+
+</Accordion>
+
+<Accordion title="World">
+```go
+func (*Server) World() *world.World
+```
+
+World returns the overworld of the server. Players will be spawned in this
+world and this world will be read from and written to when the world is
+edited.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### UserConfig
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type UserConfig struct {
+	// Network holds settings related to network aspects of the server.
+	Network	struct {
+		// Address is the address on which the server should listen. Players may
+		// connect to this address in order to join.
+		Address string
+	}
+	Server	struct {
+		// Name is the name of the server as it shows up in the server list.
+		Name	string
+		// AuthEnabled controls whether players must be connected to Xbox Live
+		// in order to join the server.
+		AuthEnabled	bool
+		// DisableJoinQuitMessages specifies if default join and quit messages
+		// for players should be disabled.
+		DisableJoinQuitMessages	bool
+		// MuteEmoteChat specifies if the player emote chat should be muted or not.
+		MuteEmoteChat	bool
+	}
+	World	struct {
+		// SaveData controls whether a world's data will be saved and loaded.
+		// If true, the server will use the default LevelDB data provider and if
+		// false, an empty provider will be used. To use your own provider, turn
+		// this value to false, as you will still be able to pass your own
+		// provider.
+		SaveData	bool
+		// Folder is the folder that the data of the world resides in.
+		Folder	string
+	}
+	Players	struct {
+		// MaxCount is the maximum amount of players allowed to join the server
+		// at the same time. If set to 0, the amount of maximum players will
+		// grow every time a player joins.
+		MaxCount	int
+		// MaximumChunkRadius is the maximum chunk radius that players may set
+		// in their settings. If they try to set it above this number, it will
+		// be capped and set to the max.
+		MaximumChunkRadius	int
+		// SaveData controls whether a player's data will be saved and loaded.
+		// If true, the server will use the default LevelDB data provider and if
+		// false, an empty provider will be used. To use your own provider, turn
+		// this value to false, as you will still be able to pass your own
+		// provider.
+		SaveData	bool
+		// Folder controls where the player data will be stored by the default
+		// LevelDB player provider if it is enabled.
+		Folder	string
+	}
+	Resources	struct {
+		// AutoBuildPack is if the server should automatically generate a
+		// resource pack for custom features.
+		AutoBuildPack	bool
+		// Folder controls the location where resource packs will be loaded
+		// from.
+		Folder	string
+		// Required is a boolean to force the client to load the resource pack
+		// on join. If they do not accept, they'll have to leave the server.
+		Required	bool
+	}
+}
+```
+
+
+
+UserConfig is the user configuration for a Dragonfly server. It holds
+settings that affect different aspects of the server, such as its name and
+maximum players. UserConfig may be serialised and can be converted to a
+Config by calling UserConfig.Config().
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Network: {
+      description: 'Network holds settings related to network aspects of the server.',
+      type: `struct {
+	// Address is the address on which the server should listen. Players may
+	// connect to this address in order to join.
+	Address string
+}`,
+    },
+    Server: {
+      description: '',
+      type: `struct {
+	// Name is the name of the server as it shows up in the server list.
+	Name	string
+	// AuthEnabled controls whether players must be connected to Xbox Live
+	// in order to join the server.
+	AuthEnabled	bool
+	// DisableJoinQuitMessages specifies if default join and quit messages
+	// for players should be disabled.
+	DisableJoinQuitMessages	bool
+	// MuteEmoteChat specifies if the player emote chat should be muted or not.
+	MuteEmoteChat	bool
+}`,
+    },
+    World: {
+      description: '',
+      type: `struct {
+	// SaveData controls whether a world's data will be saved and loaded.
+	// If true, the server will use the default LevelDB data provider and if
+	// false, an empty provider will be used. To use your own provider, turn
+	// this value to false, as you will still be able to pass your own
+	// provider.
+	SaveData	bool
+	// Folder is the folder that the data of the world resides in.
+	Folder	string
+}`,
+    },
+    Players: {
+      description: '',
+      type: `struct {
+	// MaxCount is the maximum amount of players allowed to join the server
+	// at the same time. If set to 0, the amount of maximum players will
+	// grow every time a player joins.
+	MaxCount	int
+	// MaximumChunkRadius is the maximum chunk radius that players may set
+	// in their settings. If they try to set it above this number, it will
+	// be capped and set to the max.
+	MaximumChunkRadius	int
+	// SaveData controls whether a player's data will be saved and loaded.
+	// If true, the server will use the default LevelDB data provider and if
+	// false, an empty provider will be used. To use your own provider, turn
+	// this value to false, as you will still be able to pass your own
+	// provider.
+	SaveData	bool
+	// Folder controls where the player data will be stored by the default
+	// LevelDB player provider if it is enabled.
+	Folder	string
+}`,
+    },
+    Resources: {
+      description: '',
+      type: `struct {
+	// AutoBuildPack is if the server should automatically generate a
+	// resource pack for custom features.
+	AutoBuildPack	bool
+	// Folder controls the location where resource packs will be loaded
+	// from.
+	Folder	string
+	// Required is a boolean to force the client to load the resource pack
+	// on join. If they do not accept, they'll have to leave the server.
+	Required	bool
+}`,
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Config">
+```go
+func (UserConfig) Config(log *slog.Logger) (Config, error)
+```
+
+Config converts a UserConfig to a Config, so that it may be used for creating
+a Server. An error is returned if creating data providers or loading
+resources failed.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

@@ -1,0 +1,1103 @@
+---
+title: "particle"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# particle
+
+
+```go
+import "github.com/df-mc/dragonfly/server/world/particle"
+```
+
+
+
+
+
+
+
+
+
+
+
+## Types
+
+
+### BlockBreak
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BlockBreak struct {
+	particle
+	// Block is the block of which particles should be shown. The particles will change depending on what
+	// block is held.
+	Block	world.Block
+}
+```
+
+
+
+BlockBreak is a particle sent when a block is broken. It represents a bunch of particles that are textured
+like the block that the particle holds.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    particle: {
+      description: '',
+      type: 'particle',
+    },
+    Block: {
+      description: 'Block is the block of which particles should be shown. The particles will change depending on what block is held.',
+      type: 'world.Block',
+      typeLink: '../world.mdx#block',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Spawn">
+```go
+func (BlockBreak) Spawn(*world.World, mgl64.Vec3)
+```
+
+Spawn ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BlockForceField
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BlockForceField struct{ particle }
+```
+
+
+
+BlockForceField is a particle that shows up as a block that turns invisible from an opaque black colour.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    particle: {
+      description: '',
+      type: 'particle',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Spawn">
+```go
+func (BlockForceField) Spawn(*world.World, mgl64.Vec3)
+```
+
+Spawn ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BoneMeal
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BoneMeal struct{ particle }
+```
+
+
+
+BoneMeal is a particle that shows up on bone meal usage.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    particle: {
+      description: '',
+      type: 'particle',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Spawn">
+```go
+func (BoneMeal) Spawn(*world.World, mgl64.Vec3)
+```
+
+Spawn ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### DragonEggTeleport
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type DragonEggTeleport struct {
+	particle
+
+	// Diff is a Position with the values being the difference from the original position to the new position.
+	Diff	cube.Pos
+}
+```
+
+
+
+DragonEggTeleport is a particle that shows up when a dragon egg teleports.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    particle: {
+      description: '',
+      type: 'particle',
+    },
+    Diff: {
+      description: 'Diff is a Position with the values being the difference from the original position to the new position.',
+      type: 'cube.Pos',
+      typeLink: '../block-cube.mdx#pos',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Spawn">
+```go
+func (DragonEggTeleport) Spawn(*world.World, mgl64.Vec3)
+```
+
+Spawn ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Dust
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Dust struct {
+	particle
+
+	// Colour is the colour of the Dust particle.
+	Colour	color.RGBA
+}
+```
+
+
+
+Dust is a particle shown for redstone. It can have any colour specified with the Colour field.
+If the colour is not specified, it will default to black.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    particle: {
+      description: '',
+      type: 'particle',
+    },
+    Colour: {
+      description: 'Colour is the colour of the Dust particle.',
+      type: 'color.RGBA',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Spawn">
+```go
+func (Dust) Spawn(*world.World, mgl64.Vec3)
+```
+
+Spawn ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### DustPlume
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type DustPlume struct{ particle }
+```
+
+
+
+DustPlume is a particle that shows up when an item is successfully inserted into a decorated pot.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    particle: {
+      description: '',
+      type: 'particle',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Spawn">
+```go
+func (DustPlume) Spawn(*world.World, mgl64.Vec3)
+```
+
+Spawn ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Effect
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Effect struct {
+	particle
+
+	// Colour is the colour of the particle.
+	Colour	color.RGBA
+}
+```
+
+
+
+Effect is a particle that shows up around an entity when it has effects on.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    particle: {
+      description: '',
+      type: 'particle',
+    },
+    Colour: {
+      description: 'Colour is the colour of the particle.',
+      type: 'color.RGBA',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Spawn">
+```go
+func (Effect) Spawn(*world.World, mgl64.Vec3)
+```
+
+Spawn ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### EggSmash
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type EggSmash struct{ particle }
+```
+
+
+
+EggSmash is a particle shown when an egg smashes on something.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    particle: {
+      description: '',
+      type: 'particle',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Spawn">
+```go
+func (EggSmash) Spawn(*world.World, mgl64.Vec3)
+```
+
+Spawn ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### EndermanTeleport
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type EndermanTeleport struct{ particle }
+```
+
+
+
+EndermanTeleport is a particle that shows up when an enderman teleports.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    particle: {
+      description: '',
+      type: 'particle',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Spawn">
+```go
+func (EndermanTeleport) Spawn(*world.World, mgl64.Vec3)
+```
+
+Spawn ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### EntityFlame
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type EntityFlame struct{ particle }
+```
+
+
+
+EntityFlame is a particle shown when an entity is set on fire.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    particle: {
+      description: '',
+      type: 'particle',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Spawn">
+```go
+func (EntityFlame) Spawn(*world.World, mgl64.Vec3)
+```
+
+Spawn ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Evaporate
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Evaporate struct{ particle }
+```
+
+
+
+Evaporate is a particle that shows up when a water block evaporates
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    particle: {
+      description: '',
+      type: 'particle',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Spawn">
+```go
+func (Evaporate) Spawn(*world.World, mgl64.Vec3)
+```
+
+Spawn ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Flame
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Flame struct {
+	particle
+	// Colour is the colour of the Flame particle.
+	Colour	color.RGBA
+}
+```
+
+
+
+Flame is a particle shown around torches. It can have any colour specified with the Colour field.
+If the colour is not specified, it will default to the normal flame particle.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    particle: {
+      description: '',
+      type: 'particle',
+    },
+    Colour: {
+      description: 'Colour is the colour of the Flame particle.',
+      type: 'color.RGBA',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Spawn">
+```go
+func (Flame) Spawn(*world.World, mgl64.Vec3)
+```
+
+Spawn ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### HugeExplosion
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type HugeExplosion struct{ particle }
+```
+
+
+
+HugeExplosion is a particle shown when TNT or a creeper explodes.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    particle: {
+      description: '',
+      type: 'particle',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Spawn">
+```go
+func (HugeExplosion) Spawn(*world.World, mgl64.Vec3)
+```
+
+Spawn ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Lava
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Lava struct{ particle }
+```
+
+
+
+Lava is a particle that shows up randomly above lava.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    particle: {
+      description: '',
+      type: 'particle',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Spawn">
+```go
+func (Lava) Spawn(*world.World, mgl64.Vec3)
+```
+
+Spawn ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### LavaDrip
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type LavaDrip struct{ particle }
+```
+
+
+
+LavaDrip is a particle that shows up when there is lava above a block and it looks like a dripping effect.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    particle: {
+      description: '',
+      type: 'particle',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Spawn">
+```go
+func (LavaDrip) Spawn(*world.World, mgl64.Vec3)
+```
+
+Spawn ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Note
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Note struct {
+	particle
+
+	// Instrument is the instrument of the note block.
+	Instrument	sound.Instrument
+	// Pitch is the pitch of the note.
+	Pitch	int
+}
+```
+
+
+
+Note is a particle that shows up on note block interactions.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    particle: {
+      description: '',
+      type: 'particle',
+    },
+    Instrument: {
+      description: 'Instrument is the instrument of the note block.',
+      type: 'sound.Instrument',
+      typeLink: '../world-sound.mdx#instrument',
+    },
+    Pitch: {
+      description: 'Pitch is the pitch of the note.',
+      type: 'int',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Spawn">
+```go
+func (Note) Spawn(*world.World, mgl64.Vec3)
+```
+
+Spawn ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### PunchBlock
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type PunchBlock struct {
+	particle
+	// Block is the block of which particles should be shown. The particles will change depending on what
+	// block is punched.
+	Block	world.Block
+	// Face is the face of the block that was punched. It is here that the particles will be shown.
+	Face	cube.Face
+}
+```
+
+
+
+PunchBlock is a particle shown when a player is punching a block. It shows particles of a specific block
+type at a particular face of a block.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    particle: {
+      description: '',
+      type: 'particle',
+    },
+    Block: {
+      description: 'Block is the block of which particles should be shown. The particles will change depending on what block is punched.',
+      type: 'world.Block',
+      typeLink: '../world.mdx#block',
+    },
+    Face: {
+      description: 'Face is the face of the block that was punched. It is here that the particles will be shown.',
+      type: 'cube.Face',
+      typeLink: '../block-cube.mdx#face',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Spawn">
+```go
+func (PunchBlock) Spawn(*world.World, mgl64.Vec3)
+```
+
+Spawn ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### SnowballPoof
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type SnowballPoof struct{ particle }
+```
+
+
+
+SnowballPoof is a particle shown when a snowball collides with something.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    particle: {
+      description: '',
+      type: 'particle',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Spawn">
+```go
+func (SnowballPoof) Spawn(*world.World, mgl64.Vec3)
+```
+
+Spawn ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Splash
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Splash struct {
+	particle
+
+	// Colour is the colour that should be splashed.
+	Colour	color.RGBA
+}
+```
+
+
+
+Splash is a particle that shows up when a splash potion is splashed.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    particle: {
+      description: '',
+      type: 'particle',
+    },
+    Colour: {
+      description: 'Colour is the colour that should be splashed.',
+      type: 'color.RGBA',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Spawn">
+```go
+func (Splash) Spawn(*world.World, mgl64.Vec3)
+```
+
+Spawn ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### WaterDrip
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type WaterDrip struct{ particle }
+```
+
+
+
+WaterDrip is a particle that shows up when there is water above a block and it looks like a dripping effect.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    particle: {
+      description: '',
+      type: 'particle',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Spawn">
+```go
+func (WaterDrip) Spawn(*world.World, mgl64.Vec3)
+```
+
+Spawn ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

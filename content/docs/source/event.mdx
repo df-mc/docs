@@ -1,0 +1,96 @@
+---
+title: "event"
+description: "Package event exposes a single exported `Context` type that may be used to influence the execution flow of events"
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# event
+
+
+```go
+import "github.com/df-mc/dragonfly/server/event"
+```
+
+
+
+Package event exposes a single exported `Context` type that may be used to influence the execution flow of events
+that occur on a server.
+Generally, the caller of `event.C()` calls `Context.Cancelled()` to check if the `Context` was cancelled (using
+`Context.Cancel()`) by whatever code it was passed to.
+who is then able to cancel it by calling `Context.Cancel()`.
+
+
+
+
+
+
+
+
+
+## Types
+
+
+### Context
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Context[T any] struct {
+	cancel	bool
+	val	T
+}
+```
+
+
+
+Context represents the context of an event. Handlers of an event may call methods on the context to change
+the result of the event.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Cancel">
+```go
+func (*Context[T]) Cancel()
+```
+
+Cancel cancels the context.
+
+</Accordion>
+
+<Accordion title="Cancelled">
+```go
+func (*Context[T]) Cancelled() bool
+```
+
+Cancelled returns whether the context has been cancelled.
+
+</Accordion>
+
+<Accordion title="Val">
+```go
+func (*Context[T]) Val() T
+```
+
+Val returns the subject of the Context.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

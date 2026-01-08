@@ -1,0 +1,91 @@
+---
+title: "potion"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# potion
+
+
+```go
+import "github.com/df-mc/dragonfly/server/item/potion"
+```
+
+
+
+
+
+
+
+
+
+
+
+## Types
+
+
+### Potion
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Potion struct {
+	potion
+}
+```
+
+
+
+Potion holds the effects given by the potion type.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    potion: {
+      description: '',
+      type: 'potion',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Effects">
+```go
+func (Potion) Effects() []effect.Effect
+```
+
+Effects returns the effects of the potion.
+
+</Accordion>
+
+<Accordion title="Uint8">
+```go
+func (Potion) Uint8() uint8
+```
+
+Uint8 returns the potion type as a uint8.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

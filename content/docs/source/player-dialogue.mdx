@@ -1,0 +1,371 @@
+---
+title: "dialogue"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# dialogue
+
+
+```go
+import "github.com/df-mc/dragonfly/server/player/dialogue"
+```
+
+
+
+
+
+
+
+
+
+
+
+## Types
+
+
+### Button
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Button struct {
+	// Text holds the text displayed on the button. It may use Minecraft
+	// formatting codes.
+	Text string
+}
+```
+
+
+
+Button represents a button added to a dialogue menu and consists of just
+text.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Text: {
+      description: 'Text holds the text displayed on the button. It may use Minecraft formatting codes.',
+      type: 'string',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="MarshalJSON">
+```go
+func (Button) MarshalJSON() ([]byte, error)
+```
+
+MarshalJSON ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Closer
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Closer interface {
+	// Close is called when the Submitter closes a dialogue.
+	Close(submitter Submitter, tx *world.Tx)
+}
+```
+
+
+
+Closer represents a dialogue which has special logic when being closed by a
+Submitter.
+
+
+
+
+
+
+---
+
+### Dialogue
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Dialogue struct {
+	title, body	string
+	submittable	Submittable
+	buttons		[]Button
+	display		DisplaySettings
+}
+```
+
+
+
+Dialogue represents a dialogue menu. This menu can consist of a title, a
+body and up to 6 different buttons. The menu also shows a 3D render of the
+entity that is sending the dialogue.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Body">
+```go
+func (Dialogue) Body() string
+```
+
+Body returns the formatted text in the body passed to the menu using
+WithBody().
+
+</Accordion>
+
+<Accordion title="Buttons">
+```go
+func (Dialogue) Buttons() []Button
+```
+
+Buttons returns a slice of buttons of the Submittable. It parses them from
+the fields using reflection and returns them.
+
+</Accordion>
+
+<Accordion title="Close">
+```go
+func (Dialogue) Close(submitter Submitter, tx *world.Tx)
+```
+
+Close closes the dialogue, calling the Close method on the Submittable if it
+implements the Closer interface.
+
+</Accordion>
+
+<Accordion title="Display">
+```go
+func (Dialogue) Display() DisplaySettings
+```
+
+Display returns the DisplaySettings of the Dialogue as specified using
+WithDisplay().
+
+</Accordion>
+
+<Accordion title="MarshalJSON">
+```go
+func (Dialogue) MarshalJSON() ([]byte, error)
+```
+
+MarshalJSON ...
+
+</Accordion>
+
+<Accordion title="Submit">
+```go
+func (Dialogue) Submit(index uint, submitter Submitter, tx *world.Tx) error
+```
+
+Submit submits an index of the pressed button to the Submittable. If the
+index is invalid, an error is returned.
+
+</Accordion>
+
+<Accordion title="Title">
+```go
+func (Dialogue) Title() string
+```
+
+Title returns the formatted title passed to the dialogue upon construction
+using New().
+
+</Accordion>
+
+<Accordion title="WithBody">
+```go
+func (Dialogue) WithBody(body ...any) Dialogue
+```
+
+WithBody creates a copy of the Dialogue and changes its body to the body
+passed, after which the new Dialogue is returned. The text is formatted
+following the rules of fmt.Sprintln.
+
+</Accordion>
+
+<Accordion title="WithButtons">
+```go
+func (Dialogue) WithButtons(buttons ...Button) Dialogue
+```
+
+WithButtons creates a copy of the Dialogue and appends the buttons passed to
+the existing buttons, after which the new Dialogue is returned.
+
+</Accordion>
+
+<Accordion title="WithDisplay">
+```go
+func (Dialogue) WithDisplay(display DisplaySettings) Dialogue
+```
+
+WithDisplay returns a new Dialogue with the DisplaySettings passed.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### DisplaySettings
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type DisplaySettings struct {
+	// EntityScale specifies the scale of the entity displayed in the dialogue.
+	EntityScale	mgl64.Vec3
+	// EntityOffset specifies the offset of the entity shown in the dialogue.
+	EntityOffset	mgl64.Vec3
+	// EntityRotation is the rotation of the entity shown in the dialogue. This
+	// rotation functions a bit differently to the normal entity rotation in
+	// Minecraft: The values are still degrees, but pitch (rot[1]) values are
+	// whole-body pitch instead of head-specific, and rot[2] is whole-body roll.
+	EntityRotation	mgl64.Vec3
+}
+```
+
+
+
+DisplaySettings holds optional fields that change the way the dialogue,
+particularly the entity shown in it, is displayed.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    EntityScale: {
+      description: 'EntityScale specifies the scale of the entity displayed in the dialogue.',
+      type: 'mgl64.Vec3',
+    },
+    EntityOffset: {
+      description: 'EntityOffset specifies the offset of the entity shown in the dialogue.',
+      type: 'mgl64.Vec3',
+    },
+    EntityRotation: {
+      description: 'EntityRotation is the rotation of the entity shown in the dialogue. This rotation functions a bit differently to the normal entity rotation in Minecraft: The values are still degrees, but pitch (rot[1]) values are whole-body pitch instead of head-specific, and rot[2] is whole-body roll.',
+      type: 'mgl64.Vec3',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="MarshalJSON">
+```go
+func (DisplaySettings) MarshalJSON() ([]byte, error)
+```
+
+MarshalJSON encodes the DisplaySettings to JSON.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Submittable
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Submittable interface {
+	// Submit is called when the Submitter submits the dialogue sent to it. The
+	// method is called with the button that was pressed. It may be compared
+	// with buttons in the Submittable struct to check which button was pressed.
+	// Additionally, the world.Tx of the Submitter is passed.
+	Submit(submitter Submitter, pressed Button, tx *world.Tx)
+}
+```
+
+
+
+Submittable is a structure which may be submitted by sending it as a dialogue
+using dialogue.New(). The struct will have its Submit method called with the
+button pressed. A struct that implements the Submittable interface must only
+have exported fields with the type dialogue.Button.
+
+
+
+
+
+
+---
+
+### Submitter
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Submitter interface {
+	SendDialogue(d Dialogue, e world.Entity)
+	CloseDialogue()
+}
+```
+
+
+
+Submitter is an entity that is able to submit a dialogue sent to it. It is
+able to interact with the buttons in the dialogue. The Submitter is also
+able to close the dialogue.
+
+
+
+
+
+
+---
+
+

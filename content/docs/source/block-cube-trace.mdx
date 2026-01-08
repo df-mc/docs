@@ -1,0 +1,295 @@
+---
+title: "trace"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# trace
+
+
+```go
+import "github.com/df-mc/dragonfly/server/block/cube/trace"
+```
+
+
+
+
+
+
+
+
+
+## Functions
+
+<Accordions>
+
+<Accordion title="TraverseBlocks">
+```go
+func TraverseBlocks(start, end mgl64.Vec3, f func(pos cube.Pos) (con bool))
+```
+
+
+TraverseBlocks performs a ray trace between the start and end coordinates.
+A function 'f' is passed which is called for each voxel, if f returns false, the function will return.
+TraverseBlocks panics if the start and end positions are the same.
+
+</Accordion>
+
+</Accordions>
+
+
+
+## Types
+
+
+### BBoxResult
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BBoxResult struct {
+	bb	cube.BBox
+	pos	mgl64.Vec3
+	face	cube.Face
+}
+```
+
+
+
+BBoxResult is the result of a basic ray trace collision with a bounding box.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (BBoxResult) BBox() cube.BBox
+```
+
+BBox ...
+
+</Accordion>
+
+<Accordion title="Face">
+```go
+func (BBoxResult) Face() cube.Face
+```
+
+Face ...
+
+</Accordion>
+
+<Accordion title="Position">
+```go
+func (BBoxResult) Position() mgl64.Vec3
+```
+
+Position ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BlockResult
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BlockResult struct {
+	bb	cube.BBox
+	pos	mgl64.Vec3
+	face	cube.Face
+
+	blockPos	cube.Pos
+}
+```
+
+
+
+BlockResult is the result of a ray trace collision with a block's model.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (BlockResult) BBox() cube.BBox
+```
+
+BBox returns the BBox that was collided within the block's model.
+
+</Accordion>
+
+<Accordion title="BlockPosition">
+```go
+func (BlockResult) BlockPosition() cube.Pos
+```
+
+BlockPosition returns the block that was collided with.
+
+</Accordion>
+
+<Accordion title="Face">
+```go
+func (BlockResult) Face() cube.Face
+```
+
+Face returns the hit block face.
+
+</Accordion>
+
+<Accordion title="Position">
+```go
+func (BlockResult) Position() mgl64.Vec3
+```
+
+Position ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### EntityFilter
+
+
+
+
+```go
+type EntityFilter func(iter.Seq[world.Entity]) iter.Seq[world.Entity]
+```
+
+
+
+
+
+
+
+
+---
+
+### EntityResult
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type EntityResult struct {
+	bb	cube.BBox
+	pos	mgl64.Vec3
+	face	cube.Face
+
+	entity	world.Entity
+}
+```
+
+
+
+EntityResult is the result of a ray trace collision with an entities bounding box.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (EntityResult) BBox() cube.BBox
+```
+
+BBox returns the entities bounding box that was collided with.
+
+</Accordion>
+
+<Accordion title="Entity">
+```go
+func (EntityResult) Entity() world.Entity
+```
+
+Entity returns the entity that was collided with.
+
+</Accordion>
+
+<Accordion title="Face">
+```go
+func (EntityResult) Face() cube.Face
+```
+
+Face ...
+
+</Accordion>
+
+<Accordion title="Position">
+```go
+func (EntityResult) Position() mgl64.Vec3
+```
+
+Position ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Result
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Result interface {
+	// BBox returns the bounding box collided with.
+	BBox() cube.BBox
+	// Position returns where the ray first collided with the bounding box.
+	Position() mgl64.Vec3
+	// Face returns the face of the bounding box that was collided on.
+	Face() cube.Face
+}
+```
+
+
+
+Result represents the result of a ray trace collision with a bounding box.
+
+
+
+
+
+
+---
+
+

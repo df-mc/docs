@@ -1,0 +1,954 @@
+---
+title: "form"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# form
+
+
+```go
+import "github.com/df-mc/dragonfly/server/player/form"
+```
+
+
+
+
+
+
+
+
+
+
+
+## Types
+
+
+### Button
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Button struct {
+	// Text holds the text displayed on the button. It may use Minecraft formatting codes and may have
+	// newlines.
+	Text	string
+	// Image holds a path to an image for the button. The Image may either be a URL pointing to an image,
+	// such as 'https://someimagewebsite.com/someimage.png', or a path pointing to a local asset, such as
+	// 'textures/blocks/grass_carried'.
+	Image	string
+}
+```
+
+
+
+Button represents a button added to a Menu or Modal form. The button has text on it and an optional image,
+which may be either retrieved from a website or the local assets of the game.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Text: {
+      description: 'Text holds the text displayed on the button. It may use Minecraft formatting codes and may have newlines.',
+      type: 'string',
+    },
+    Image: {
+      description: 'Image holds a path to an image for the button. The Image may either be a URL pointing to an image, such as \'https://someimagewebsite.com/someimage.png\', or a path pointing to a local asset, such as \'textures/blocks/grass_carried\'.',
+      type: 'string',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="MarshalJSON">
+```go
+func (Button) MarshalJSON() ([]byte, error)
+```
+
+MarshalJSON ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Closer
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Closer interface {
+	// Close is called when the Submitter closes a form.
+	Close(submitter Submitter, tx *world.Tx)
+}
+```
+
+
+
+Closer represents a form which has special logic when being closed by a Submitter.
+
+
+
+
+
+
+---
+
+### Custom
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Custom struct {
+	title		string
+	submittable	Submittable
+}
+```
+
+
+
+Custom represents a form that may be sent to a player and has fields that should be filled out by the
+player that the form is sent to.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Elements">
+```go
+func (Custom) Elements() []Element
+```
+
+Elements returns a list of all elements as set in the Submittable passed to form.New().
+
+</Accordion>
+
+<Accordion title="MarshalJSON">
+```go
+func (Custom) MarshalJSON() ([]byte, error)
+```
+
+MarshalJSON ...
+
+</Accordion>
+
+<Accordion title="SubmitJSON">
+```go
+func (Custom) SubmitJSON(b []byte, submitter Submitter, tx *world.Tx) error
+```
+
+SubmitJSON submits a JSON data slice to the form. The form will check all values in the JSON array passed,
+making sure their values are valid for the form's elements.
+If the values are valid and can be parsed properly, the Submittable.Submit() method of the form's Submittable is
+called and the fields of the Submittable will be filled out.
+
+</Accordion>
+
+<Accordion title="Title">
+```go
+func (Custom) Title() string
+```
+
+Title returns the formatted title passed when the form was created using New().
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Dropdown
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Dropdown struct {
+	// Text is the text displayed over the dropdown element. The text may contain Minecraft formatting codes.
+	Text	string
+	// Options holds a list of options that a Submitter may select. The order of these options is retained
+	// when shown to the submitter of the form.
+	Options	[]string
+	// DefaultIndex is the index in the Options slice that is used as default. When sent to a Submitter, the
+	// value at this index in the Options slice will be selected.
+	DefaultIndex	int
+
+	value	int
+}
+```
+
+
+
+Dropdown represents a dropdown which, when clicked, opens a window with the options set in the Options
+field. Submitters may select one of the options.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Text: {
+      description: 'Text is the text displayed over the dropdown element. The text may contain Minecraft formatting codes.',
+      type: 'string',
+    },
+    Options: {
+      description: 'Options holds a list of options that a Submitter may select. The order of these options is retained when shown to the submitter of the form.',
+      type: '[]string',
+    },
+    DefaultIndex: {
+      description: 'DefaultIndex is the index in the Options slice that is used as default. When sent to a Submitter, the value at this index in the Options slice will be selected.',
+      type: 'int',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="MarshalJSON">
+```go
+func (Dropdown) MarshalJSON() ([]byte, error)
+```
+
+MarshalJSON ...
+
+</Accordion>
+
+<Accordion title="Value">
+```go
+func (Dropdown) Value() int
+```
+
+Value returns the value that the Submitter submitted. The value is an index pointing to the selected option
+in the Options slice.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Element
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Element interface {
+	json.Marshaler
+	elem()
+}
+```
+
+
+
+Element represents an element that may be added to a Form. Any of the types in this package that implement
+the element interface may be used as struct fields when passing the form structure to form.New().
+
+
+
+
+
+
+---
+
+### Form
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Form interface {
+	json.Marshaler
+	SubmitJSON(b []byte, submitter Submitter, tx *world.Tx) error
+}
+```
+
+
+
+Form represents a form that may be sent to a Submitter. The three types of forms, custom forms, menu forms
+and modal forms implement this interface.
+
+
+
+
+
+
+---
+
+### Input
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Input struct {
+	// Text is the text displayed over the input element. The text may contain Minecraft formatting codes.
+	Text	string
+	// Default is the default value filled out in the input. The user may remove this value and fill out its
+	// own text. The text may contain Minecraft formatting codes.
+	Default	string
+	// Placeholder is the text displayed in the input box if it does not contain any text filled out by the
+	// user. The text may contain Minecraft formatting codes.
+	Placeholder	string
+
+	value	string
+}
+```
+
+
+
+Input represents a text input box element. Submitters may write any text in these boxes with no specific
+length.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Text: {
+      description: 'Text is the text displayed over the input element. The text may contain Minecraft formatting codes.',
+      type: 'string',
+    },
+    Default: {
+      description: 'Default is the default value filled out in the input. The user may remove this value and fill out its own text. The text may contain Minecraft formatting codes.',
+      type: 'string',
+    },
+    Placeholder: {
+      description: 'Placeholder is the text displayed in the input box if it does not contain any text filled out by the user. The text may contain Minecraft formatting codes.',
+      type: 'string',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="MarshalJSON">
+```go
+func (Input) MarshalJSON() ([]byte, error)
+```
+
+MarshalJSON ...
+
+</Accordion>
+
+<Accordion title="Value">
+```go
+func (Input) Value() string
+```
+
+Value returns the value filled out by the user.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Label
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Label struct {
+	// Text is the text held by the label. The text may contain Minecraft formatting codes.
+	Text string
+}
+```
+
+
+
+Label represents a static label on a form. It serves only to display a box of text, and users cannot
+submit values to it.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Text: {
+      description: 'Text is the text held by the label. The text may contain Minecraft formatting codes.',
+      type: 'string',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="MarshalJSON">
+```go
+func (Label) MarshalJSON() ([]byte, error)
+```
+
+MarshalJSON ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Menu
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Menu struct {
+	title, body	string
+	submittable	MenuSubmittable
+	buttons		[]Button
+}
+```
+
+
+
+Menu represents a menu form. These menus are made up of a title and a body, with a number of buttons which
+come below the body. These buttons may also have images on the side of them.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Body">
+```go
+func (Menu) Body() string
+```
+
+Body returns the formatted text in the body passed to the menu using WithBody().
+
+</Accordion>
+
+<Accordion title="Buttons">
+```go
+func (Menu) Buttons() []Button
+```
+
+Buttons returns a list of all buttons of the MenuSubmittable. It parses them from the fields using
+reflection and returns them.
+
+</Accordion>
+
+<Accordion title="MarshalJSON">
+```go
+func (Menu) MarshalJSON() ([]byte, error)
+```
+
+MarshalJSON ...
+
+</Accordion>
+
+<Accordion title="SubmitJSON">
+```go
+func (Menu) SubmitJSON(b []byte, submitter Submitter, tx *world.Tx) error
+```
+
+SubmitJSON submits a JSON value to the menu, containing the index of the button clicked.
+
+</Accordion>
+
+<Accordion title="Title">
+```go
+func (Menu) Title() string
+```
+
+Title returns the formatted title passed to the menu upon construction using NewMenu().
+
+</Accordion>
+
+<Accordion title="WithBody">
+```go
+func (Menu) WithBody(body ...any) Menu
+```
+
+WithBody creates a copy of the Menu form and changes its body to the body passed, after which the new Menu
+form is returned. The text is formatted following the rules of fmt.Sprintln.
+
+</Accordion>
+
+<Accordion title="WithButtons">
+```go
+func (Menu) WithButtons(buttons ...Button) Menu
+```
+
+WithButtons creates a copy of the Menu form and appends the buttons passed to the existing buttons, after
+which the new Menu form is returned.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### MenuSubmittable
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type MenuSubmittable interface {
+	// Submit is called when the Submitter submits the menu form sent to it. The method is called with the
+	// button that was pressed. It may be compared with buttons in the MenuSubmittable struct to check which
+	// button was pressed.
+	Submit(submitter Submitter, pressed Button, tx *world.Tx)
+}
+```
+
+
+
+MenuSubmittable is a structure which may be submitted by sending it as a form using form.NewMenu(), much
+like a Submittable. The struct will have its Submit method called with the button pressed.
+A struct that implements the MenuSubmittable interface must only have exported fields with the type
+form.Button.
+
+
+
+
+
+
+---
+
+### Modal
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Modal struct {
+	title, body	string
+	submittable	ModalSubmittable
+}
+```
+
+
+
+Modal represents a modal form. These forms have a body with text and two buttons at the end, typically one
+for Yes and one for No. These buttons may have custom text, but can, unlike with a Menu form, not have
+images next to them.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Body">
+```go
+func (Modal) Body() string
+```
+
+Body returns the formatted text in the body passed to the menu using WithBody().
+
+</Accordion>
+
+<Accordion title="Buttons">
+```go
+func (Modal) Buttons() []Button
+```
+
+Buttons returns a list of all buttons of the Modal form, which will always be a total of two buttons.
+
+</Accordion>
+
+<Accordion title="MarshalJSON">
+```go
+func (Modal) MarshalJSON() ([]byte, error)
+```
+
+MarshalJSON ...
+
+</Accordion>
+
+<Accordion title="SubmitJSON">
+```go
+func (Modal) SubmitJSON(b []byte, submitter Submitter, tx *world.Tx) error
+```
+
+SubmitJSON submits a JSON byte slice to the modal form. This byte slice contains a JSON encoded bool in it,
+which is used to determine which button was clicked.
+
+</Accordion>
+
+<Accordion title="Title">
+```go
+func (Modal) Title() string
+```
+
+Title returns the formatted title passed to the menu upon construction using NewModal().
+
+</Accordion>
+
+<Accordion title="WithBody">
+```go
+func (Modal) WithBody(body ...any) Modal
+```
+
+WithBody creates a copy of the Modal form and changes its body to the body passed, after which the new Modal
+form is returned. The text is formatted following the rules of fmt.Sprintln.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ModalSubmittable
+
+
+
+
+```go
+type ModalSubmittable MenuSubmittable
+```
+
+
+
+ModalSubmittable is a structure which may be submitted by sending it as a form using form.NewModal(), much
+like a Submittable and a MenuSubmittable. The struct will have its Submit method called with the button
+pressed.
+A struct that implements the ModalSubmittable interface must have exactly two exported fields with the type
+form.Button, which may be used to specify the text of the Modal form's buttons. Unlike with a Menu form,
+buttons on a Modal form will not have images.
+
+
+
+
+
+
+---
+
+### Slider
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Slider struct {
+	// Text is the text displayed over the slider element. The text may contain Minecraft formatting codes.
+	Text	string
+	// Min and Max are used to specify the minimum and maximum range of the slider. A value lower or higher
+	// than these values cannot be selected.
+	Min, Max	float64
+	// StepSize is the size that one step of the slider takes up. When set to 1.0 for example, a submitter
+	// will be able to select only whole values.
+	StepSize	float64
+	// Default is the default value filled out for the slider.
+	Default	float64
+
+	value	float64
+}
+```
+
+
+
+Slider represents a slider element. Submitters may move the slider to values within the range of the slider
+to select a value.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Text: {
+      description: 'Text is the text displayed over the slider element. The text may contain Minecraft formatting codes.',
+      type: 'string',
+    },
+    Min: {
+      description: 'Min and Max are used to specify the minimum and maximum range of the slider. A value lower or higher than these values cannot be selected.',
+      type: 'float64',
+    },
+    Max: {
+      description: 'Min and Max are used to specify the minimum and maximum range of the slider. A value lower or higher than these values cannot be selected.',
+      type: 'float64',
+    },
+    StepSize: {
+      description: 'StepSize is the size that one step of the slider takes up. When set to 1.0 for example, a submitter will be able to select only whole values.',
+      type: 'float64',
+    },
+    Default: {
+      description: 'Default is the default value filled out for the slider.',
+      type: 'float64',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="MarshalJSON">
+```go
+func (Slider) MarshalJSON() ([]byte, error)
+```
+
+MarshalJSON ...
+
+</Accordion>
+
+<Accordion title="Value">
+```go
+func (Slider) Value() float64
+```
+
+Value returns the value filled out by the user.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### StepSlider
+
+
+
+
+```go
+type StepSlider Dropdown
+```
+
+
+
+StepSlider represents a slider that has a number of options that may be selected. It is essentially a
+combination of a Dropdown and a Slider, looking like a slider but having properties like a dropdown.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="MarshalJSON">
+```go
+func (StepSlider) MarshalJSON() ([]byte, error)
+```
+
+MarshalJSON ...
+
+</Accordion>
+
+<Accordion title="Value">
+```go
+func (StepSlider) Value() int
+```
+
+Value returns the value that the Submitter submitted. The value is an index pointing to the selected option
+in the Options slice.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Submittable
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Submittable interface {
+	// Submit is called when the Submitter submits the form sent to it. Once this method is called, all fields
+	// in the struct will have their values filled out as filled out by the Submitter.
+	Submit(submitter Submitter, tx *world.Tx)
+}
+```
+
+
+
+Submittable is a structure which may be submitted by sending it as a form using form.New(). When filled out
+and submitted, the struct will have its Submit method called and its fields will have the values that the
+Submitter passed filled out.
+The fields of a Submittable struct must be either unexported or have a type of one of those that implement
+the form.Element interface.
+
+
+
+
+
+
+---
+
+### Submitter
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Submitter interface {
+	SendForm(form Form)
+	CloseForm()
+}
+```
+
+
+
+Submitter is an entity that is able to submit a form sent to it. It is able to fill out fields in the form
+which will then be present when handled. The Submitter is also able to close the form.
+
+
+
+
+
+
+---
+
+### Toggle
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Toggle struct {
+	// Text is the text displayed over the toggle element. The text may contain Minecraft formatting codes.
+	Text	string
+	// Default determines if the toggle should be on/off by default.
+	Default	bool
+
+	value	bool
+}
+```
+
+
+
+Toggle represents an on-off button element. Submitters may either toggle this on or off, which will then
+hold a value of true or false respectively.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Text: {
+      description: 'Text is the text displayed over the toggle element. The text may contain Minecraft formatting codes.',
+      type: 'string',
+    },
+    Default: {
+      description: 'Default determines if the toggle should be on/off by default.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="MarshalJSON">
+```go
+func (Toggle) MarshalJSON() ([]byte, error)
+```
+
+MarshalJSON ...
+
+</Accordion>
+
+<Accordion title="Value">
+```go
+func (Toggle) Value() bool
+```
+
+Value returns the value filled out by the user.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

@@ -1,0 +1,1918 @@
+---
+title: "model"
+description: "Package model has world."
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# model
+
+
+```go
+import "github.com/df-mc/dragonfly/server/block/model"
+```
+
+
+
+Package model has world.BlockModel implementations for each world.Block implementation in the block package. These
+models may be reused by blocks that share the same model.
+Some block models require additional fields and knowledge about the surrounding blocks to calculate the correct
+model.
+
+
+
+
+
+
+
+
+
+## Types
+
+
+### Anvil
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Anvil struct {
+	// Facing is the direction that the anvil is facing.
+	Facing cube.Direction
+}
+```
+
+
+
+Anvil is a model used by anvils.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Facing: {
+      description: 'Facing is the direction that the anvil is facing.',
+      type: 'cube.Direction',
+      typeLink: '../block-cube.mdx#direction',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Anvil) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox ...
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Anvil) FaceSolid(cube.Pos, cube.Face, world.BlockSource) bool
+```
+
+FaceSolid ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BrewingStand
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BrewingStand struct{}
+```
+
+
+
+BrewingStand is a model used by brewing stands.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (BrewingStand) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox ...
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (BrewingStand) FaceSolid(cube.Pos, cube.Face, world.BlockSource) bool
+```
+
+FaceSolid ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Cactus
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Cactus struct{}
+```
+
+
+
+Cactus is the model for a Cactus. It is just barely not a full block, having a slightly reduced width and depth.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Cactus) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox returns a physics.BBox that is slightly smaller than a full block.
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Cactus) FaceSolid(cube.Pos, cube.Face, world.BlockSource) bool
+```
+
+FaceSolid always returns false.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Cake
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Cake struct {
+	// Bites is the amount of bites that were taken from the cake. A cake can have up to 7 bites taken from it, before
+	// being consumed entirely.
+	Bites int
+}
+```
+
+
+
+Cake is a model used by cake blocks.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Bites: {
+      description: 'Bites is the amount of bites that were taken from the cake. A cake can have up to 7 bites taken from it, before being consumed entirely.',
+      type: 'int',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Cake) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox returns an BBox with a size that depends on the amount of bites taken.
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Cake) FaceSolid(cube.Pos, cube.Face, world.BlockSource) bool
+```
+
+FaceSolid always returns false.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Campfire
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Campfire struct{}
+```
+
+
+
+Campfire is the model used by campfires.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Campfire) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox returns a flat BBox with a height of 0.4375.
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Campfire) FaceSolid(_ cube.Pos, face cube.Face, _ world.BlockSource) bool
+```
+
+FaceSolid returns true if the face is down.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Carpet
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Carpet struct{}
+```
+
+
+
+Carpet is a model for carpet-like extremely thin blocks.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Carpet) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox returns a flat BBox with a width of 0.0625.
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Carpet) FaceSolid(cube.Pos, cube.Face, world.BlockSource) bool
+```
+
+FaceSolid always returns false.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Chain
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Chain struct {
+	// Axis is the axis which the chain faces.
+	Axis cube.Axis
+}
+```
+
+
+
+Chain is a model used by chain blocks.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Axis: {
+      description: 'Axis is the axis which the chain faces.',
+      type: 'cube.Axis',
+      typeLink: '../block-cube.mdx#axis',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Chain) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox ...
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Chain) FaceSolid(cube.Pos, cube.Face, world.BlockSource) bool
+```
+
+FaceSolid ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Chest
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Chest struct{}
+```
+
+
+
+Chest is the model of a chest. It is just barely not a full block, having a slightly reduced with on all
+axes.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Chest) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox returns a physics.BBox that is slightly smaller than a full block.
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Chest) FaceSolid(cube.Pos, cube.Face, world.BlockSource) bool
+```
+
+FaceSolid always returns false.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### CocoaBean
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type CocoaBean struct {
+	// Facing is the face that the cocoa bean faces. It is the opposite of the face that the CocoaBean is attached to.
+	Facing	cube.Direction
+	// Age is the age of the CocoaBean. The age influences the size of the CocoaBean. The maximum age value of a cocoa
+	// bean is 3.
+	Age	int
+}
+```
+
+
+
+CocoaBean is a model used by cocoa bean blocks.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Facing: {
+      description: 'Facing is the face that the cocoa bean faces. It is the opposite of the face that the CocoaBean is attached to.',
+      type: 'cube.Direction',
+      typeLink: '../block-cube.mdx#direction',
+    },
+    Age: {
+      description: 'Age is the age of the CocoaBean. The age influences the size of the CocoaBean. The maximum age value of a cocoa bean is 3.',
+      type: 'int',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (CocoaBean) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox returns a single physics.BBox whose size depends on the age of the CocoaBean.
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (CocoaBean) FaceSolid(cube.Pos, cube.Face, world.BlockSource) bool
+```
+
+FaceSolid always returns false.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Composter
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Composter struct {
+	// Level is the level of compost inside the composter.
+	Level int
+}
+```
+
+
+
+Composter is a model used by composter blocks. It is solid on all sides apart from the top, and the height of the
+inside area depends on the level of compost inside the composter.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Level: {
+      description: 'Level is the level of compost inside the composter.',
+      type: 'int',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Composter) BBox(_ cube.Pos, _ world.BlockSource) []cube.BBox
+```
+
+BBox ...
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Composter) FaceSolid(_ cube.Pos, face cube.Face, _ world.BlockSource) bool
+```
+
+FaceSolid returns true for all faces other than the top.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### DecoratedPot
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type DecoratedPot struct{}
+```
+
+
+
+DecoratedPot is the model for a DecoratedPot. It is just barely not a full block, having a slightly reduced width and
+depth.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (DecoratedPot) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox returns a physics.BBox that is slightly smaller than a full block.
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (DecoratedPot) FaceSolid(_ cube.Pos, face cube.Face, _ world.BlockSource) bool
+```
+
+FaceSolid always returns true for the top and bottom face, and false for all other faces.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Door
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Door struct {
+	// Facing is the direction that the door is facing when closed.
+	Facing	cube.Direction
+	// Open specifies if the Door is open. The direction it opens towards depends on the Right field.
+	Open	bool
+	// Right specifies the attachment side of the door and, with that, the direction it opens in.
+	Right	bool
+}
+```
+
+
+
+Door is a model used for doors. It has no solid faces and a bounding box that changes depending on
+the direction of the door, whether it is open, and the side of its hinge.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Facing: {
+      description: 'Facing is the direction that the door is facing when closed.',
+      type: 'cube.Direction',
+      typeLink: '../block-cube.mdx#direction',
+    },
+    Open: {
+      description: 'Open specifies if the Door is open. The direction it opens towards depends on the Right field.',
+      type: 'bool',
+    },
+    Right: {
+      description: 'Right specifies the attachment side of the door and, with that, the direction it opens in.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Door) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox returns a physics.BBox that depends on if the Door is open, what direction it is facing and whether it is
+attached to the right/left side of a block.
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Door) FaceSolid(cube.Pos, cube.Face, world.BlockSource) bool
+```
+
+FaceSolid always returns false.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Empty
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Empty struct{}
+```
+
+
+
+Empty is a model that is completely empty. It has no collision boxes or solid faces.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Empty) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox returns an empty slice.
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Empty) FaceSolid(cube.Pos, cube.Face, world.BlockSource) bool
+```
+
+FaceSolid always returns false.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### EnchantingTable
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type EnchantingTable struct{}
+```
+
+
+
+EnchantingTable is a model used by enchanting tables.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (EnchantingTable) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox ...
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (EnchantingTable) FaceSolid(cube.Pos, cube.Face, world.BlockSource) bool
+```
+
+FaceSolid ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### EndRod
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type EndRod struct {
+	// Axis is the axis which the end rod faces.
+	Axis cube.Axis
+}
+```
+
+
+
+EndRod is a model used by end rod blocks.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Axis: {
+      description: 'Axis is the axis which the end rod faces.',
+      type: 'cube.Axis',
+      typeLink: '../block-cube.mdx#axis',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (EndRod) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox ...
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (EndRod) FaceSolid(cube.Pos, cube.Face, world.BlockSource) bool
+```
+
+FaceSolid ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Fence
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Fence struct {
+	// Wood specifies if the Fence is made from wood. This field is used to check if two fences are able to attach to
+	// each other.
+	Wood bool
+}
+```
+
+
+
+Fence is a model used by fences of any type. It can attach to blocks with solid faces and other fences of the same
+type and has a model height just slightly over 1.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Wood: {
+      description: 'Wood specifies if the Fence is made from wood. This field is used to check if two fences are able to attach to each other.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Fence) BBox(pos cube.Pos, s world.BlockSource) []cube.BBox
+```
+
+BBox returns multiple physics.BBox depending on how many connections it has with the surrounding blocks.
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Fence) FaceSolid(_ cube.Pos, face cube.Face, _ world.BlockSource) bool
+```
+
+FaceSolid returns true if the face is cube.FaceDown or cube.FaceUp.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### FenceGate
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FenceGate struct {
+	// Facing is the facing direction of the FenceGate. A fence gate can only be opened in this direction or the
+	// direction opposite to it.
+	Facing	cube.Direction
+	// Open specifies if the FenceGate is open. In this case, BBox returns an empty slice.
+	Open	bool
+}
+```
+
+
+
+FenceGate is a model used by fence gates. The model is completely zero-ed when the FenceGate is opened.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Facing: {
+      description: 'Facing is the facing direction of the FenceGate. A fence gate can only be opened in this direction or the direction opposite to it.',
+      type: 'cube.Direction',
+      typeLink: '../block-cube.mdx#direction',
+    },
+    Open: {
+      description: 'Open specifies if the FenceGate is open. In this case, BBox returns an empty slice.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (FenceGate) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox returns up to one physics.BBox depending on the facing direction of the FenceGate and whether it is open.
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (FenceGate) FaceSolid(cube.Pos, cube.Face, world.BlockSource) bool
+```
+
+FaceSolid always returns false.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Grindstone
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Grindstone struct {
+	// Axis is the axis the grindstone is attached to.
+	Axis cube.Axis
+}
+```
+
+
+
+Grindstone is a model used by grindstones.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Axis: {
+      description: 'Axis is the axis the grindstone is attached to.',
+      type: 'cube.Axis',
+      typeLink: '../block-cube.mdx#axis',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Grindstone) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox ...
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Grindstone) FaceSolid(cube.Pos, cube.Face, world.BlockSource) bool
+```
+
+FaceSolid always returns false.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Hopper
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Hopper struct{}
+```
+
+
+
+Hopper is a model used by hoppers.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Hopper) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox returns a physics.BBox that spans a full block.
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Hopper) FaceSolid(_ cube.Pos, face cube.Face, _ world.BlockSource) bool
+```
+
+FaceSolid only returns true for the top face of the hopper.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Ladder
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Ladder struct {
+	// Facing is the side opposite to the block the Ladder is currently attached to.
+	Facing cube.Direction
+}
+```
+
+
+
+Ladder is the model for a ladder block.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Facing: {
+      description: 'Facing is the side opposite to the block the Ladder is currently attached to.',
+      type: 'cube.Direction',
+      typeLink: '../block-cube.mdx#direction',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Ladder) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox returns one physics.BBox that depends on the facing direction of the Ladder.
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Ladder) FaceSolid(cube.Pos, cube.Face, world.BlockSource) bool
+```
+
+FaceSolid always returns false.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Lantern
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Lantern struct {
+	// Hanging specifies if the lantern is hanging from a block or if it's placed on the ground.
+	Hanging bool
+}
+```
+
+
+
+Lantern is a model for the lantern block. It can be placed on the ground or hanging from the ceiling.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Hanging: {
+      description: 'Hanging specifies if the lantern is hanging from a block or if it\'s placed on the ground.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Lantern) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox returns a physics.BBox attached to either the ceiling or to the ground.
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Lantern) FaceSolid(cube.Pos, cube.Face, world.BlockSource) bool
+```
+
+FaceSolid always returns false.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Leaves
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Leaves struct{}
+```
+
+
+
+Leaves is a model for leaves-like blocks. These blocks have a full collision box, but none of their faces
+are solid.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Leaves) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox returns a physics.BBox that spans a full block.
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Leaves) FaceSolid(cube.Pos, cube.Face, world.BlockSource) bool
+```
+
+FaceSolid always returns false.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Lectern
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Lectern struct{}
+```
+
+
+
+Lectern is a model used by lecterns.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Lectern) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox ...
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Lectern) FaceSolid(cube.Pos, cube.Face, world.BlockSource) bool
+```
+
+FaceSolid ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### LilyPad
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type LilyPad struct{}
+```
+
+
+
+LilyPad is a model for the lily pad block.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (LilyPad) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox ...
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (LilyPad) FaceSolid(cube.Pos, cube.Face, world.BlockSource) bool
+```
+
+FaceSolid ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Skull
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Skull struct {
+	// Direction is the direction the skull is facing.
+	Direction	cube.Face
+	// Hanging specifies if the Skull is hanging on a wall.
+	Hanging	bool
+}
+```
+
+
+
+Skull is a model used by skull blocks.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Direction: {
+      description: 'Direction is the direction the skull is facing.',
+      type: 'cube.Face',
+      typeLink: '../block-cube.mdx#face',
+    },
+    Hanging: {
+      description: 'Hanging specifies if the Skull is hanging on a wall.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Skull) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox ...
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Skull) FaceSolid(cube.Pos, cube.Face, world.BlockSource) bool
+```
+
+FaceSolid ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Slab
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Slab struct {
+	// Double and Top specify if the Slab is a double slab and if it's in the top slot respectively. If Double is true,
+	// the BBox returned is always a full block.
+	Double, Top bool
+}
+```
+
+
+
+Slab is the model of a slab-like block, which is either a half block or a full block, depending on if the
+slab is double.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Double: {
+      description: 'Double and Top specify if the Slab is a double slab and if it\'s in the top slot respectively. If Double is true, the BBox returned is always a full block.',
+      type: 'bool',
+    },
+    Top: {
+      description: 'Double and Top specify if the Slab is a double slab and if it\'s in the top slot respectively. If Double is true, the BBox returned is always a full block.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Slab) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox returns either a physics.BBox spanning a full block or a half block in the top/bottom part of the block,
+depending on the Double and Top fields.
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Slab) FaceSolid(_ cube.Pos, face cube.Face, _ world.BlockSource) bool
+```
+
+FaceSolid returns true if the Slab is double, or if the face is cube.FaceUp when the Top field is true, or if the
+face is cube.FaceDown when the Top field is false.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Solid
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Solid struct{}
+```
+
+
+
+Solid is the model of a fully solid block. Blocks with this model, such as stone or wooden planks, have a
+1x1x1 collision box.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Solid) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox returns a physics.BBox spanning a full block.
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Solid) FaceSolid(cube.Pos, cube.Face, world.BlockSource) bool
+```
+
+FaceSolid always returns true.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Stair
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Stair struct {
+	// Facing specifies the direction that the full side of the Stair faces.
+	Facing	cube.Direction
+	// UpsideDown turns the Stair upside-down, meaning the full side of the Stair is turned to the top side of the
+	// block.
+	UpsideDown	bool
+}
+```
+
+
+
+Stair is a model for stair-like blocks. These have different solid sides depending on the direction the
+stairs are facing, the surrounding blocks and whether it is upside down or not.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Facing: {
+      description: 'Facing specifies the direction that the full side of the Stair faces.',
+      type: 'cube.Direction',
+      typeLink: '../block-cube.mdx#direction',
+    },
+    UpsideDown: {
+      description: 'UpsideDown turns the Stair upside-down, meaning the full side of the Stair is turned to the top side of the block.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Stair) BBox(pos cube.Pos, bs world.BlockSource) []cube.BBox
+```
+
+BBox returns a slice of physics.BBox depending on if the Stair is upside down and which direction it is facing.
+Additionally, these BBoxs depend on the Stair blocks surrounding this one, which can influence the model.
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Stair) FaceSolid(pos cube.Pos, face cube.Face, bs world.BlockSource) bool
+```
+
+FaceSolid returns true for all faces of the Stair that are completely filled.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Stonecutter
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Stonecutter struct{}
+```
+
+
+
+Stonecutter is a model used by stonecutters.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Stonecutter) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox ...
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Stonecutter) FaceSolid(cube.Pos, cube.Face, world.BlockSource) bool
+```
+
+FaceSolid ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Thin
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Thin struct{}
+```
+
+
+
+Thin is a model for thin, partial blocks such as a glass pane or an iron bar. It changes its bounding box depending
+on solid faces next to it.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Thin) BBox(pos cube.Pos, s world.BlockSource) []cube.BBox
+```
+
+BBox returns a slice of physics.BBox that depends on the blocks surrounding the Thin block. Thin blocks can connect
+to any other Thin block, wall or solid faces of other blocks.
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Thin) FaceSolid(_ cube.Pos, face cube.Face, _ world.BlockSource) bool
+```
+
+FaceSolid returns true if the face passed is cube.FaceDown.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### TilledGrass
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type TilledGrass struct{}
+```
+
+
+
+TilledGrass is a model used for grass that has been tilled in some way, such as dirt paths and farmland.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (TilledGrass) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox returns a physics.BBox that spans an entire block.
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (TilledGrass) FaceSolid(cube.Pos, cube.Face, world.BlockSource) bool
+```
+
+FaceSolid always returns true.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Trapdoor
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Trapdoor struct {
+	// Facing is the facing direction of the Trapdoor. In addition to the texture, it influences the direction in which
+	// the Trapdoor is opened.
+	Facing	cube.Direction
+	// Open and Top specify if the Trapdoor is opened and if it's in the top or bottom part of a block respectively.
+	Open, Top	bool
+}
+```
+
+
+
+Trapdoor is a model used for trapdoors. It has no solid faces and a bounding box that changes depending on
+the direction of the trapdoor.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Facing: {
+      description: 'Facing is the facing direction of the Trapdoor. In addition to the texture, it influences the direction in which the Trapdoor is opened.',
+      type: 'cube.Direction',
+      typeLink: '../block-cube.mdx#direction',
+    },
+    Open: {
+      description: 'Open and Top specify if the Trapdoor is opened and if it\'s in the top or bottom part of a block respectively.',
+      type: 'bool',
+    },
+    Top: {
+      description: 'Open and Top specify if the Trapdoor is opened and if it\'s in the top or bottom part of a block respectively.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Trapdoor) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox returns a physics.BBox that depends on the facing direction of the Trapdoor and whether it is open and in the
+top part of the block.
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Trapdoor) FaceSolid(_ cube.Pos, face cube.Face, _ world.BlockSource) bool
+```
+
+FaceSolid returns true if the face is completely filled with the trapdoor.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Wall
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Wall struct {
+	// NorthConnection is the height of the connection for the north direction.
+	NorthConnection	float64
+	// EastConnection is the height of the connection for the east direction.
+	EastConnection	float64
+	// SouthConnection is the height of the connection for the south direction.
+	SouthConnection	float64
+	// WestConnection is the height of the connection for the west direction.
+	WestConnection	float64
+	// Post is if the wall is the full height of a block or not.
+	Post	bool
+}
+```
+
+
+
+Wall is a model used by all wall types.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    NorthConnection: {
+      description: 'NorthConnection is the height of the connection for the north direction.',
+      type: 'float64',
+    },
+    EastConnection: {
+      description: 'EastConnection is the height of the connection for the east direction.',
+      type: 'float64',
+    },
+    SouthConnection: {
+      description: 'SouthConnection is the height of the connection for the south direction.',
+      type: 'float64',
+    },
+    WestConnection: {
+      description: 'WestConnection is the height of the connection for the west direction.',
+      type: 'float64',
+    },
+    Post: {
+      description: 'Post is if the wall is the full height of a block or not.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BBox">
+```go
+func (Wall) BBox(cube.Pos, world.BlockSource) []cube.BBox
+```
+
+BBox ...
+
+</Accordion>
+
+<Accordion title="FaceSolid">
+```go
+func (Wall) FaceSolid(_ cube.Pos, face cube.Face, _ world.BlockSource) bool
+```
+
+FaceSolid returns true if the face is in the Y axis.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

@@ -1,0 +1,4427 @@
+---
+title: "sound"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# sound
+
+
+```go
+import "github.com/df-mc/dragonfly/server/world/sound"
+```
+
+
+
+
+
+## Constants
+
+<Accordions>
+
+<Accordion title="CrossbowLoadingStart">
+```go
+const CrossbowLoadingStart  = iota
+```
+
+</Accordion>
+
+<Accordion title="CrossbowLoadingMiddle">
+```go
+const CrossbowLoadingMiddle  = 
+```
+
+</Accordion>
+
+<Accordion title="CrossbowLoadingEnd">
+```go
+const CrossbowLoadingEnd  = 
+```
+
+</Accordion>
+
+</Accordions>
+
+
+
+
+
+
+
+## Types
+
+
+### AnvilBreak
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type AnvilBreak struct{ sound }
+```
+
+
+
+AnvilBreak is played when an anvil is broken.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (AnvilBreak) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### AnvilLand
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type AnvilLand struct{ sound }
+```
+
+
+
+AnvilLand is played when an anvil lands on the ground.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (AnvilLand) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### AnvilUse
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type AnvilUse struct{ sound }
+```
+
+
+
+AnvilUse is played when an anvil is used.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (AnvilUse) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ArrowHit
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ArrowHit struct{ sound }
+```
+
+
+
+ArrowHit is a sound played when an arrow hits ground.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (ArrowHit) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Attack
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Attack struct {
+	// Damage specifies if the attack actually dealt damage to the other entity. If set to false, the sound
+	// will be different from when set to true.
+	Damage	bool
+
+	sound
+}
+```
+
+
+
+Attack is a sound played when an entity, most notably a player, attacks another entity.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Damage: {
+      description: 'Damage specifies if the attack actually dealt damage to the other entity. If set to false, the sound will be different from when set to true.',
+      type: 'bool',
+    },
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (Attack) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BarrelClose
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BarrelClose struct{ sound }
+```
+
+
+
+BarrelClose is played when a barrel is closed.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (BarrelClose) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BarrelOpen
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BarrelOpen struct{ sound }
+```
+
+
+
+BarrelOpen is played when a barrel is opened.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (BarrelOpen) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BlastFurnaceCrackle
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BlastFurnaceCrackle struct{ sound }
+```
+
+
+
+BlastFurnaceCrackle is a sound played every one to five seconds from a blast furnace.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (BlastFurnaceCrackle) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BlockBreaking
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BlockBreaking struct {
+	// Block is the block which is being broken, for which a sound should be played. The sound played depends
+	// on the block type.
+	Block	world.Block
+
+	sound
+}
+```
+
+
+
+BlockBreaking is a sound sent continuously while a player is breaking a block.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Block: {
+      description: 'Block is the block which is being broken, for which a sound should be played. The sound played depends on the block type.',
+      type: 'world.Block',
+      typeLink: '../world.mdx#block',
+    },
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (BlockBreaking) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BlockPlace
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BlockPlace struct {
+	// Block is the block which is placed, for which a sound should be played. The sound played depends on
+	// the block type.
+	Block	world.Block
+
+	sound
+}
+```
+
+
+
+BlockPlace is a sound sent when a block is placed.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Block: {
+      description: 'Block is the block which is placed, for which a sound should be played. The sound played depends on the block type.',
+      type: 'world.Block',
+      typeLink: '../world.mdx#block',
+    },
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (BlockPlace) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BowShoot
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BowShoot struct{ sound }
+```
+
+
+
+BowShoot is a sound played when a bow is shot.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (BowShoot) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BucketEmpty
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BucketEmpty struct {
+	// Liquid is the liquid that the bucket places into the world.
+	Liquid	world.Liquid
+
+	sound
+}
+```
+
+
+
+BucketEmpty is a sound played when a bucket with a liquid in it is placed into the world.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Liquid: {
+      description: 'Liquid is the liquid that the bucket places into the world.',
+      type: 'world.Liquid',
+      typeLink: '../world.mdx#liquid',
+    },
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (BucketEmpty) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BucketFill
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BucketFill struct {
+	// Liquid is the liquid that the bucket is filled up with.
+	Liquid	world.Liquid
+
+	sound
+}
+```
+
+
+
+BucketFill is a sound played when a bucket is filled using a liquid source block from the world.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Liquid: {
+      description: 'Liquid is the liquid that the bucket is filled up with.',
+      type: 'world.Liquid',
+      typeLink: '../world.mdx#liquid',
+    },
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (BucketFill) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Burning
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Burning struct{ sound }
+```
+
+
+
+Burning is a sound played when an entity is on fire.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (Burning) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Burp
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Burp struct{ sound }
+```
+
+
+
+Burp is a sound played when a player finishes eating an item.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (Burp) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### CampfireCrackle
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type CampfireCrackle struct{ sound }
+```
+
+
+
+CampfireCrackle is a sound played every one to five seconds from a campfire.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (CampfireCrackle) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ChestClose
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ChestClose struct{ sound }
+```
+
+
+
+ChestClose is played when a chest is closed.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (ChestClose) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ChestOpen
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ChestOpen struct{ sound }
+```
+
+
+
+ChestOpen is played when a chest is opened.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (ChestOpen) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Click
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Click struct{ sound }
+```
+
+
+
+Click is a clicking sound.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (Click) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ComposterEmpty
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ComposterEmpty struct{ sound }
+```
+
+
+
+ComposterEmpty is a sound played when a composter has been emptied.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (ComposterEmpty) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ComposterFill
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ComposterFill struct{ sound }
+```
+
+
+
+ComposterFill is a sound played when a composter has been filled, but not gone up a layer.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (ComposterFill) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ComposterFillLayer
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ComposterFillLayer struct{ sound }
+```
+
+
+
+ComposterFillLayer is a sound played when a composter has been filled and gone up a layer.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (ComposterFillLayer) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ComposterReady
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ComposterReady struct{ sound }
+```
+
+
+
+ComposterReady is a sound played when a composter has produced bone meal and is ready to be collected.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (ComposterReady) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### CopperScraped
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type CopperScraped struct{ sound }
+```
+
+
+
+CopperScraped is a sound played when a player scrapes a copper block to reduce its oxidation level.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (CopperScraped) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### CrossbowLoad
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type CrossbowLoad struct {
+	// Stage is the stage of the crossbow.
+	Stage	int
+	// QuickCharge returns if the item being used has quick charge enchantment.
+	QuickCharge	bool
+
+	sound
+}
+```
+
+
+
+CrossbowLoad is a sound when a crossbow is being loaded.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Stage: {
+      description: 'Stage is the stage of the crossbow.',
+      type: 'int',
+    },
+    QuickCharge: {
+      description: 'QuickCharge returns if the item being used has quick charge enchantment.',
+      type: 'bool',
+    },
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (CrossbowLoad) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### CrossbowShoot
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type CrossbowShoot struct{ sound }
+```
+
+
+
+CrossbowShoot is a sound played when a crossbow is shot.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (CrossbowShoot) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### DecoratedPotInsertFailed
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type DecoratedPotInsertFailed struct{ sound }
+```
+
+
+
+DecoratedPotInsertFailed is a sound played when an item fails to be inserted into a decorated pot.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (DecoratedPotInsertFailed) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### DecoratedPotInserted
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type DecoratedPotInserted struct {
+	sound
+	// Progress is how much of the decorated pot has been filled.
+	Progress	float64
+}
+```
+
+
+
+DecoratedPotInserted is a sound played when an item is successfully inserted into a decorated pot.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+    Progress: {
+      description: 'Progress is how much of the decorated pot has been filled.',
+      type: 'float64',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (DecoratedPotInserted) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Deny
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Deny struct{ sound }
+```
+
+
+
+Deny is a sound played when a block is placed or broken above a 'Deny' block from Education edition.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (Deny) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### DiscType
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type DiscType struct {
+	disc
+}
+```
+
+
+
+DiscType represents the type of music disc. Typically, Minecraft has a total of 15 music discs.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    disc: {
+      description: '',
+      type: 'disc',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Author">
+```go
+func (DiscType) Author() string
+```
+
+Author ...
+
+</Accordion>
+
+<Accordion title="DisplayName">
+```go
+func (DiscType) DisplayName() string
+```
+
+DisplayName ...
+
+</Accordion>
+
+<Accordion title="String">
+```go
+func (DiscType) String() string
+```
+
+String ...
+
+</Accordion>
+
+<Accordion title="Uint8">
+```go
+func (DiscType) Uint8() uint8
+```
+
+Uint8 converts the disc to an integer that uniquely identifies its type.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### DoorClose
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type DoorClose struct {
+	// Block is the block which is being closed, for which a sound should be played. The sound played depends on the
+	// block type.
+	Block	world.Block
+
+	sound
+}
+```
+
+
+
+DoorClose is a sound played when a door is closed.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Block: {
+      description: 'Block is the block which is being closed, for which a sound should be played. The sound played depends on the block type.',
+      type: 'world.Block',
+      typeLink: '../world.mdx#block',
+    },
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (DoorClose) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### DoorCrash
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type DoorCrash struct{ sound }
+```
+
+
+
+DoorCrash is a sound played when a door is forced open.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (DoorCrash) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### DoorOpen
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type DoorOpen struct {
+	// Block is the block which is being opened, for which a sound should be played. The sound played depends on the
+	// block type.
+	Block	world.Block
+
+	sound
+}
+```
+
+
+
+DoorOpen is a sound played when a door is opened.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Block: {
+      description: 'Block is the block which is being opened, for which a sound should be played. The sound played depends on the block type.',
+      type: 'world.Block',
+      typeLink: '../world.mdx#block',
+    },
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (DoorOpen) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Drowning
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Drowning struct{ sound }
+```
+
+
+
+Drowning is a sound played when an entity is drowning in water.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (Drowning) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### EnderChestClose
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type EnderChestClose struct{ sound }
+```
+
+
+
+EnderChestClose is played when a ender chest is closed.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (EnderChestClose) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### EnderChestOpen
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type EnderChestOpen struct{ sound }
+```
+
+
+
+EnderChestOpen is played when a ender chest is opened.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (EnderChestOpen) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### EquipItem
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type EquipItem struct {
+	// Item is the item that was equipped. The sound played differs depending on this field.
+	Item	world.Item
+
+	sound
+}
+```
+
+
+
+EquipItem is a sound played when the player fast equips an item by using it.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Item: {
+      description: 'Item is the item that was equipped. The sound played differs depending on this field.',
+      type: 'world.Item',
+      typeLink: '../world.mdx#item',
+    },
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (EquipItem) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Experience
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Experience struct{ sound }
+```
+
+
+
+Experience is a sound played whenever a player picks up an XP orb.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (Experience) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Explosion
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Explosion struct{ sound }
+```
+
+
+
+Explosion is a sound played when an explosion happens, such as from a creeper or TNT.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (Explosion) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Fall
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Fall struct {
+	// Distance is the distance the entity has fallen.
+	Distance	float64
+
+	sound
+}
+```
+
+
+
+Fall is a sound played when an entity falls and hits ground.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Distance: {
+      description: 'Distance is the distance the entity has fallen.',
+      type: 'float64',
+    },
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (Fall) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### FenceGateClose
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FenceGateClose struct {
+	// Block is the block which is being closed, for which a sound should be played. The sound played depends on the
+	// block type.
+	Block	world.Block
+
+	sound
+}
+```
+
+
+
+FenceGateClose is a sound played when a fence gate is closed.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Block: {
+      description: 'Block is the block which is being closed, for which a sound should be played. The sound played depends on the block type.',
+      type: 'world.Block',
+      typeLink: '../world.mdx#block',
+    },
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (FenceGateClose) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### FenceGateOpen
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FenceGateOpen struct {
+	// Block is the block which is being opened, for which a sound should be played. The sound played depends on the
+	// block type.
+	Block	world.Block
+
+	sound
+}
+```
+
+
+
+FenceGateOpen is a sound played when a fence gate is opened.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Block: {
+      description: 'Block is the block which is being opened, for which a sound should be played. The sound played depends on the block type.',
+      type: 'world.Block',
+      typeLink: '../world.mdx#block',
+    },
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (FenceGateOpen) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### FireCharge
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FireCharge struct{ sound }
+```
+
+
+
+FireCharge is a sound played when a player lights a block on fire with a fire charge, or when a dispenser or a
+blaze shoots a fireball.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (FireCharge) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### FireExtinguish
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FireExtinguish struct{ sound }
+```
+
+
+
+FireExtinguish is a sound played when a fire is extinguished.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (FireExtinguish) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### FireworkBlast
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FireworkBlast struct{ sound }
+```
+
+
+
+FireworkBlast is a sound played when a small sphere firework explodes.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (FireworkBlast) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### FireworkHugeBlast
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FireworkHugeBlast struct{ sound }
+```
+
+
+
+FireworkHugeBlast is a sound played when a huge sphere firework explodes.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (FireworkHugeBlast) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### FireworkLaunch
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FireworkLaunch struct{ sound }
+```
+
+
+
+FireworkLaunch is a sound played when a firework is launched.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (FireworkLaunch) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### FireworkTwinkle
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FireworkTwinkle struct{ sound }
+```
+
+
+
+FireworkTwinkle is a sound played when a firework explodes and should twinkle.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (FireworkTwinkle) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Fizz
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Fizz struct{ sound }
+```
+
+
+
+Fizz is a sound sent when a lava block and a water block interact with each other in a way that one of
+them turns into a solid block.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (Fizz) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### FurnaceCrackle
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FurnaceCrackle struct{ sound }
+```
+
+
+
+FurnaceCrackle is a sound played every one to five seconds from a furnace.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (FurnaceCrackle) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### GhastShoot
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type GhastShoot struct{ sound }
+```
+
+
+
+GhastShoot is a sound played when a ghast shoots a fire charge.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (GhastShoot) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### GhastWarning
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type GhastWarning struct{ sound }
+```
+
+
+
+GhastWarning is a sound played when a ghast is ready to attack.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (GhastWarning) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### GlassBreak
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type GlassBreak struct{ sound }
+```
+
+
+
+GlassBreak is a sound played when a glass block or item is broken.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (GlassBreak) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### GoatHorn
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type GoatHorn struct {
+	// Horn is the type of the goat horn.
+	Horn	Horn
+
+	sound
+}
+```
+
+
+
+GoatHorn is a sound played when a player uses a goat horn.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Horn: {
+      description: 'Horn is the type of the goat horn.',
+      type: 'Horn',
+      typeLink: '../world-sound.mdx#horn',
+    },
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (GoatHorn) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Horn
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Horn struct {
+	goatHornType
+}
+```
+
+
+
+Horn represents a variant of a goat horn.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    goatHornType: {
+      description: '',
+      type: 'goatHornType',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Name">
+```go
+func (Horn) Name() string
+```
+
+Name returns the goat horn type's name.
+
+</Accordion>
+
+<Accordion title="Uint8">
+```go
+func (Horn) Uint8() uint8
+```
+
+Uint8 returns the goat horn type as a uint8.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Ignite
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Ignite struct{ sound }
+```
+
+
+
+Ignite is a sound played when using a flint & steel.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (Ignite) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Instrument
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Instrument struct {
+	instrument
+}
+```
+
+
+
+Instrument represents a note block instrument.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    instrument: {
+      description: '',
+      type: 'instrument',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Int32">
+```go
+func (Instrument) Int32() int32
+```
+
+Int32 ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ItemAdd
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ItemAdd struct{ sound }
+```
+
+
+
+ItemAdd is a sound played when an item is added to an item frame or campfire.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (ItemAdd) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ItemBreak
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ItemBreak struct{ sound }
+```
+
+
+
+ItemBreak is a sound played when an item in the inventory is broken, such as when a tool reaches 0
+durability and breaks.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (ItemBreak) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ItemFrameRemove
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ItemFrameRemove struct{ sound }
+```
+
+
+
+ItemFrameRemove is a sound played when an item is removed from an item frame.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (ItemFrameRemove) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ItemFrameRotate
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ItemFrameRotate struct{ sound }
+```
+
+
+
+ItemFrameRotate is a sound played when an item frame's item is rotated.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (ItemFrameRotate) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ItemThrow
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ItemThrow struct{ sound }
+```
+
+
+
+ItemThrow is a sound played when a player throws an item, such as a snowball.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (ItemThrow) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ItemUseOn
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ItemUseOn struct {
+	// Block is generally the block that was created by using the item on a block. The sound played differs
+	// depending on this field.
+	Block	world.Block
+
+	sound
+}
+```
+
+
+
+ItemUseOn is a sound played when a player uses its item on a block. An example of this is when a player
+uses a shovel to turn grass into dirt path. Note that in these cases, the Block is actually the new block,
+not the old one.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Block: {
+      description: 'Block is generally the block that was created by using the item on a block. The sound played differs depending on this field.',
+      type: 'world.Block',
+      typeLink: '../world.mdx#block',
+    },
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (ItemUseOn) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### LecternBookPlace
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type LecternBookPlace struct{ sound }
+```
+
+
+
+LecternBookPlace is a sound played when a book is placed in a lectern.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (LecternBookPlace) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### LevelUp
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type LevelUp struct{ sound }
+```
+
+
+
+LevelUp is a sound played for a player whenever they level up.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (LevelUp) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### LightningExplode
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type LightningExplode struct{ sound }
+```
+
+
+
+LightningExplode ...
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (LightningExplode) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### LightningThunder
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type LightningThunder struct{ sound }
+```
+
+
+
+LightningThunder ...
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (LightningThunder) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### MusicDiscEnd
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type MusicDiscEnd struct{ sound }
+```
+
+
+
+MusicDiscEnd is a sound played when a music disc has stopped playing in a jukebox.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (MusicDiscEnd) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### MusicDiscPlay
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type MusicDiscPlay struct {
+	sound
+
+	// DiscType is the disc type of the music disc.
+	DiscType	DiscType
+}
+```
+
+
+
+MusicDiscPlay is a sound played when a music disc has started playing in a jukebox.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+    DiscType: {
+      description: 'DiscType is the disc type of the music disc.',
+      type: 'DiscType',
+      typeLink: '../world-sound.mdx#disctype',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (MusicDiscPlay) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Note
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Note struct {
+	sound
+	// Instrument is the instrument of the note block.
+	Instrument	Instrument
+	// Pitch is the pitch of the note.
+	Pitch	int
+}
+```
+
+
+
+Note is a sound played by note blocks.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+    Instrument: {
+      description: 'Instrument is the instrument of the note block.',
+      type: 'Instrument',
+      typeLink: '../world-sound.mdx#instrument',
+    },
+    Pitch: {
+      description: 'Pitch is the pitch of the note.',
+      type: 'int',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (Note) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Pop
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Pop struct{ sound }
+```
+
+
+
+Pop is a sound played when a chicken lays an egg.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (Pop) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### PotionBrewed
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type PotionBrewed struct{ sound }
+```
+
+
+
+PotionBrewed is a sound played when a potion is brewed.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (PotionBrewed) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### SignWaxed
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type SignWaxed struct{ sound }
+```
+
+
+
+SignWaxed is a sound played when a sign is waxed.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (SignWaxed) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### SmokerCrackle
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type SmokerCrackle struct{ sound }
+```
+
+
+
+SmokerCrackle is a sound played every one to five seconds from a smoker.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (SmokerCrackle) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### StopUsingSpyglass
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type StopUsingSpyglass struct{ sound }
+```
+
+
+
+StopUsingSpyglass is a sound played when a player stops using a spyglass.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (StopUsingSpyglass) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### TNT
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type TNT struct{ sound }
+```
+
+
+
+TNT is a sound played when TNT is ignited.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (TNT) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Teleport
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Teleport struct{ sound }
+```
+
+
+
+Teleport is a sound played upon teleportation of an enderman, or teleportation of a player by an ender pearl or a chorus fruit.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (Teleport) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Thunder
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Thunder struct{ sound }
+```
+
+
+
+Thunder is a sound played when lightning strikes the ground.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (Thunder) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Totem
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Totem struct{ sound }
+```
+
+
+
+Totem is a sound played when a player uses a totem.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (Totem) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### TrapdoorClose
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type TrapdoorClose struct {
+	// Block is the block which is being closed, for which a sound should be played. The sound played depends on the
+	// block type.
+	Block	world.Block
+
+	sound
+}
+```
+
+
+
+TrapdoorClose is a sound played when a trapdoor is closed.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Block: {
+      description: 'Block is the block which is being closed, for which a sound should be played. The sound played depends on the block type.',
+      type: 'world.Block',
+      typeLink: '../world.mdx#block',
+    },
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (TrapdoorClose) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### TrapdoorOpen
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type TrapdoorOpen struct {
+	// Block is the block which is being opened, for which a sound should be played. The sound played depends on the
+	// block type.
+	Block	world.Block
+
+	sound
+}
+```
+
+
+
+TrapdoorOpen is a sound played when a trapdoor is opened.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Block: {
+      description: 'Block is the block which is being opened, for which a sound should be played. The sound played depends on the block type.',
+      type: 'world.Block',
+      typeLink: '../world.mdx#block',
+    },
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (TrapdoorOpen) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### UseSpyglass
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type UseSpyglass struct{ sound }
+```
+
+
+
+UseSpyglass is a sound played when a player uses a spyglass.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (UseSpyglass) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### WaxRemoved
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type WaxRemoved struct{ sound }
+```
+
+
+
+WaxRemoved is a sound played when wax is removed from a block.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (WaxRemoved) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### WaxedSignFailedInteraction
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type WaxedSignFailedInteraction struct{ sound }
+```
+
+
+
+WaxedSignFailedInteraction is a sound played when a player tries to interact with a waxed sign.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sound: {
+      description: '',
+      type: 'sound',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Play">
+```go
+func (WaxedSignFailedInteraction) Play(*world.World, mgl64.Vec3)
+```
+
+Play ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

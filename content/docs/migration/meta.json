@@ -1,0 +1,16 @@
+{
+    "title": "Migration",
+    "icon": "ArrowRight",
+    "pages": [
+        "project-structure",
+        "configuration",
+        "concurrency",
+        "error-handling",
+        "chat-messaging",
+        "commands",
+        "blocks",
+        "items-inventories",
+        "entities",
+        "permissions"
+    ]
+}

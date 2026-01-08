@@ -1,4 +1,0 @@
----
-icon: hourglass
-visibility: hidden
----

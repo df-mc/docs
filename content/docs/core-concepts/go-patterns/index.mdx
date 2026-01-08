@@ -1,0 +1,49 @@
+---
+title: Go Patterns for Dragonfly
+icon: Code
+---
+
+This section is specifically for developers coming from PocketMine-MP, Nukkit, or similar plugin-based server software. These are the common patterns and anti-patterns you'll encounter when moving to Dragonfly and Go.
+
+Go is not PHP or Java. The patterns that worked well in those languages can lead to overly complex code in Go. This section covers what to avoid and what to embrace.
+
+## Anti-Patterns to Avoid
+
+### Overengineering
+
+The biggest trap for PM/Nukkit developers. You don't need interfaces for everything. You don't need abstraction layers. You don't need a config option for every constant.
+
+[Overengineering →](/docs/core-concepts/go-patterns/overengineering)
+
+### Excessive Abstraction
+
+Go doesn't have classes. Trying to force OOP patterns from PHP/Java leads to awkward code. Learn to think in composition and interfaces.
+
+[Abstraction Patterns →](/docs/core-concepts/go-patterns/abstraction)
+
+### Unnecessary Polymorphism
+
+Just because you can use interfaces everywhere doesn't mean you should. Start concrete, abstract when you have a real reason.
+
+[Polymorphism →](/docs/core-concepts/go-patterns/polymorphism)
+
+### Tight Coupling
+
+Global state and circular dependencies will bite you. Go makes it easy to avoid these—learn how.
+
+[Object Coupling →](/docs/core-concepts/go-patterns/coupling)
+
+## The Dragonfly Way
+
+Dragonfly's codebase is pragmatic. Handlers are simple interfaces. Blocks are simple structs. There's no AbstractBlockFactoryProvider.
+
+Follow the same principles:
+1. **Solve the problem you have** - not the problem you might have
+2. **Start concrete, abstract later** - write the specific solution first
+3. **Three strikes rule** - don't abstract until you've written similar code three times
+
+## Encapsulation
+
+Go's approach to visibility is different from PHP/Java. It's simpler, and works well once you understand it.
+
+[Encapsulation →](/docs/core-concepts/go-patterns/encapsulation)

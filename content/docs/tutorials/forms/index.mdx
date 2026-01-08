@@ -1,0 +1,96 @@
+---
+title: Forms
+description: Understanding the form system in Dragonfly.
+---
+
+# Forms
+
+Dragonfly provides a complete form system for creating interactive UI dialogs that display on the Bedrock client. Forms allow you to collect user input, present choices, and create menu-driven interfaces.
+
+## Form Types
+
+Dragonfly supports three distinct form types:
+
+| Type | Purpose | Use Case |
+|------|---------|----------|
+| **Custom** | Multi-element input forms | Registration, settings, complex data entry |
+| **Menu** | Button-based selection with optional images | Main menus, shop interfaces, navigation |
+| **Modal** | Simple two-button yes/no dialogs | Confirmations, alerts, simple choices |
+
+## Architecture
+
+Forms in Dragonfly use a struct-based pattern where your form's fields define both the UI elements and receive the submitted values:
+
+```go title="form_architecture.go"
+import "github.com/df-mc/dragonfly/server/player/form"
+
+// Your struct defines the form elements
+type MyForm struct {
+    Name   form.Input
+    Age    form.Slider
+    Active form.Toggle
+}
+
+// Submit is called when the user submits the form
+func (f *MyForm) Submit(submitter form.Submitter, tx *world.Tx) {
+    name := f.Name.Value()
+    age := f.Age.Value()
+    active := f.Active.Value()
+    // Handle the values...
+}
+```
+
+## Key Interfaces
+
+### Submitter
+
+The entity interacting with the form (typically a player):
+
+```go title="submitter_interface.go"
+type Submitter interface {
+    SendForm(form Form)
+    CloseForm()
+}
+```
+
+### Submittable (Custom Forms)
+
+```go title="submittable_interface.go"
+type Submittable interface {
+    Submit(submitter Submitter, tx *world.Tx)
+}
+```
+
+### MenuSubmittable (Menu Forms)
+
+```go title="menu_submittable_interface.go"
+type MenuSubmittable interface {
+    Submit(submitter Submitter, pressed Button, tx *world.Tx)
+}
+```
+
+### Closer (Optional)
+
+Implement this to handle when a form is closed without submission:
+
+```go title="closer_interface.go"
+type Closer interface {
+    Close(submitter Submitter, tx *world.Tx)
+}
+```
+
+## Sending Forms
+
+Forms are sent to players using the `SendForm` method:
+
+```go title="sending_forms.go"
+func handlePlayer(p *player.Player, tx *world.Tx) {
+    myForm := form.New(&MyForm{
+        Name:   form.NewInput("Name", "", "Enter your name"),
+        Age:    form.NewSlider("Age", 1, 100, 1, 18),
+        Active: form.NewToggle("Active", true),
+    }, "Player Profile")
+
+    p.SendForm(myForm)
+}
+```

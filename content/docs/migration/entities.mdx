@@ -1,0 +1,304 @@
+---
+title: Entities
+icon: Ghost
+---
+
+Spawning entities, giving them custom behavior, and managing their lifecycle is straightforward in Dragonfly—but it's different from PM/Nukkit.
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+## How PM/Nukkit vs Dragonfly Entities Work
+
+<Tabs items={["PocketMine (PHP)", "Dragonfly (Go)"]}>
+  <Tab value="PocketMine (PHP)">
+    In PocketMine-MP, you spawn entities using the EntityFactory.
+
+    ```php title="Spawning in PM"
+    // Spawning a Zombie
+    $location = new Location($x, $y, $z, $world, 0, 0);
+    $entity = EntityFactory::getInstance()->create("minecraft:zombie", $location);
+    $entity->spawnToAll();
+    ```
+  </Tab>
+  <Tab value="Dragonfly (Go)">
+    In Dragonfly, you create the struct and add it to the world.
+
+    ```go title="spawning.go"
+    // Spawning a Zombie
+    pos := mgl64.Vec3{x, y, z}
+    zombie := entity.NewZombie()
+
+    // AddEntity spawns it immediately
+    w.AddEntity(zombie)
+    zombie.SetPosition(pos)
+    ```
+  </Tab>
+</Tabs>
+
+The entity is spawned immediately and visible to all players in range.
+
+## Entity Handles vs Entity Types
+
+This confuses a lot of people, so let's clarify.
+
+An **entity type** is a struct that implements the `world.Entity` interface:
+
+```go title="entity.go"
+type Zombie struct {
+    // Fields...
+}
+```
+
+An **entity handle** is what you get back when you spawn it:
+
+```go title="entity_handle.go"
+zombie := entity.NewZombie()
+w.AddEntity(zombie)  // Spawns the entity
+
+// zombie is now a handle to the spawned entity
+```
+
+You use the handle to interact with the entity:
+
+```go title="usage.go"
+zombie.SetPosition(mgl64.Vec3{10, 64, 10})
+zombie.Hurt(5.0, entity.AttackDamageSource{})
+zombie.Close()  // Despawn
+```
+
+## Spawning Common Entities
+
+```go title="examples.go"
+// Zombie
+zombie := entity.NewZombie()
+w.AddEntity(zombie)
+
+// Item entity (dropped item)
+stack := item.NewStack(item.Diamond{}, 1)
+itemEntity := entity.NewItem(stack, pos)
+w.AddEntity(itemEntity)
+
+// Experience orb
+xp := entity.NewExperienceOrb(100)  // 100 XP
+w.AddEntity(xp)
+xp.SetPosition(pos)
+
+// Falling block
+fallingBlock := entity.NewFallingBlock(block.Sand{}, pos)
+w.AddEntity(fallingBlock)
+```
+
+## Custom Entity Behavior
+
+Dragonfly doesn't have an `onUpdate` method. Instead, entities can implement the `world.TickerEntity` interface.
+
+<Tabs items={["PocketMine (PHP)", "Dragonfly (Go)"]}>
+  <Tab value="PocketMine (PHP)">
+    You extend the class and override `onUpdate`.
+
+    ```php title="CustomZombie.php"
+    class CustomZombie extends Zombie {
+        public function onUpdate(int $currentTick): bool {
+            // Custom behavior
+            return parent::onUpdate($currentTick);
+        }
+    }
+    
+    // Registration required...
+    ```
+  </Tab>
+  <Tab value="Dragonfly (Go)">
+    You embed the struct and implement `Tick`.
+
+    ```go title="custom_zombie.go"
+    type CustomZombie struct {
+        *entity.Zombie
+    }
+
+    func NewCustomZombie() *CustomZombie {
+        z := entity.NewZombie()
+        return &CustomZombie{Zombie: z}
+    }
+
+    func (z *CustomZombie) Tick(w *world.World, current int64) {
+        // Custom behavior every tick
+        z.Zombie.Tick(w, current)  // Call parent tick
+    }
+    ```
+    
+    No registration needed. Just `w.AddEntity(NewCustomZombie())`.
+  </Tab>
+</Tabs>
+
+## Entity AI
+
+Dragonfly's entity AI is limited compared to vanilla Minecraft or PM/Nukkit. Most entities have basic behavior, but custom AI requires manual implementation.
+
+For example, making a zombie chase the nearest player:
+
+```go title="entity_ai.go"
+func (z *CustomZombie) Tick(w *world.World, current int64) {
+    // Find nearest player
+    pos := z.Position()
+    nearest := findNearestPlayer(w, pos, 16.0)
+
+    if nearest != nil {
+        // Move towards player
+        targetPos := nearest.Position()
+        direction := targetPos.Sub(pos).Normalize()
+
+        newPos := pos.Add(direction.Mul(0.1))  // Move 0.1 blocks per tick
+        z.SetPosition(newPos)
+    }
+
+    z.Zombie.Tick(w, current)
+}
+
+func findNearestPlayer(w *world.World, pos mgl64.Vec3, radius float64) *player.Player {
+    var nearest *player.Player
+    minDist := radius
+
+    for _, e := range w.Entities() {
+        if p, ok := e.(*player.Player); ok {
+            dist := p.Position().Sub(pos).Len()
+            if dist < minDist {
+                minDist = dist
+                nearest = p
+            }
+        }
+    }
+
+    return nearest
+}
+```
+
+This is manual, but it gives you full control.
+
+## Damaging Entities
+
+```go title="damage.go"
+import "github.com/df-mc/dragonfly/server/entity/damage"
+
+zombie.Hurt(5.0, damage.SourceEntityAttack{Attacker: p})
+```
+
+The second parameter is the damage source. Common sources:
+
+- `damage.SourceEntityAttack{Attacker: entity}`
+- `damage.SourceProjectile{Projectile: entity, Owner: entity}`
+- `damage.SourceFall{}`
+- `damage.SourceLava{}`
+- `damage.SourceVoid{}`
+
+## Killing Entities
+
+```go title="kill.go"
+zombie.Kill()  // Kills the entity (drops items, plays death animation)
+zombie.Close() // Despawns immediately (no death animation)
+```
+
+`Kill` simulates a natural death. `Close` removes it instantly.
+
+## Getting Entities in a World
+
+```go title="loop.go"
+for _, e := range w.Entities() {
+    switch entity := e.(type) {
+    case *entity.Zombie:
+        fmt.Println("Found a zombie at", entity.Position())
+    case *player.Player:
+        fmt.Println("Found player", entity.Name())
+    }
+}
+```
+
+Use type switches to filter by entity type.
+
+## Entity Metadata
+
+In PM/Nukkit, you set entity data flags and metadata. Dragonfly has higher-level methods:
+
+```go title="metadata.go"
+// Set entity on fire
+zombie.SetOnFire(5 * time.Second)
+
+// Make it invisible
+// (There's no built-in SetInvisible, you'd need to implement it)
+
+// Name tag
+zombie.SetNameTag("§cBoss Zombie")
+```
+
+## Projectiles
+
+Spawning projectiles like arrows:
+
+```go title="projectile.go"
+import "github.com/df-mc/dragonfly/server/entity/projectile"
+
+arrow := projectile.NewArrow(pos, p.Rotation(), p)
+w.AddEntity(arrow)
+```
+
+The arrow will handle collision and damage automatically.
+
+## Practical Example: Boss Entity
+
+```go title="boss_zombie.go"
+type BossZombie struct {
+    *entity.Zombie
+    health    float64
+    maxHealth float64
+}
+
+func NewBossZombie(pos mgl64.Vec3) *BossZombie {
+    z := entity.NewZombie()
+    b := &BossZombie{
+        Zombie:    z,
+        health:    100.0,
+        maxHealth: 100.0,
+    }
+    b.SetNameTag(fmt.Sprintf("§c§lBOSS §r§c[%.0f/%.0f]", b.health, b.maxHealth))
+    b.SetPosition(pos)
+    return b
+}
+
+func (b *BossZombie) Hurt(damage float64, src damage.Source) {
+    b.health -= damage
+    if b.health <= 0 {
+        b.Kill()
+        // Drop rewards
+        w := b.World()
+        w.AddEntity(entity.NewItem(item.NewStack(item.Diamond{}, 10), b.Position()))
+        return
+    }
+
+    // Update name tag
+    b.SetNameTag(fmt.Sprintf("§c§lBOSS §r§c[%.0f/%.0f]", b.health, b.maxHealth))
+
+    // Don't call parent Hurt (we're handling it manually)
+}
+
+func (b *BossZombie) Tick(w *world.World, current int64) {
+    // Custom AI...
+    b.Zombie.Tick(w, current)
+}
+```
+
+Spawn it:
+
+```go title="spawning_boss.go"
+boss := NewBossZombie(mgl64.Vec3{0, 64, 0})
+w.AddEntity(boss)
+```
+
+## Key Takeaways
+
+- Spawn entities with `w.AddEntity(entity)`
+- Entities are handles to spawned objects. Use them to interact with the entity.
+- Implement `world.TickerEntity` for custom behavior (the `Tick` method).
+- Entity AI is mostly manual. You build it yourself.
+- Use type switches to filter entities by type.
+- `Kill()` for natural death, `Close()` for instant despawn.
+
+Dragonfly's entity system is more bare-bones than PM/Nukkit. You have to implement more yourself, but you also have complete control.

@@ -1,0 +1,81 @@
+---
+title: Event System
+icon: Calendar
+---
+
+Dragonfly does not have a traditional event handling system. Instead, a per-player handler can be registered to handle all actions originated from that player.
+
+If this is confusing, below are explanations that may help you discern the differences between the typical event system you're used to in software like PocketMine-MP/Nukkit and Dragonfly's approach.
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+## Typical Event System vs Dragonfly
+
+<Tabs items={["PocketMine-MP (Global)", "Dragonfly (Per-Player)"]}>
+  <Tab value="PocketMine-MP (Global)">
+    In a traditional event system, every action any player performs is handled by a single global listener.
+    
+    ```php title="Global Listener Pattern"
+ Player A      Player B      Player C
+    |             |             |
+    v             v             v
++-----------------------------------+
+|      Global Server Listener       |
++-----------------------------------+
+                |
+                v
+       +--------------------+
+       |  Database / Logic  |
+       +--------------------+
+    ```
+
+    You have to check `if ($player->getLevel()->getName() === "lobby")` inside every event function.
+  </Tab>
+  <Tab value="Dragonfly (Per-Player)">
+    In Dragonfly, each player has their own handler instance.
+    
+    ```go title="Per-Player Handler Pattern"
+ Player A            Player B            Player C
+    |                   |                   |
+    v                   v                   v
++--------------+   +---------------+   +--------------+
+| LobbyHandler |   | ArenaHandler  |   | LobbyHandler |
++--------------+   +---------------+   +--------------+
+
+    ```
+    
+    You don't check for world names. If the player is in the lobby, they have a `LobbyHandler` which simply doesn't have a `HandleAttack` method (so they can't attack).
+  </Tab>
+</Tabs>
+
+In Dragonfly, each player has their own handler instance mounted directly on them. Think of it as adding an `eventHandler` field of type `Handler` to each player. Each handler runs in its own goroutine.
+
+This system provides more modularity—you can design handlers for specific contexts and decouple logic from larger monolithic listeners. The tradeoff is that global/shared event handling requires more deliberate design, which we'll cover in a later section.
+
+## Key Takeaway
+
+Event handlers are mounted on the player instance itself. You can change a player's handler at any point during the server lifecycle to match their current context:
+
+```go title="handler_swapping.go"
+func onPlayerJoin(p *player.Player) {
+    data.Initialize(p)
+    p.Handle(lobby.NewHandler(p))
+}
+
+func onArenaJoin(p *player.Player, ar *ffa.Arena) {
+    // Player is still using lobby handler, so we change it
+    ar.Add(p)
+    p.Handle(ffa.NewHandler(p))
+}
+
+func onPlayerDeath(p *player.Player) {
+    // Use type assertion to check the current handler
+    if _, ok := p.Handler().(*ffa.Handler); ok {
+        // Player died in arena, return them to lobby
+        lobby.Add(p)
+        p.Handle(lobby.NewHandler(p))
+    }
+}
+```
+
+This pattern allows you to completely swap out behavior based on what the player is doing—lobby, minigame, spectating, etc.—without complex conditional logic in a single global listener.

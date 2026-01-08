@@ -1,0 +1,281 @@
+---
+title: Elements
+description: Form elements available in Dragonfly.
+---
+
+# Form Elements
+
+Dragonfly provides various UI elements for building forms. Elements are divided into two categories: **Custom Form Elements** (for data input) and **Menu Elements** (for button-based forms).
+
+## Custom Form Elements
+
+These elements are used in Custom forms created with `form.New()`.
+
+### Input
+
+A text entry field for free-form user input.
+
+```go title="Input Signature"
+form.NewInput(text, defaultValue, placeholder string) Input
+```
+
+| Parameter | Description |
+|-----------|-------------|
+| `text` | Label displayed above the input |
+| `defaultValue` | Pre-filled value |
+| `placeholder` | Hint text shown when empty |
+
+```go title="input_example.go"
+type MyForm struct {
+    Name  form.Input
+    Email form.Input
+}
+
+// Create with values
+f := form.New(&MyForm{
+    Name:  form.NewInput("Your Name", "Steve", "Enter name..."),
+    Email: form.NewInput("Email", "", "user@example.com"),
+}, "Contact Form")
+
+// Get submitted value
+func (f *MyForm) Submit(submitter form.Submitter, tx *world.Tx) {
+    name := f.Name.Value()   // string
+    email := f.Email.Value() // string
+}
+```
+
+#### With Tooltip
+
+```go title="tooltip_example.go"
+input := form.NewInput("Username", "", "Enter username").
+    WithTooltip("Choose a unique username between 3-16 characters")
+```
+
+### Toggle
+
+A boolean switch for on/off values.
+
+```go title="Toggle Signature"
+form.NewToggle(text string, defaultValue bool) Toggle
+```
+
+```go title="toggle_example.go"
+type SettingsForm struct {
+    Notifications form.Toggle
+    DarkMode      form.Toggle
+}
+
+f := form.New(&SettingsForm{
+    Notifications: form.NewToggle("Enable Notifications", true),
+    DarkMode:      form.NewToggle("Dark Mode", false),
+}, "Settings")
+
+func (f *SettingsForm) Submit(submitter form.Submitter, tx *world.Tx) {
+    notifs := f.Notifications.Value() // bool
+    dark := f.DarkMode.Value()        // bool
+}
+```
+
+### Slider
+
+A numeric slider for selecting values within a range.
+
+```go title="Slider Signature"
+form.NewSlider(text string, min, max, stepSize, defaultValue float64) Slider
+```
+
+| Parameter | Description |
+|-----------|-------------|
+| `text` | Label for the slider |
+| `min` | Minimum value |
+| `max` | Maximum value |
+| `stepSize` | Increment between values |
+| `defaultValue` | Initial position |
+
+```go title="slider_example.go"
+type VolumeForm struct {
+    MasterVolume form.Slider
+    MusicVolume  form.Slider
+}
+
+f := form.New(&VolumeForm{
+    MasterVolume: form.NewSlider("Master Volume", 0, 100, 5, 80),
+    MusicVolume:  form.NewSlider("Music Volume", 0, 100, 1, 50),
+}, "Audio Settings")
+
+func (f *VolumeForm) Submit(submitter form.Submitter, tx *world.Tx) {
+    master := f.MasterVolume.Value() // float64
+    music := f.MusicVolume.Value()   // float64
+}
+```
+
+### Dropdown
+
+A selection list for choosing from predefined options.
+
+```go title="Dropdown Signature"
+form.NewDropdown(text string, options []string, defaultIndex int) Dropdown
+```
+
+```go title="dropdown_example.go"
+type ClassSelection struct {
+    Class      form.Dropdown
+    Difficulty form.Dropdown
+}
+
+f := form.New(&ClassSelection{
+    Class:      form.NewDropdown("Choose Class", []string{"Warrior", "Mage", "Archer", "Rogue"}, 0),
+    Difficulty: form.NewDropdown("Difficulty", []string{"Easy", "Normal", "Hard"}, 1),
+}, "Game Setup")
+
+func (f *ClassSelection) Submit(submitter form.Submitter, tx *world.Tx) {
+    classIdx := f.Class.Value()      // int (index)
+    diffIdx := f.Difficulty.Value()  // int (index)
+
+    classes := []string{"Warrior", "Mage", "Archer", "Rogue"}
+    selectedClass := classes[classIdx]
+}
+```
+
+### StepSlider
+
+A slider that snaps to discrete values, displayed as a slider but functions like a dropdown.
+
+```go title="StepSlider Definition"
+// StepSlider is a type alias for Dropdown with slider appearance
+type StepSlider Dropdown
+```
+
+```go title="step_slider_example.go"
+type GameSettings struct {
+    RenderDistance form.StepSlider
+}
+
+f := form.New(&GameSettings{
+    RenderDistance: form.StepSlider(form.NewDropdown(
+        "Render Distance",
+        []string{"4 chunks", "8 chunks", "12 chunks", "16 chunks"},
+        2,
+    )),
+}, "Graphics")
+```
+
+### Label
+
+A read-only text element for displaying information. Labels don't collect input.
+
+```go title="Label Signature"
+form.NewLabel(text string) Label
+```
+
+```go title="label_example.go"
+type InfoForm struct {
+    Notice   form.Label
+    Username form.Input
+}
+
+f := form.New(&InfoForm{
+    Notice:   form.NewLabel("Please enter your details below.\n\nFields marked with * are required."),
+    Username: form.NewInput("Username *", "", ""),
+}, "Registration")
+```
+
+Labels support Minecraft formatting codes for styled text.
+
+## Menu Elements
+
+These elements are used in Menu forms created with `form.NewMenu()`.
+
+### Button
+
+A clickable button with optional image.
+
+```go title="Button Signature"
+form.NewButton(text, image string) Button
+```
+
+| Parameter | Description |
+|-----------|-------------|
+| `text` | Button label (supports newlines and formatting) |
+| `image` | Texture path or URL (empty string for no image) |
+
+```go title="button_example.go"
+type ShopMenu struct {
+    Weapons form.Button
+    Armor   form.Button
+    Potions form.Button
+}
+
+menu := form.NewMenu(&ShopMenu{
+    Weapons: form.NewButton("Weapons\n10 items", "textures/items/diamond_sword"),
+    Armor:   form.NewButton("Armor\n8 items", "textures/items/diamond_chestplate"),
+    Potions: form.NewButton("Potions\n15 items", "textures/items/potion_bottle_splash_heal"),
+}, "Shop")
+```
+
+#### Image Sources
+
+- **Resource pack textures:** `textures/items/diamond_sword`
+- **URLs:** `https://example.com/icon.png`
+- **No image:** `""`
+
+### Header
+
+A section title for organizing menu content.
+
+```go title="Header Signature"
+form.NewHeader(text string) Header
+```
+
+```go title="header_example.go"
+menu := form.NewMenu(&MyMenu{}, "Inventory").
+    AddHeader(form.NewHeader("Equipment")).
+    AddButton(form.NewButton("Weapon", "")).
+    AddButton(form.NewButton("Armor", "")).
+    AddHeader(form.NewHeader("Consumables")).
+    AddButton(form.NewButton("Food", "")).
+    AddButton(form.NewButton("Potions", ""))
+```
+
+### Divider
+
+A horizontal line for visual separation.
+
+```go title="Divider Signature"
+form.Divider{}
+```
+
+```go title="divider_example.go"
+menu := form.NewMenu(&MyMenu{}, "Options").
+    AddButton(form.NewButton("Play", "")).
+    AddButton(form.NewButton("Settings", "")).
+    AddDivider(form.Divider{}).
+    AddButton(form.NewButton("Quit", ""))
+```
+
+### Label (Menu)
+
+Static text in menus, similar to custom form labels.
+
+```go title="label_menu_example.go"
+menu := form.NewMenu(&MyMenu{}, "Info").
+    AddLabel(form.NewLabel("Server: play.example.com\nPlayers: 42/100"))
+```
+
+## Element Tooltips
+
+Input, Toggle, Slider, and Dropdown elements support tooltips that appear when the player hovers:
+
+```go title="tooltip_all_example.go"
+input := form.NewInput("Password", "", "").
+    WithTooltip("Must be at least 8 characters")
+
+slider := form.NewSlider("Speed", 1, 10, 1, 5).
+    WithTooltip("Higher values = faster movement")
+
+toggle := form.NewToggle("PvP", true).
+    WithTooltip("Enable or disable player combat")
+
+dropdown := form.NewDropdown("Region", []string{"US", "EU", "Asia"}, 0).
+    WithTooltip("Select your closest server region")
+```

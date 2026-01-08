@@ -1,0 +1,322 @@
+---
+title: "customblock"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# customblock
+
+
+```go
+import "github.com/df-mc/dragonfly/server/block/customblock"
+```
+
+
+
+
+
+
+
+
+
+
+
+## Types
+
+
+### Material
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Material struct {
+	// texture is the name of the texture for the material.
+	texture	string
+	// renderMethod is the method to use when rendering the material.
+	renderMethod	Method
+	// faceDimming is if the material should be dimmed by the direction it's facing.
+	faceDimming	bool
+	// ambientOcclusion is if the material should have ambient occlusion applied when lighting.
+	ambientOcclusion	bool
+}
+```
+
+
+
+Material represents a single material used for rendering part of a custom block.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Encode">
+```go
+func (Material) Encode() map[string]any
+```
+
+Encode returns the material encoded as a map that can be sent over the network to the client.
+
+</Accordion>
+
+<Accordion title="WithAmbientOcclusion">
+```go
+func (Material) WithAmbientOcclusion() Material
+```
+
+WithAmbientOcclusion returns a copy of the Material with ambient occlusion enabled.
+
+</Accordion>
+
+<Accordion title="WithFaceDimming">
+```go
+func (Material) WithFaceDimming() Material
+```
+
+WithFaceDimming returns a copy of the Material with face dimming enabled.
+
+</Accordion>
+
+<Accordion title="WithoutAmbientOcclusion">
+```go
+func (Material) WithoutAmbientOcclusion() Material
+```
+
+WithoutAmbientOcclusion returns a copy of the Material with ambient occlusion disabled.
+
+</Accordion>
+
+<Accordion title="WithoutFaceDimming">
+```go
+func (Material) WithoutFaceDimming() Material
+```
+
+WithoutFaceDimming returns a copy of the Material with face dimming disabled.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Method
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Method struct {
+	renderMethod
+}
+```
+
+
+
+Method is the method to use when rendering a material for a custom block.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    renderMethod: {
+      description: '',
+      type: 'renderMethod',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AmbientOcclusion">
+```go
+func (Method) AmbientOcclusion() bool
+```
+
+AmbientOcclusion returns if ambient occlusion should be enabled by default for a material using this rendering method.
+
+</Accordion>
+
+<Accordion title="String">
+```go
+func (Method) String() string
+```
+
+String ...
+
+</Accordion>
+
+<Accordion title="Uint8">
+```go
+func (Method) Uint8() uint8
+```
+
+Uint8 returns the render method as a uint8.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Permutation
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Permutation struct {
+	Properties
+	// Condition is a molang query that is used to determine whether the permutation should be applied.
+	// Only the latest version of molang is supported.
+	Condition	string
+}
+```
+
+
+
+Permutation represents a specific permutation for a block that is only applied when the condition is met.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Properties: {
+      description: '',
+      type: 'Properties',
+      typeLink: '../block-customblock.mdx#properties',
+    },
+    Condition: {
+      description: 'Condition is a molang query that is used to determine whether the permutation should be applied. Only the latest version of molang is supported.',
+      type: 'string',
+    },
+  }}
+/>
+
+
+
+
+
+---
+
+### Properties
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Properties struct {
+	// CollisionBox represents the bounding box of the block that the player can collide with. This cannot exceed the
+	// position of the current block in the world, otherwise it will be cut off at the edge.
+	CollisionBox	cube.BBox
+	// Cube determines whether the block should inherit the default cube geometry. This will only be considered if the
+	// Geometry field is empty.
+	Cube	bool
+	// Geometry represents the geometry identifier that should be used for the block. If you want to use the default
+	// cube geometry, leave this field empty and set Cube to true.
+	Geometry	string
+	// MapColour represents the hex colour that should be used for the block on a map.
+	MapColour	string
+	// Rotation represents the rotation of the block. Rotations are only applied in 90 degree increments, meaning
+	// 1 = 90 degrees, 2 = 180 degrees, 3 = 270 degrees and 4 = 360 degrees.
+	Rotation	cube.Pos
+	// Scale is the scale of the block, with 1 being the default scale in all axes. When scaled, the block cannot
+	// exceed a 30x30x30 pixel area otherwise the client will not render the block.
+	Scale	mgl64.Vec3
+	// SelectionBox represents the bounding box of the block that the player can interact with. This cannot exceed the
+	// position of the current block in the world, otherwise it will be cut off at the edge.
+	SelectionBox	cube.BBox
+	// Textures define the textures that should be used for the block. The key is the target of the texture, such as
+	// "*" for all sides, or one of "up", "down", "north", "south", "east", "west" for a specific side.
+	Textures	map[string]Material
+	// Translation is the translation of the block within itself. When translated, the block cannot exceed a 30x30x30
+	// pixel area otherwise the client will not render the block.
+	Translation	mgl64.Vec3
+}
+```
+
+
+
+Properties represents the different properties that can be applied to a block or a permutation.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    CollisionBox: {
+      description: 'CollisionBox represents the bounding box of the block that the player can collide with. This cannot exceed the position of the current block in the world, otherwise it will be cut off at the edge.',
+      type: 'cube.BBox',
+      typeLink: '../block-cube.mdx#bbox',
+    },
+    Cube: {
+      description: 'Cube determines whether the block should inherit the default cube geometry. This will only be considered if the Geometry field is empty.',
+      type: 'bool',
+    },
+    Geometry: {
+      description: 'Geometry represents the geometry identifier that should be used for the block. If you want to use the default cube geometry, leave this field empty and set Cube to true.',
+      type: 'string',
+    },
+    MapColour: {
+      description: 'MapColour represents the hex colour that should be used for the block on a map.',
+      type: 'string',
+    },
+    Rotation: {
+      description: 'Rotation represents the rotation of the block. Rotations are only applied in 90 degree increments, meaning 1 = 90 degrees, 2 = 180 degrees, 3 = 270 degrees and 4 = 360 degrees.',
+      type: 'cube.Pos',
+      typeLink: '../block-cube.mdx#pos',
+    },
+    Scale: {
+      description: 'Scale is the scale of the block, with 1 being the default scale in all axes. When scaled, the block cannot exceed a 30x30x30 pixel area otherwise the client will not render the block.',
+      type: 'mgl64.Vec3',
+    },
+    SelectionBox: {
+      description: 'SelectionBox represents the bounding box of the block that the player can interact with. This cannot exceed the position of the current block in the world, otherwise it will be cut off at the edge.',
+      type: 'cube.BBox',
+      typeLink: '../block-cube.mdx#bbox',
+    },
+    Textures: {
+      description: 'Textures define the textures that should be used for the block. The key is the target of the texture, such as "*" for all sides, or one of "up", "down", "north", "south", "east", "west" for a specific side.',
+      type: 'map[string]Material',
+    },
+    Translation: {
+      description: 'Translation is the translation of the block within itself. When translated, the block cannot exceed a 30x30x30 pixel area otherwise the client will not render the block.',
+      type: 'mgl64.Vec3',
+    },
+  }}
+/>
+
+
+
+
+
+---
+
+

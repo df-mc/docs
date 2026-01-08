@@ -1,0 +1,279 @@
+---
+title: Project Structure
+icon: FolderTree
+---
+
+There's no plugin folder. No `plugin.yml`. No `onEnable` or `onDisable`. Dragonfly isn't a server that loads plugins—it's a library that you import into your own Go program.
+
+This is the biggest mental shift from PocketMine-MP/Nukkit, so let's break it down.
+
+import { Files, File, Folder } from 'fumadocs-ui/components/files';
+
+## How PM/Nukkit Projects Are Structured
+
+In PocketMine-MP, your project looks like this:
+
+<Files>
+  <Folder name="MyPlugin" defaultOpen>
+    <File name="plugin.yml" />
+    <Folder name="src" defaultOpen>
+      <Folder name="MyPlugin" defaultOpen>
+        <File name="Main.php" />
+      </Folder>
+    </Folder>
+    <Folder name="resources">
+      <File name="config.yml" />
+    </Folder>
+  </Folder>
+</Files>
+
+
+```php title="Main.php"
+class Main extends PluginBase {
+    public function onEnable(): void {
+        $this->getServer()->getPluginManager()->registerEvents(new EventListener(), $this);
+        $this->getLogger()->info("MyPlugin enabled!");
+    }
+
+    public function onDisable(): void {
+        $this->getLogger()->info("MyPlugin disabled!");
+    }
+}
+```
+
+The server loads your plugin, calls `onEnable`, and you hook into the server through its API.
+
+## How Dragonfly Projects Are Structured
+
+Dragonfly doesn't load plugins. You write the main program, and Dragonfly is a library you import.
+
+<Files>
+  <Folder name="my-server" defaultOpen>
+    <File name="go.mod" />
+    <File name="go.sum" />
+    <File name="main.go" />
+    <Folder name="internal" defaultOpen>
+      <Folder name="handlers" defaultOpen>
+        <File name="lobby.go" />
+        <File name="arena.go" />
+      </Folder>
+      <Folder name="commands">
+        <File name="kit.go" />
+      </Folder>
+      <Folder name="database">
+        <File name="db.go" />
+      </Folder>
+    </Folder>
+    <Folder name="config">
+      <File name="config.go" />
+    </Folder>
+  </Folder>
+</Files>
+
+```go title="main.go"
+package main
+
+import (
+    "github.com/df-mc/dragonfly/server"
+    "github.com/df-mc/dragonfly/server/player"
+    "github.com/df-mc/dragonfly/server/cmd"
+    "my-server/internal/handlers"
+    "my-server/internal/commands"
+)
+
+func main() {
+    conf, err := server.DefaultConfig()
+    if err != nil {
+        panic(err)
+    }
+
+    srv := conf.New()
+    srv.CloseOnProgramEnd()
+
+    // Register commands
+    cmd.Register(commands.KitCommand{})
+
+    if err := srv.Start(); err != nil {
+        panic(err)
+    }
+
+    for srv.Accept(func(p *player.Player) {
+        p.Handle(handlers.NewLobbyHandler(p))
+    }) {
+    }
+}
+```
+
+You're not extending a base class. You're calling Dragonfly's API to create and configure the server.
+
+## What Replaces plugin.yml?
+
+Nothing. You don't need it. Commands are registered in code. Configuration is loaded however you want (JSON, YAML, TOML, hardcoded constants, whatever).
+
+In PM/Nukkit, `plugin.yml` tells the server:
+- What commands exist
+- What permissions exist
+- What the plugin is called
+- What the main class is
+
+In Dragonfly:
+- Commands are registered with `cmd.Register()`
+- Permissions are whatever you decide (see Permissions section)
+- The "plugin" is just your entire program
+- There's no main class because you control the entry point
+
+## What Replaces onEnable/onDisable?
+
+You control the lifecycle. Want to do something on startup? Put it in `main()` before `srv.Start()`:
+
+```go title="main.go"
+func main() {
+    conf, err := server.DefaultConfig()
+    if err != nil {
+        panic(err)
+    }
+
+    srv := conf.New()
+    srv.CloseOnProgramEnd()
+
+    // "onEnable" equivalent
+    db := connectDatabase()
+    defer db.Close()  // "onDisable" equivalent
+
+    cmd.Register(commands.KitCommand{})
+
+    if err := srv.Start(); err != nil {
+        panic(err)
+    }
+
+    for srv.Accept(func(p *player.Player) {
+        p.Handle(handlers.NewLobbyHandler(p))
+    }) {
+    }
+}
+```
+
+Want to run cleanup when the server shuts down? Use `defer` or handle `Ctrl+C` with signal handling:
+
+```go title="signal_handling.go"
+import (
+    "os"
+    "os/signal"
+    "syscall"
+)
+
+func main() {
+    // ... server setup ...
+
+    sig := make(chan os.Signal, 1)
+    signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
+
+    go func() {
+        <-sig
+        log.Println("Shutting down...")
+        // cleanup code here
+        os.Exit(0)
+    }()
+
+    for srv.Accept(nil) {
+    }
+}
+```
+
+## Organizing Your Code
+
+Since there's no enforced structure, you can organize however you want. Here's a common pattern:
+
+```txt title="Directory Structure"
+my-server/
+├── cmd/
+│   └── server/
+│       └── main.go          # Entry point
+├── internal/
+│   ├── handlers/            # Player handlers (lobby, arena, etc)
+│   ├── commands/            # Command implementations
+│   ├── database/            # Database layer
+│   ├── minigames/           # Game logic
+│   └── util/                # Helper functions
+├── pkg/                     # Reusable packages (if any)
+├── go.mod
+└── go.sum
+```
+
+The `internal/` directory is a Go convention. Code in `internal/` can only be imported by code in the same module. It's a way to keep implementation details private.
+
+## Multiple "Plugins"
+
+In PM/Nukkit, you'd make separate plugins for separate features. In Dragonfly, you just organize your code into packages:
+
+<Files>
+  <Folder name="my-server" defaultOpen>
+    <File name="main.go" />
+    <Folder name="internal" defaultOpen>
+      <Folder name="kits" defaultOpen>
+        <File name="kit.go" />
+        <File name="command.go" />
+      </Folder>
+      <Folder name="clans">
+        <File name="clan.go" />
+        <File name="command.go" />
+      </Folder>
+      <Folder name="auction">
+        <File name="auction.go" />
+        <File name="command.go" />
+      </Folder>
+    </Folder>
+  </Folder>
+</Files>
+
+Each package is self-contained, but they're all part of the same program.
+
+## Dependencies
+
+In PM/Nukkit, you use Composer and `composer.json`. In Go, you use Go modules.
+
+Initialize a module:
+
+```bash title="Terminal"
+go mod init my-server
+```
+
+Add Dragonfly:
+
+```bash title="Terminal"
+go get github.com/df-mc/dragonfly
+```
+
+Your `go.mod` will look like:
+
+```go title="go.mod"
+module my-server
+
+go 1.21
+
+require github.com/df-mc/dragonfly v0.9.0
+```
+
+Run `go mod tidy` to clean up dependencies.
+
+## Building and Running
+
+In PM/Nukkit, you just copy files to the `plugins/` folder. In Dragonfly, you compile a binary:
+
+```bash title="Terminal"
+go run main.go          # Run directly (useful for dev)
+go build -o server.exe  # Build executable
+./server.exe            # Run the executable
+```
+
+The `go build` command produces a single executable with no dependencies. Copy it to a server and run it—no runtime installation needed.
+
+## Key Takeaways
+
+- Dragonfly is a library, not a plugin loader. You write the main program.
+- No `plugin.yml`, no `onEnable/onDisable`. You control the lifecycle.
+- Organize your code however you want. The `internal/` pattern is common.
+- Use `go mod` for dependencies, `go build` to compile.
+- Everything is in a single compiled binary. No runtime dependencies.
+
+This is a completely different paradigm. It takes some getting used to, but once you do, you'll realize how much more control and flexibility you have.

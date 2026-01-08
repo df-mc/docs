@@ -1,0 +1,826 @@
+---
+title: "leveldat"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# leveldat
+
+
+```go
+import "github.com/df-mc/dragonfly/server/world/mcdb/leveldat"
+```
+
+
+
+
+
+## Constants
+
+<Accordions>
+
+<Accordion title="Version">
+```go
+const Version  = 10
+```
+
+Version is the current version stored in level.dat files.
+
+</Accordion>
+
+</Accordions>
+
+
+
+
+
+
+
+## Types
+
+
+### Data
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Data struct {
+	BaseGameVersion			string	`nbt:"baseGameVersion"`
+	BiomeOverride			string
+	ConfirmedPlatformLockedContent	bool
+	CenterMapsToOrigin		bool
+	CheatsEnabled			bool	`nbt:"cheatsEnabled"`
+	DaylightCycle			int32	`nbt:"daylightCycle"`
+	Difficulty			int32
+	EduOffer			int32	`nbt:"eduOffer"`
+	FlatWorldLayers			string
+	ForceGameType			bool
+	GameType			int32
+	Generator			int32
+	InventoryVersion		string
+	LANBroadcast			bool
+	LANBroadcastIntent		bool
+	LastPlayed			int64
+	LevelName			string
+	LimitedWorldOriginX		int32
+	LimitedWorldOriginY		int32
+	LimitedWorldOriginZ		int32
+	LimitedWorldDepth		int32	`nbt:"limitedWorldDepth"`
+	LimitedWorldWidth		int32	`nbt:"limitedWorldWidth"`
+	LocatorBar			bool	`nbt:"locatorbar"`
+	MinimumCompatibleClientVersion	[]int32
+	MultiPlayerGame			bool	`nbt:"MultiplayerGame"`
+	MultiPlayerGameIntent		bool	`nbt:"MultiplayerGameIntent"`
+	NetherScale			int32
+	NetworkVersion			int32
+	Platform			int32
+	PlatformBroadcastIntent		int32
+	RandomSeed			int64
+	ShowTags			bool	`nbt:"showtags"`
+	SingleUseWorld			bool	`nbt:"isSingleUseWorld"`
+	SpawnX, SpawnY, SpawnZ		int32
+	SpawnV1Villagers		bool
+	StorageVersion			int32
+	Time				int64
+	XBLBroadcast			bool
+	XBLBroadcastIntent		int32
+	XBLBroadcastMode		int32
+	Abilities			struct {
+		AttackMobs		bool	`nbt:"attackmobs"`
+		AttackPlayers		bool	`nbt:"attackplayers"`
+		Build			bool	`nbt:"build"`
+		Mine			bool	`nbt:"mine"`
+		DoorsAndSwitches	bool	`nbt:"doorsandswitches"`
+		FlySpeed		float32	`nbt:"flySpeed"`
+		Flying			bool	`nbt:"flying"`
+		InstantBuild		bool	`nbt:"instabuild"`
+		Invulnerable		bool	`nbt:"invulnerable"`
+		Lightning		bool	`nbt:"lightning"`
+		MayFly			bool	`nbt:"mayfly"`
+		OP			bool	`nbt:"op"`
+		OpenContainers		bool	`nbt:"opencontainers"`
+		PermissionsLevel	int32	`nbt:"permissionsLevel"`
+		PlayerPermissionsLevel	int32	`nbt:"playerPermissionsLevel"`
+		Teleport		bool	`nbt:"teleport"`
+		WalkSpeed		float32	`nbt:"walkSpeed"`
+		VerticalFlySpeed	float32	`nbt:"verticalFlySpeed"`
+	}	`nbt:"abilities"`
+	BonusChestEnabled		bool		`nbt:"bonusChestEnabled"`
+	BonusChestSpawned		bool		`nbt:"bonusChestSpawned"`
+	CommandBlockOutput		bool		`nbt:"commandblockoutput"`
+	CommandBlocksEnabled		bool		`nbt:"commandblocksenabled"`
+	CommandsEnabled			bool		`nbt:"commandsEnabled"`
+	CurrentTick			int64		`nbt:"currentTick"`
+	DoDayLightCycle			bool		`nbt:"dodaylightcycle"`
+	DoEntityDrops			bool		`nbt:"doentitydrops"`
+	DoFireTick			bool		`nbt:"dofiretick"`
+	DoImmediateRespawn		bool		`nbt:"doimmediaterespawn"`
+	DoInsomnia			bool		`nbt:"doinsomnia"`
+	DoMobLoot			bool		`nbt:"domobloot"`
+	DoMobSpawning			bool		`nbt:"domobspawning"`
+	DoTileDrops			bool		`nbt:"dotiledrops"`
+	DoWeatherCycle			bool		`nbt:"doweathercycle"`
+	DrowningDamage			bool		`nbt:"drowningdamage"`
+	EduLevel			bool		`nbt:"eduLevel"`
+	EducationFeaturesEnabled	bool		`nbt:"educationFeaturesEnabled"`
+	ExperimentalGamePlay		bool		`nbt:"experimentalgameplay"`
+	FallDamage			bool		`nbt:"falldamage"`
+	FireDamage			bool		`nbt:"firedamage"`
+	FunctionCommandLimit		int32		`nbt:"functioncommandlimit"`
+	HasBeenLoadedInCreative		bool		`nbt:"hasBeenLoadedInCreative"`
+	HasLockedBehaviourPack		bool		`nbt:"hasLockedBehaviorPack"`
+	HasLockedResourcePack		bool		`nbt:"hasLockedResourcePack"`
+	ImmutableWorld			bool		`nbt:"immutableWorld"`
+	IsCreatedInEditor		bool		`nbt:"isCreatedInEditor"`
+	IsExportedFromEditor		bool		`nbt:"isExportedFromEditor"`
+	IsFromLockedTemplate		bool		`nbt:"isFromLockedTemplate"`
+	IsFromWorldTemplate		bool		`nbt:"isFromWorldTemplate"`
+	IsWorldTemplateOptionLocked	bool		`nbt:"isWorldTemplateOptionLocked"`
+	KeepInventory			bool		`nbt:"keepinventory"`
+	LastOpenedWithVersion		[]int32		`nbt:"lastOpenedWithVersion"`
+	LightningLevel			float32		`nbt:"lightningLevel"`
+	LightningTime			int32		`nbt:"lightningTime"`
+	MaxCommandChainLength		int32		`nbt:"maxcommandchainlength"`
+	MobGriefing			bool		`nbt:"mobgriefing"`
+	NaturalRegeneration		bool		`nbt:"naturalregeneration"`
+	PRID				string		`nbt:"prid"`
+	PVP				bool		`nbt:"pvp"`
+	RainLevel			float32		`nbt:"rainLevel"`
+	RainTime			int32		`nbt:"rainTime"`
+	RandomTickSpeed			int32		`nbt:"randomtickspeed"`
+	RequiresCopiedPackRemovalCheck	bool		`nbt:"requiresCopiedPackRemovalCheck"`
+	SendCommandFeedback		bool		`nbt:"sendcommandfeedback"`
+	ServerChunkTickRange		int32		`nbt:"serverChunkTickRange"`
+	ShowCoordinates			bool		`nbt:"showcoordinates"`
+	ShowDeathMessages		bool		`nbt:"showdeathmessages"`
+	SpawnMobs			bool		`nbt:"spawnMobs"`
+	SpawnRadius			int32		`nbt:"spawnradius"`
+	StartWithMapEnabled		bool		`nbt:"startWithMapEnabled"`
+	TexturePacksRequired		bool		`nbt:"texturePacksRequired"`
+	TNTExplodes			bool		`nbt:"tntexplodes"`
+	UseMSAGamerTagsOnly		bool		`nbt:"useMsaGamertagsOnly"`
+	WorldStartCount			int64		`nbt:"worldStartCount"`
+	Experiments			map[string]any	`nbt:"experiments"`
+	FreezeDamage			bool		`nbt:"freezedamage"`
+	WorldPolicies			map[string]any	`nbt:"world_policies"`
+	WorldVersion			int32		`nbt:"WorldVersion"`
+	RespawnBlocksExplode		bool		`nbt:"respawnblocksexplode"`
+	ShowBorderEffect		bool		`nbt:"showbordereffect"`
+	PermissionsLevel		int32		`nbt:"permissionsLevel"`
+	PlayerPermissionsLevel		int32		`nbt:"playerPermissionsLevel"`
+	IsRandomSeedAllowed		bool		`nbt:"isRandomSeedAllowed"`
+	DoLimitedCrafting		bool		`nbt:"dolimitedcrafting"`
+	EditorWorldType			int32		`nbt:"editorWorldType"`
+	PlayersSleepingPercentage	int32		`nbt:"playerssleepingpercentage"`
+	RecipesUnlock			bool		`nbt:"recipesunlock"`
+	NaturalGeneration		bool		`nbt:"naturalgeneration"`
+	ProjectilesCanBreakBlocks	bool		`nbt:"projectilescanbreakblocks"`
+	ShowRecipeMessages		bool		`nbt:"showrecipemessages"`
+	IsHardcore			bool		`nbt:"IsHardcore"`
+	ShowDaysPlayed			bool		`nbt:"showdaysplayed"`
+	TNTExplosionDropDecay		bool		`nbt:"tntexplosiondropdecay"`
+	HasUncompleteWorldFileOnDisk	bool		`nbt:"HasUncompleteWorldFileOnDisk"`
+	PlayerHasDied			bool		`nbt:"PlayerHasDied"`
+}
+```
+
+
+
+Data holds a collection of data that specify a range of Settings of the
+world. These Settings usually alter the way that players interact with the
+world. The data held here is usually saved in a level.dat file of the world.
+Data may be used in LevelDat.Unmarshal to collect the data of the level.dat.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    BaseGameVersion: {
+      description: '',
+      type: 'string',
+    },
+    BiomeOverride: {
+      description: '',
+      type: 'string',
+    },
+    ConfirmedPlatformLockedContent: {
+      description: '',
+      type: 'bool',
+    },
+    CenterMapsToOrigin: {
+      description: '',
+      type: 'bool',
+    },
+    CheatsEnabled: {
+      description: '',
+      type: 'bool',
+    },
+    DaylightCycle: {
+      description: '',
+      type: 'int32',
+    },
+    Difficulty: {
+      description: '',
+      type: 'int32',
+    },
+    EduOffer: {
+      description: '',
+      type: 'int32',
+    },
+    FlatWorldLayers: {
+      description: '',
+      type: 'string',
+    },
+    ForceGameType: {
+      description: '',
+      type: 'bool',
+    },
+    GameType: {
+      description: '',
+      type: 'int32',
+    },
+    Generator: {
+      description: '',
+      type: 'int32',
+    },
+    InventoryVersion: {
+      description: '',
+      type: 'string',
+    },
+    LANBroadcast: {
+      description: '',
+      type: 'bool',
+    },
+    LANBroadcastIntent: {
+      description: '',
+      type: 'bool',
+    },
+    LastPlayed: {
+      description: '',
+      type: 'int64',
+    },
+    LevelName: {
+      description: '',
+      type: 'string',
+    },
+    LimitedWorldOriginX: {
+      description: '',
+      type: 'int32',
+    },
+    LimitedWorldOriginY: {
+      description: '',
+      type: 'int32',
+    },
+    LimitedWorldOriginZ: {
+      description: '',
+      type: 'int32',
+    },
+    LimitedWorldDepth: {
+      description: '',
+      type: 'int32',
+    },
+    LimitedWorldWidth: {
+      description: '',
+      type: 'int32',
+    },
+    LocatorBar: {
+      description: '',
+      type: 'bool',
+    },
+    MinimumCompatibleClientVersion: {
+      description: '',
+      type: '[]int32',
+    },
+    MultiPlayerGame: {
+      description: '',
+      type: 'bool',
+    },
+    MultiPlayerGameIntent: {
+      description: '',
+      type: 'bool',
+    },
+    NetherScale: {
+      description: '',
+      type: 'int32',
+    },
+    NetworkVersion: {
+      description: '',
+      type: 'int32',
+    },
+    Platform: {
+      description: '',
+      type: 'int32',
+    },
+    PlatformBroadcastIntent: {
+      description: '',
+      type: 'int32',
+    },
+    RandomSeed: {
+      description: '',
+      type: 'int64',
+    },
+    ShowTags: {
+      description: '',
+      type: 'bool',
+    },
+    SingleUseWorld: {
+      description: '',
+      type: 'bool',
+    },
+    SpawnX: {
+      description: '',
+      type: 'int32',
+    },
+    SpawnY: {
+      description: '',
+      type: 'int32',
+    },
+    SpawnZ: {
+      description: '',
+      type: 'int32',
+    },
+    SpawnV1Villagers: {
+      description: '',
+      type: 'bool',
+    },
+    StorageVersion: {
+      description: '',
+      type: 'int32',
+    },
+    Time: {
+      description: '',
+      type: 'int64',
+    },
+    XBLBroadcast: {
+      description: '',
+      type: 'bool',
+    },
+    XBLBroadcastIntent: {
+      description: '',
+      type: 'int32',
+    },
+    XBLBroadcastMode: {
+      description: '',
+      type: 'int32',
+    },
+    Abilities: {
+      description: '',
+      type: `struct {
+	AttackMobs		bool	\`nbt:"attackmobs"\`
+	AttackPlayers		bool	\`nbt:"attackplayers"\`
+	Build			bool	\`nbt:"build"\`
+	Mine			bool	\`nbt:"mine"\`
+	DoorsAndSwitches	bool	\`nbt:"doorsandswitches"\`
+	FlySpeed		float32	\`nbt:"flySpeed"\`
+	Flying			bool	\`nbt:"flying"\`
+	InstantBuild		bool	\`nbt:"instabuild"\`
+	Invulnerable		bool	\`nbt:"invulnerable"\`
+	Lightning		bool	\`nbt:"lightning"\`
+	MayFly			bool	\`nbt:"mayfly"\`
+	OP			bool	\`nbt:"op"\`
+	OpenContainers		bool	\`nbt:"opencontainers"\`
+	PermissionsLevel	int32	\`nbt:"permissionsLevel"\`
+	PlayerPermissionsLevel	int32	\`nbt:"playerPermissionsLevel"\`
+	Teleport		bool	\`nbt:"teleport"\`
+	WalkSpeed		float32	\`nbt:"walkSpeed"\`
+	VerticalFlySpeed	float32	\`nbt:"verticalFlySpeed"\`
+}`,
+    },
+    BonusChestEnabled: {
+      description: '',
+      type: 'bool',
+    },
+    BonusChestSpawned: {
+      description: '',
+      type: 'bool',
+    },
+    CommandBlockOutput: {
+      description: '',
+      type: 'bool',
+    },
+    CommandBlocksEnabled: {
+      description: '',
+      type: 'bool',
+    },
+    CommandsEnabled: {
+      description: '',
+      type: 'bool',
+    },
+    CurrentTick: {
+      description: '',
+      type: 'int64',
+    },
+    DoDayLightCycle: {
+      description: '',
+      type: 'bool',
+    },
+    DoEntityDrops: {
+      description: '',
+      type: 'bool',
+    },
+    DoFireTick: {
+      description: '',
+      type: 'bool',
+    },
+    DoImmediateRespawn: {
+      description: '',
+      type: 'bool',
+    },
+    DoInsomnia: {
+      description: '',
+      type: 'bool',
+    },
+    DoMobLoot: {
+      description: '',
+      type: 'bool',
+    },
+    DoMobSpawning: {
+      description: '',
+      type: 'bool',
+    },
+    DoTileDrops: {
+      description: '',
+      type: 'bool',
+    },
+    DoWeatherCycle: {
+      description: '',
+      type: 'bool',
+    },
+    DrowningDamage: {
+      description: '',
+      type: 'bool',
+    },
+    EduLevel: {
+      description: '',
+      type: 'bool',
+    },
+    EducationFeaturesEnabled: {
+      description: '',
+      type: 'bool',
+    },
+    ExperimentalGamePlay: {
+      description: '',
+      type: 'bool',
+    },
+    FallDamage: {
+      description: '',
+      type: 'bool',
+    },
+    FireDamage: {
+      description: '',
+      type: 'bool',
+    },
+    FunctionCommandLimit: {
+      description: '',
+      type: 'int32',
+    },
+    HasBeenLoadedInCreative: {
+      description: '',
+      type: 'bool',
+    },
+    HasLockedBehaviourPack: {
+      description: '',
+      type: 'bool',
+    },
+    HasLockedResourcePack: {
+      description: '',
+      type: 'bool',
+    },
+    ImmutableWorld: {
+      description: '',
+      type: 'bool',
+    },
+    IsCreatedInEditor: {
+      description: '',
+      type: 'bool',
+    },
+    IsExportedFromEditor: {
+      description: '',
+      type: 'bool',
+    },
+    IsFromLockedTemplate: {
+      description: '',
+      type: 'bool',
+    },
+    IsFromWorldTemplate: {
+      description: '',
+      type: 'bool',
+    },
+    IsWorldTemplateOptionLocked: {
+      description: '',
+      type: 'bool',
+    },
+    KeepInventory: {
+      description: '',
+      type: 'bool',
+    },
+    LastOpenedWithVersion: {
+      description: '',
+      type: '[]int32',
+    },
+    LightningLevel: {
+      description: '',
+      type: 'float32',
+    },
+    LightningTime: {
+      description: '',
+      type: 'int32',
+    },
+    MaxCommandChainLength: {
+      description: '',
+      type: 'int32',
+    },
+    MobGriefing: {
+      description: '',
+      type: 'bool',
+    },
+    NaturalRegeneration: {
+      description: '',
+      type: 'bool',
+    },
+    PRID: {
+      description: '',
+      type: 'string',
+    },
+    PVP: {
+      description: '',
+      type: 'bool',
+    },
+    RainLevel: {
+      description: '',
+      type: 'float32',
+    },
+    RainTime: {
+      description: '',
+      type: 'int32',
+    },
+    RandomTickSpeed: {
+      description: '',
+      type: 'int32',
+    },
+    RequiresCopiedPackRemovalCheck: {
+      description: '',
+      type: 'bool',
+    },
+    SendCommandFeedback: {
+      description: '',
+      type: 'bool',
+    },
+    ServerChunkTickRange: {
+      description: '',
+      type: 'int32',
+    },
+    ShowCoordinates: {
+      description: '',
+      type: 'bool',
+    },
+    ShowDeathMessages: {
+      description: '',
+      type: 'bool',
+    },
+    SpawnMobs: {
+      description: '',
+      type: 'bool',
+    },
+    SpawnRadius: {
+      description: '',
+      type: 'int32',
+    },
+    StartWithMapEnabled: {
+      description: '',
+      type: 'bool',
+    },
+    TexturePacksRequired: {
+      description: '',
+      type: 'bool',
+    },
+    TNTExplodes: {
+      description: '',
+      type: 'bool',
+    },
+    UseMSAGamerTagsOnly: {
+      description: '',
+      type: 'bool',
+    },
+    WorldStartCount: {
+      description: '',
+      type: 'int64',
+    },
+    Experiments: {
+      description: '',
+      type: 'map[string]any',
+    },
+    FreezeDamage: {
+      description: '',
+      type: 'bool',
+    },
+    WorldPolicies: {
+      description: '',
+      type: 'map[string]any',
+    },
+    WorldVersion: {
+      description: '',
+      type: 'int32',
+    },
+    RespawnBlocksExplode: {
+      description: '',
+      type: 'bool',
+    },
+    ShowBorderEffect: {
+      description: '',
+      type: 'bool',
+    },
+    PermissionsLevel: {
+      description: '',
+      type: 'int32',
+    },
+    PlayerPermissionsLevel: {
+      description: '',
+      type: 'int32',
+    },
+    IsRandomSeedAllowed: {
+      description: '',
+      type: 'bool',
+    },
+    DoLimitedCrafting: {
+      description: '',
+      type: 'bool',
+    },
+    EditorWorldType: {
+      description: '',
+      type: 'int32',
+    },
+    PlayersSleepingPercentage: {
+      description: '',
+      type: 'int32',
+    },
+    RecipesUnlock: {
+      description: '',
+      type: 'bool',
+    },
+    NaturalGeneration: {
+      description: '',
+      type: 'bool',
+    },
+    ProjectilesCanBreakBlocks: {
+      description: '',
+      type: 'bool',
+    },
+    ShowRecipeMessages: {
+      description: '',
+      type: 'bool',
+    },
+    IsHardcore: {
+      description: '',
+      type: 'bool',
+    },
+    ShowDaysPlayed: {
+      description: '',
+      type: 'bool',
+    },
+    TNTExplosionDropDecay: {
+      description: '',
+      type: 'bool',
+    },
+    HasUncompleteWorldFileOnDisk: {
+      description: '',
+      type: 'bool',
+    },
+    PlayerHasDied: {
+      description: '',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="FillDefault">
+```go
+func (*Data) FillDefault()
+```
+
+FillDefault fills out d with all the default level.dat values.
+
+</Accordion>
+
+<Accordion title="PutSettings">
+```go
+func (*Data) PutSettings(s *world.Settings)
+```
+
+PutSettings updates d with the Settings stored in s.
+
+</Accordion>
+
+<Accordion title="Settings">
+```go
+func (*Data) Settings() *world.Settings
+```
+
+Settings returns a world.Settings value based on the properties stored in d.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### LevelDat
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type LevelDat struct {
+	hdr	header
+	data	[]byte
+}
+```
+
+
+
+LevelDat implements the encoding and decoding of level.dat files. An empty
+LevelDat is a valid value and may be used to Marshal and Write to a writer or
+file afterward.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Marshal">
+```go
+func (*LevelDat) Marshal(src any) error
+```
+
+Marshal encodes src and stores it in the level.dat. src should be either a
+struct or a map of fields. Marshal updates the storage version to the latest.
+
+</Accordion>
+
+<Accordion title="Unmarshal">
+```go
+func (*LevelDat) Unmarshal(dst any) error
+```
+
+Unmarshal decodes the level.dat properties from ld into dst. Unmarshal
+returns an error if dst was unable to store all properties found in the
+level.dat.
+
+</Accordion>
+
+<Accordion title="Ver">
+```go
+func (*LevelDat) Ver() int
+```
+
+Ver returns the version of the level.dat decoded, or 0 if ld is the empty
+value.
+
+</Accordion>
+
+<Accordion title="Write">
+```go
+func (*LevelDat) Write(w io.Writer) error
+```
+
+Write writes ld to w.
+
+</Accordion>
+
+<Accordion title="WriteFile">
+```go
+func (*LevelDat) WriteFile(name string) error
+```
+
+WriteFile writes ld to a file at name.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

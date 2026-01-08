@@ -1,0 +1,306 @@
+---
+title: Blocks
+icon: Cuboid
+---
+
+Blocks in Dragonfly are typed structs, just like items. There are no block IDs, no meta values. Everything is strongly typed and compile-time safe.
+
+## How PM/Nukkit Blocks Work
+
+In PocketMine-MP, you use block IDs and meta:
+
+```php title="PM_Example.php"
+use pocketmine\block\BlockFactory;
+use pocketmine\block\BlockIds;
+
+$block = BlockFactory::getInstance()->get(BlockIds::STONE, 0);
+$world->setBlock($pos, $block);
+```
+
+You check block types with IDs:
+
+```php title="PM_Check.php"
+if ($block->getId() === BlockIds::DIAMOND_ORE) {
+    // Handle ore
+}
+```
+
+And you manipulate block states (e.g., door open/closed) through meta values or methods:
+
+```php title="PM_States.php"
+$door->setOpen(true);
+$world->setBlock($pos, $door);
+```
+
+## How Dragonfly Blocks Work
+
+In Dragonfly, every block type is its own struct:
+
+```go title="dragonfly_blocks.go"
+import (
+    "github.com/df-mc/dragonfly/server/block"
+    "github.com/df-mc/dragonfly/server/block/cube"
+)
+
+stone := block.Stone{}
+w.SetBlock(cube.Pos{0, 64, 0}, stone, nil)
+```
+
+No IDs. You construct the block type directly.
+
+## Block Positions
+
+Dragonfly uses `cube.Pos` for block positions:
+
+```go title="positions.go"
+import "github.com/df-mc/dragonfly/server/block/cube"
+
+pos := cube.Pos{X: 0, Y: 64, Z: 0}
+```
+
+This is different from entity positions, which use `mgl64.Vec3` (floating point). Block positions are integers.
+
+## Getting Blocks
+
+```go title="get_block.go"
+pos := cube.Pos{0, 64, 0}
+b := w.Block(pos)
+
+// Check block type
+switch block := b.(type) {
+case block.Stone:
+    fmt.Println("It's stone!")
+case block.DiamondOre:
+    fmt.Println("Found diamond ore!")
+default:
+    fmt.Println("Unknown block:", block)
+}
+```
+
+Use type switches to check block types.
+
+## Setting Blocks
+
+```go title="set_block.go"
+pos := cube.Pos{0, 64, 0}
+w.SetBlock(pos, block.Stone{}, nil)
+```
+
+The third parameter is a `world.BlockUpdateFunc`. This is called after the block is placed, allowing you to run custom logic. Use `nil` if you don't need it.
+
+## Block States
+
+Some blocks have states (e.g., doors can be open/closed, logs have orientations). States are fields on the block struct:
+
+```go title="block_states.go"
+door := block.WoodenDoor{
+    Facing: cube.FaceNorth,
+    Open:   true,
+    Top:    false,
+}
+w.SetBlock(pos, door, nil)
+```
+
+This is way cleaner than meta values. You can't set an invalid state because the struct enforces it.
+
+### Example: Logs
+
+```go title="logs.go"
+log := block.Log{
+    Wood: block.OakWood(),
+    Axis: cube.AxisY,  // Vertical log
+}
+w.SetBlock(pos, log, nil)
+```
+
+### Example: Wool
+
+```go title="wool.go"
+wool := block.Wool{
+    Colour: block.ColourRed(),
+}
+w.SetBlock(pos, wool, nil)
+```
+
+All block states are type-safe. No magic values.
+
+## Breaking Blocks
+
+```go title="break_block.go"
+pos := cube.Pos{0, 64, 0}
+b := w.Block(pos)
+
+// Check if the block can be broken
+if breakable, ok := b.(block.Breakable); ok {
+    // Drop items
+    drops := breakable.BreakInfo().Drops(item.ToolNone{}, nil)
+    for _, drop := range drops {
+        w.AddEntity(entity.NewItem(drop, pos.Vec3Centre()))
+    }
+}
+
+// Replace with air
+w.SetBlock(pos, block.Air{}, nil)
+```
+
+The `block.Breakable` interface provides drop information.
+
+## Custom Blocks
+
+Custom blocks are more involved in Dragonfly than in PM/Nukkit. You need to implement the `world.Block` interface:
+
+```go title="custom_ore.go"
+type CustomOre struct{}
+
+func (CustomOre) EncodeBlock() (name string, properties map[string]interface{}) {
+    return "minecraft:diamond_ore", nil
+}
+
+func (CustomOre) Model() world.BlockModel {
+    return block.Model{} // Use default model
+}
+
+func (CustomOre) BreakInfo() block.BreakInfo {
+    return block.BreakInfo{
+        Hardness:    3.0,
+        Harvestable: func(t item.Tool) bool {
+            return t.ToolType() == item.ToolTypePickaxe && t.HarvestLevel() >= item.ToolTierIron.HarvestLevel
+        },
+        Effective: item.ToolTypePickaxe,
+        Drops: func(t item.Tool, enchantments []item.Enchantment) []item.Stack {
+            return []item.Stack{item.NewStack(item.Diamond{}, 3)}
+        },
+    }
+}
+```
+
+This is a lot more verbose than PM/Nukkit, but it's fully typed and explicit.
+
+## Block Placement Handlers
+
+In PM/Nukkit, you'd listen for `BlockPlaceEvent`. In Dragonfly, you use player handlers:
+
+```go title="placement_handler.go"
+type GameHandler struct {
+    player *player.Player
+}
+
+func (h *GameHandler) HandleBlockPlace(ctx *event.Context, pos cube.Pos, b world.Block) {
+    // Block was placed
+    if _, ok := b.(block.TNT); ok {
+        h.player.SendMessage("§cYou placed TNT!")
+        ctx.Cancel()  // Prevent placement
+    }
+}
+```
+
+The handler is called before the block is placed. Call `ctx.Cancel()` to prevent it.
+
+## Block Breaking Handlers
+
+```go title="break_handler.go"
+func (h *GameHandler) HandleBlockBreak(ctx *event.Context, pos cube.Pos, drops *[]item.Stack) {
+    b := h.player.World().Block(pos)
+
+    if ore, ok := b.(block.DiamondOre); ok {
+        h.player.SendMessage("§aYou mined diamond ore!")
+        *drops = append(*drops, item.NewStack(item.Diamond{}, 5)) // Bonus diamonds
+    }
+}
+```
+
+You can modify the drops by changing the `drops` slice.
+
+## Block Updates
+
+Some blocks react to neighboring block changes (e.g., sand falls when the block below is removed). Implement `world.NeighbourUpdateTicker`:
+
+```go title="block_updates.go"
+type CustomBlock struct{}
+
+func (CustomBlock) NeighbourUpdateTick(pos, changedNeighbour cube.Pos, w *world.World) {
+    // React to neighbor change
+    if w.Block(pos.Side(cube.FaceDown)) == block.Air{} {
+        // Block below was removed, make this block fall
+        w.SetBlock(pos, block.Air{}, nil)
+        w.AddEntity(entity.NewFallingBlock(CustomBlock{}, pos.Vec3Centre()))
+    }
+}
+```
+
+## Scheduled Block Updates
+
+Some blocks need to update after a delay (e.g., redstone repeaters). Use `world.ScheduleBlockUpdate`:
+
+```go title="scheduled_update.go"
+w.ScheduleBlockUpdate(pos, time.Second)
+```
+
+Then implement `world.ScheduledTick`:
+
+```go title="scheduled_tick.go"
+type CustomBlock struct{}
+
+func (CustomBlock) ScheduledTick(pos cube.Pos, w *world.World, r *rand.Rand) {
+    // This is called after the scheduled delay
+    fmt.Println("Block updated at", pos)
+}
+```
+
+## Practical Example: Lucky Block
+
+```go title="lucky_block.go"
+type LuckyBlock struct{}
+
+func (LuckyBlock) EncodeBlock() (name string, properties map[string]interface{}) {
+    return "minecraft:gold_block", nil  // Render as gold block
+}
+
+func (LuckyBlock) Model() world.BlockModel {
+    return block.Model{}
+}
+
+func (LuckyBlock) BreakInfo() block.BreakInfo {
+    return block.BreakInfo{
+        Hardness: 1.0,
+        Drops: func(t item.Tool, enchantments []item.Enchantment) []item.Stack {
+            // No normal drops (we handle it in the break handler)
+            return nil
+        },
+    }
+}
+```
+
+Handle breaking:
+
+```go title="lucky_block_handler.go"
+func (h *GameHandler) HandleBlockBreak(ctx *event.Context, pos cube.Pos, drops *[]item.Stack) {
+    b := h.player.World().Block(pos)
+
+    if _, ok := b.(LuckyBlock); ok {
+        // Random reward
+        rewards := []item.Stack{
+            item.NewStack(item.Diamond{}, 10),
+            item.NewStack(item.Dirt{}, 64),
+            item.NewStack(item.GoldenApple{}, 1),
+        }
+
+        reward := rewards[rand.Intn(len(rewards))]
+        *drops = []item.Stack{reward}
+
+        h.player.SendMessage("§6You got lucky!")
+    }
+}
+```
+
+## Key Takeaways
+
+- Blocks are typed structs. No IDs, no meta.
+- Block positions use `cube.Pos` (integers).
+- Block states are struct fields. Fully type-safe.
+- Use type switches to check block types.
+- Implement `block.Breakable` for custom break behavior.
+- Block placement/breaking is handled in player handlers.
+- Custom blocks implement the `world.Block` interface.
+
+The typed block system eliminates entire classes of bugs (invalid meta, wrong IDs, etc.). It's more verbose, but it's rock-solid.

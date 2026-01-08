@@ -1,4 +1,0 @@
----
-icon: ruby
-visibility: hidden
----

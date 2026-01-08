@@ -1,0 +1,558 @@
+---
+title: "debug"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# debug
+
+
+```go
+import "github.com/df-mc/dragonfly/server/player/debug"
+```
+
+
+
+
+
+
+
+
+
+
+
+## Types
+
+
+### Arrow
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Arrow struct {
+	shape
+
+	// Colour is the colour that will be used for the line and head. If empty, it will default to white.
+	Colour	color.RGBA
+	// Position is the origin position of the shape in the world.
+	Position	mgl64.Vec3
+	// EndPosition is the end position of the arrow in the world. The arrow will be drawn from Position to
+	// EndPosition, with the head being drawn at EndPosition.
+	EndPosition	mgl64.Vec3
+	// HeadLength is the length of the head to be drawn at the end of the arrow. If zero, it will default
+	// to 1.0.
+	HeadLength	float64
+	// HeadRadius is the radius of the head to be drawn at the end of the arrow. If zero, it will default
+	// to 0.5.
+	HeadRadius	float64
+	// HeadSegments is the number of segments that the head of the arrow will be drawn with. The more
+	// segments, the smoother the head will look. If zero, it will default to 4.
+	HeadSegments	int
+}
+```
+
+
+
+Arrow represents an arrow shape that can be drawn at any point in the world. It has a head which can also
+be positioned anywhere, and the length, radius and number of segments can be changed.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    shape: {
+      description: '',
+      type: 'shape',
+    },
+    Colour: {
+      description: 'Colour is the colour that will be used for the line and head. If empty, it will default to white.',
+      type: 'color.RGBA',
+    },
+    Position: {
+      description: 'Position is the origin position of the shape in the world.',
+      type: 'mgl64.Vec3',
+    },
+    EndPosition: {
+      description: 'EndPosition is the end position of the arrow in the world. The arrow will be drawn from Position to EndPosition, with the head being drawn at EndPosition.',
+      type: 'mgl64.Vec3',
+    },
+    HeadLength: {
+      description: 'HeadLength is the length of the head to be drawn at the end of the arrow. If zero, it will default to 1.0.',
+      type: 'float64',
+    },
+    HeadRadius: {
+      description: 'HeadRadius is the radius of the head to be drawn at the end of the arrow. If zero, it will default to 0.5.',
+      type: 'float64',
+    },
+    HeadSegments: {
+      description: 'HeadSegments is the number of segments that the head of the arrow will be drawn with. The more segments, the smoother the head will look. If zero, it will default to 4.',
+      type: 'int',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="ShapeID">
+```go
+func (*Arrow) ShapeID() int
+```
+
+ShapeID ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Box
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Box struct {
+	shape
+
+	// Colour is the colour that will be used for the outline. If empty, it will default to white.
+	Colour	color.RGBA
+	// Bounds is the size of the box in the world, acting as an offset from the Position. If empty,
+	// it will default to a 1x1x1 box.
+	Bounds	mgl64.Vec3
+	// Position is the origin position of the shape in the world.
+	Position	mgl64.Vec3
+	// Scale is the rate to scale the shape from its origin point. If zero, it will default to 1.0.
+	Scale	float64
+}
+```
+
+
+
+Box represents a hollow box that can be drawn at any point in the world, with a bounds that can be set.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    shape: {
+      description: '',
+      type: 'shape',
+    },
+    Colour: {
+      description: 'Colour is the colour that will be used for the outline. If empty, it will default to white.',
+      type: 'color.RGBA',
+    },
+    Bounds: {
+      description: 'Bounds is the size of the box in the world, acting as an offset from the Position. If empty, it will default to a 1x1x1 box.',
+      type: 'mgl64.Vec3',
+    },
+    Position: {
+      description: 'Position is the origin position of the shape in the world.',
+      type: 'mgl64.Vec3',
+    },
+    Scale: {
+      description: 'Scale is the rate to scale the shape from its origin point. If zero, it will default to 1.0.',
+      type: 'float64',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="ShapeID">
+```go
+func (*Box) ShapeID() int
+```
+
+ShapeID ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Circle
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Circle struct {
+	shape
+
+	// Colour is the colour that will be used for the outline. If empty, it will default to white.
+	Colour	color.RGBA
+	// Position is the origin position of the shape in the world.
+	Position	mgl64.Vec3
+	// Scale is the radius of the circle. If zero, it will default to 1.0.
+	Scale	float64
+	// Segments is the number of segments that the circle will be drawn with. The more segments, the smoother
+	// the circle will look. If empty, it will default to 20.
+	Segments	int
+}
+```
+
+
+
+Circle represents a hollow circle that can be drawn at any point in the world, with the scale being used
+to control the radius.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    shape: {
+      description: '',
+      type: 'shape',
+    },
+    Colour: {
+      description: 'Colour is the colour that will be used for the outline. If empty, it will default to white.',
+      type: 'color.RGBA',
+    },
+    Position: {
+      description: 'Position is the origin position of the shape in the world.',
+      type: 'mgl64.Vec3',
+    },
+    Scale: {
+      description: 'Scale is the radius of the circle. If zero, it will default to 1.0.',
+      type: 'float64',
+    },
+    Segments: {
+      description: 'Segments is the number of segments that the circle will be drawn with. The more segments, the smoother the circle will look. If empty, it will default to 20.',
+      type: 'int',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="ShapeID">
+```go
+func (*Circle) ShapeID() int
+```
+
+ShapeID ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Line
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Line struct {
+	shape
+
+	// Colour is the colour that will be used for the line. If empty, it will default to white.
+	Colour	color.RGBA
+	// Position is the origin position of the shape in the world.
+	Position	mgl64.Vec3
+	// EndPosition is the end position of the line in the world. The line will be drawn from Position to
+	// EndPosition.
+	EndPosition	mgl64.Vec3
+}
+```
+
+
+
+Line represents a line that can be drawn at any point in the world, with a start and end position.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    shape: {
+      description: '',
+      type: 'shape',
+    },
+    Colour: {
+      description: 'Colour is the colour that will be used for the line. If empty, it will default to white.',
+      type: 'color.RGBA',
+    },
+    Position: {
+      description: 'Position is the origin position of the shape in the world.',
+      type: 'mgl64.Vec3',
+    },
+    EndPosition: {
+      description: 'EndPosition is the end position of the line in the world. The line will be drawn from Position to EndPosition.',
+      type: 'mgl64.Vec3',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="ShapeID">
+```go
+func (*Line) ShapeID() int
+```
+
+ShapeID ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Renderer
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Renderer interface {
+	// AddDebugShape adds a debug shape to the renderer, which should be rendered to the player. If the shape
+	// already exists, it will be updated with the new information.
+	AddDebugShape(shape Shape)
+	// RemoveDebugShape removes a debug shape from the renderer by its unique identifier.
+	RemoveDebugShape(shape Shape)
+	// VisibleDebugShapes returns a slice of all debug shapes that are currently being shown by the renderer.
+	VisibleDebugShapes() []Shape
+	// RemoveAllDebugShapes clears all debug shapes from the renderer, removing them from the view of the player.
+	RemoveAllDebugShapes()
+}
+```
+
+
+
+Renderer represents an interface for a renderer that can manage debug shapes.
+
+
+
+
+
+
+---
+
+### Shape
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Shape interface {
+	// ShapeID returns the unique identifier of the shape. This is used to either update or remove the shape
+	// after it has been sent to the player.
+	ShapeID() int
+}
+```
+
+
+
+Shape represents a shape that can be drawn to a player from any point in the world.
+
+
+
+
+
+
+---
+
+### Sphere
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Sphere struct {
+	shape
+
+	// Colour is the colour that will be used for the outline. If empty, it will default to white.
+	Colour	color.RGBA
+	// Position is the origin position of the shape in the world.
+	Position	mgl64.Vec3
+	// Scale is the radius of the sphere. If zero, it will default to 1.0.
+	Scale	float64
+	// Segments is the number of segments that the circle will be drawn with. The more segments, the smoother
+	// the circle will look. If empty, it will default to 20.
+	Segments	int
+}
+```
+
+
+
+Sphere represents a hollow sphere that can be drawn at any point in the world, with one line in each axis.
+The scale is used to control the radius of the sphere.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    shape: {
+      description: '',
+      type: 'shape',
+    },
+    Colour: {
+      description: 'Colour is the colour that will be used for the outline. If empty, it will default to white.',
+      type: 'color.RGBA',
+    },
+    Position: {
+      description: 'Position is the origin position of the shape in the world.',
+      type: 'mgl64.Vec3',
+    },
+    Scale: {
+      description: 'Scale is the radius of the sphere. If zero, it will default to 1.0.',
+      type: 'float64',
+    },
+    Segments: {
+      description: 'Segments is the number of segments that the circle will be drawn with. The more segments, the smoother the circle will look. If empty, it will default to 20.',
+      type: 'int',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="ShapeID">
+```go
+func (*Sphere) ShapeID() int
+```
+
+ShapeID ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Text
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Text struct {
+	shape
+
+	// Colour is the colour that will be used for the actual text, not affecting the always-black background.
+	// If empty, the text will default to white.
+	Colour	color.RGBA
+	// Position is the origin position of the shape in the world.
+	Position	mgl64.Vec3
+	// Text is the text to be displayed on the shape. The background automatically scales to fit the text.
+	Text	string
+}
+```
+
+
+
+Text represents text that can be drawn at any point in the world, looking like a normal entity nametag
+without actually being attached to an entity.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    shape: {
+      description: '',
+      type: 'shape',
+    },
+    Colour: {
+      description: 'Colour is the colour that will be used for the actual text, not affecting the always-black background. If empty, the text will default to white.',
+      type: 'color.RGBA',
+    },
+    Position: {
+      description: 'Position is the origin position of the shape in the world.',
+      type: 'mgl64.Vec3',
+    },
+    Text: {
+      description: 'Text is the text to be displayed on the shape. The background automatically scales to fit the text.',
+      type: 'string',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="ShapeID">
+```go
+func (*Text) ShapeID() int
+```
+
+ShapeID ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

@@ -1,0 +1,42 @@
+---
+title: Core Concepts
+icon: Lightbulb
+---
+
+Understanding how Dragonfly works is key to building good servers. These docs cover the core systems you'll interact with daily.
+
+## What's Different About Dragonfly?
+
+If you're coming from PocketMine-MP or Nukkit, Dragonfly works quite differently. There are no global event listeners. No plugin.yml. No magical folder structure. Just Go code.
+
+The main things to wrap your head around:
+- **Per-player handlers** instead of global event listeners
+- **Goroutines** for concurrent operations  
+- **Composition over inheritance** (Go doesn't have classes)
+
+## Core Systems
+
+### Event System
+How to handle player actions. Dragonfly mounts handlers directly on players instead of using global listeners.
+
+[Event System →](/docs/core-concepts/event-system)
+
+### World Management
+Loading, saving, and managing worlds. Spawning entities, modifying blocks.
+
+[Worlds →](/docs/core-concepts/worlds)
+
+### Scoreboards
+Display data on the player's screen. XP bars, kill counts, whatever you need.
+
+[Scoreboards →](/docs/core-concepts/scoreboards)
+
+### Tasks & Scheduling
+Run code on intervals. Timers, cooldowns, delayed actions.
+
+[Tasks →](/docs/core-concepts/tasks)
+
+### Go Patterns for Dragonfly
+Common patterns you'll see in Dragonfly servers. Avoiding overengineering, writing idiomatic Go.
+
+[Go Patterns →](/docs/core-concepts/go-patterns)

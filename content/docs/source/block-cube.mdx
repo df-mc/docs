@@ -1,0 +1,908 @@
+---
+title: "cube"
+description: "Package cube provides types and functions to handle positions and rotations"
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# cube
+
+
+```go
+import "github.com/df-mc/dragonfly/server/block/cube"
+```
+
+
+
+Package cube provides types and functions to handle positions and rotations
+of voxel-based objects in a 3D world.
+
+
+
+
+
+
+
+## Functions
+
+<Accordions>
+
+<Accordion title="AnyIntersections">
+```go
+func AnyIntersections(boxes []BBox, search BBox) bool
+```
+
+
+AnyIntersections checks if any of boxes intersect with search.
+
+</Accordion>
+
+</Accordions>
+
+
+
+## Types
+
+
+### Axis
+
+
+
+
+```go
+type Axis int
+```
+
+
+
+Axis represents the axis that a block, such as a log, may be directed in.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="RotateLeft">
+```go
+func (Axis) RotateLeft() Axis
+```
+
+RotateLeft rotates an Axis from X to Z or from Z to X.
+
+</Accordion>
+
+<Accordion title="RotateRight">
+```go
+func (Axis) RotateRight() Axis
+```
+
+RotateRight rotates an Axis from X to Z or from Z to X.
+
+</Accordion>
+
+<Accordion title="String">
+```go
+func (Axis) String() string
+```
+
+String converts an Axis into either x, y or z, depending on which axis it is.
+
+</Accordion>
+
+<Accordion title="Vec3">
+```go
+func (Axis) Vec3() mgl64.Vec3
+```
+
+Vec3 returns a unit Vec3 of either (1, 0, 0), (0, 1, 0) or (0, 0, 1),
+depending on the Axis.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BBox
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BBox struct {
+	min, max mgl64.Vec3
+}
+```
+
+
+
+BBox represents an Axis Aligned Bounding Box in a 3D space. It is defined as
+two Vec3s, of which one is the minimum and one is the maximum.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Corners">
+```go
+func (BBox) Corners() []mgl64.Vec3
+```
+
+Corners returns the positions of all corners of a BBox.
+
+</Accordion>
+
+<Accordion title="Extend">
+```go
+func (BBox) Extend(vec mgl64.Vec3) BBox
+```
+
+Extend expands the BBox on all axes as represented by the Vec3 passed.
+Negative coordinates result in an expansion towards the negative axis, and
+vice versa for positive coordinates.
+
+</Accordion>
+
+<Accordion title="ExtendTowards">
+```go
+func (BBox) ExtendTowards(f Face, x float64) BBox
+```
+
+ExtendTowards extends the bounding box by x in a given direction.
+
+</Accordion>
+
+<Accordion title="Grow">
+```go
+func (BBox) Grow(x float64) BBox
+```
+
+Grow grows the bounding box in all directions by x and returns the new
+bounding box.
+
+</Accordion>
+
+<Accordion title="GrowVec3">
+```go
+func (BBox) GrowVec3(vec mgl64.Vec3) BBox
+```
+
+GrowVec3 grows the BBox on all axes as represented by the Vec3 passed. The
+vec values are subtracted from the minimum values of the BBox and added to
+the maximum values of the BBox.
+
+</Accordion>
+
+<Accordion title="Height">
+```go
+func (BBox) Height() float64
+```
+
+Height returns the height of the BBox.
+
+</Accordion>
+
+<Accordion title="IntersectsWith">
+```go
+func (BBox) IntersectsWith(other BBox) bool
+```
+
+IntersectsWith checks if the BBox intersects with another BBox.
+
+</Accordion>
+
+<Accordion title="Length">
+```go
+func (BBox) Length() float64
+```
+
+Length returns the length of the BBox.
+
+</Accordion>
+
+<Accordion title="Max">
+```go
+func (BBox) Max() mgl64.Vec3
+```
+
+Max returns the maximum coordinate of the bounding box.
+
+</Accordion>
+
+<Accordion title="Min">
+```go
+func (BBox) Min() mgl64.Vec3
+```
+
+Min returns the minimum coordinate of the bounding box.
+
+</Accordion>
+
+<Accordion title="Mul">
+```go
+func (BBox) Mul(val float64) BBox
+```
+
+Mul performs a scalar multiplication of the min and max points of a BBox.
+
+</Accordion>
+
+<Accordion title="Stretch">
+```go
+func (BBox) Stretch(a Axis, x float64) BBox
+```
+
+Stretch stretches the bounding box by x in a given axis.
+
+</Accordion>
+
+<Accordion title="Translate">
+```go
+func (BBox) Translate(vec mgl64.Vec3) BBox
+```
+
+Translate moves the entire BBox with the Vec3 given. The (minimum and
+maximum) x, y and z coordinates are moved by those in the Vec3 passed.
+
+</Accordion>
+
+<Accordion title="TranslateTowards">
+```go
+func (BBox) TranslateTowards(f Face, x float64) BBox
+```
+
+TranslateTowards moves the entire BBox by x in the direction of a Face f.
+
+</Accordion>
+
+<Accordion title="Vec3Within">
+```go
+func (BBox) Vec3Within(vec mgl64.Vec3) bool
+```
+
+Vec3Within checks if a BBox has vec within it.
+
+</Accordion>
+
+<Accordion title="Vec3WithinXY">
+```go
+func (BBox) Vec3WithinXY(vec mgl64.Vec3) bool
+```
+
+Vec3WithinXY checks if a BBox has vec within its X and Y bounds.
+
+</Accordion>
+
+<Accordion title="Vec3WithinXZ">
+```go
+func (BBox) Vec3WithinXZ(vec mgl64.Vec3) bool
+```
+
+Vec3WithinXZ checks if a BBox has vec within its X and Z bounds.
+
+</Accordion>
+
+<Accordion title="Vec3WithinYZ">
+```go
+func (BBox) Vec3WithinYZ(vec mgl64.Vec3) bool
+```
+
+Vec3WithinYZ checks if a BBox has vec within its Y and Z bounds.
+
+</Accordion>
+
+<Accordion title="Volume">
+```go
+func (BBox) Volume() float64
+```
+
+Volume calculates the volume of a BBox.
+
+</Accordion>
+
+<Accordion title="Width">
+```go
+func (BBox) Width() float64
+```
+
+Width returns the width of the BBox.
+
+</Accordion>
+
+<Accordion title="XOffset">
+```go
+func (BBox) XOffset(nearby BBox, deltaX float64) float64
+```
+
+XOffset calculates the offset on the X axis between two bounding boxes,
+returning a delta always smaller than or equal to deltaX if deltaX is bigger
+than 0, or always bigger than or equal to deltaX if it is smaller than 0.
+
+</Accordion>
+
+<Accordion title="YOffset">
+```go
+func (BBox) YOffset(nearby BBox, deltaY float64) float64
+```
+
+YOffset calculates the offset on the Y axis between two bounding boxes,
+returning a delta always smaller than or equal to deltaY if deltaY is bigger
+than 0, or always bigger than or equal to deltaY if it is smaller than 0.
+
+</Accordion>
+
+<Accordion title="ZOffset">
+```go
+func (BBox) ZOffset(nearby BBox, deltaZ float64) float64
+```
+
+ZOffset calculates the offset on the Z axis between two bounding boxes,
+returning a delta always smaller than or equal to deltaZ if deltaZ is bigger
+than 0, or always bigger than or equal to deltaZ if it is smaller than 0.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Direction
+
+
+
+
+```go
+type Direction int
+```
+
+
+
+Direction represents a direction towards one of the horizontal axes
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Face">
+```go
+func (Direction) Face() Face
+```
+
+Face converts the direction to a Face and returns it.
+
+</Accordion>
+
+<Accordion title="Opposite">
+```go
+func (Direction) Opposite() Direction
+```
+
+Opposite returns Direction opposite to the current one.
+
+</Accordion>
+
+<Accordion title="RotateLeft">
+```go
+func (Direction) RotateLeft() Direction
+```
+
+RotateLeft rotates the direction 90 degrees to the left horizontally
+(counter-clockwise) and returns the new direction.
+
+</Accordion>
+
+<Accordion title="RotateRight">
+```go
+func (Direction) RotateRight() Direction
+```
+
+RotateRight rotates the direction 90 degrees to the right horizontally
+(clockwise) and returns the new direction.
+
+</Accordion>
+
+<Accordion title="String">
+```go
+func (Direction) String() string
+```
+
+String returns the Direction as a string.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Face
+
+
+
+
+```go
+type Face int
+```
+
+
+
+Face represents the face of a block or entity.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Axis">
+```go
+func (Face) Axis() Axis
+```
+
+Axis returns the Axis the face is facing. FaceEast and FaceWest correspond
+to the X Axis, FaceNorth and FaceSouth to the Z Axis and FaceUp and FaceDown
+to the Y Axis.
+
+</Accordion>
+
+<Accordion title="Direction">
+```go
+func (Face) Direction() Direction
+```
+
+Direction converts the Face to a Direction and returns it, assuming the Face
+is horizontal and not FaceUp or FaceDown.
+
+</Accordion>
+
+<Accordion title="Opposite">
+```go
+func (Face) Opposite() Face
+```
+
+Opposite returns the opposite Face. FaceDown will return FaceUp, FaceNorth
+will return FaceSouth, FaceWest will return FaceEast, and vice versa.
+
+</Accordion>
+
+<Accordion title="RotateLeft">
+```go
+func (Face) RotateLeft() Face
+```
+
+RotateLeft rotates the face 90 degrees to the left horizontally
+(counter-clockwise) and returns the new Face.
+
+</Accordion>
+
+<Accordion title="RotateRight">
+```go
+func (Face) RotateRight() Face
+```
+
+RotateRight rotates the face 90 degrees to the right horizontally
+(clockwise) and returns the new Face.
+
+</Accordion>
+
+<Accordion title="String">
+```go
+func (Face) String() string
+```
+
+String returns the Face as a string.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Orientation
+
+
+
+
+```go
+type Orientation int
+```
+
+
+
+Orientation represents the rotation of a block divided into 16 options.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Opposite">
+```go
+func (Orientation) Opposite() Orientation
+```
+
+Opposite returns the opposite orientation value of the Orientation.
+
+</Accordion>
+
+<Accordion title="RotateLeft">
+```go
+func (Orientation) RotateLeft() Orientation
+```
+
+RotateLeft rotates the orientation left by 90 degrees and returns it.
+
+</Accordion>
+
+<Accordion title="RotateRight">
+```go
+func (Orientation) RotateRight() Orientation
+```
+
+RotateRight rotates the orientation right by 90 degrees and returns it.
+
+</Accordion>
+
+<Accordion title="Yaw">
+```go
+func (Orientation) Yaw() float64
+```
+
+Yaw returns the yaw value that matches the orientation.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Pos
+
+
+
+
+```go
+type Pos [3]int
+```
+
+
+
+Pos holds the position of a block. The position is represented as an array
+with an x, y and z value, where the y value is positive.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Add">
+```go
+func (Pos) Add(pos Pos) Pos
+```
+
+Add adds two positions together and returns a new combined one.
+
+</Accordion>
+
+<Accordion title="Face">
+```go
+func (Pos) Face(other Pos) Face
+```
+
+Face returns the face that the other Pos was on compared to the current Pos.
+The other Pos is assumed to be a direct neighbour of the current Pos.
+
+</Accordion>
+
+<Accordion title="Neighbours">
+```go
+func (Pos) Neighbours(f func(neighbour Pos), r Range)
+```
+
+Neighbours calls the function passed for each of the block position's
+neighbours. If the Y value is out of bounds, the function will not be called
+for that position.
+
+</Accordion>
+
+<Accordion title="OutOfBounds">
+```go
+func (Pos) OutOfBounds(r Range) bool
+```
+
+OutOfBounds checks if the Y value is either bigger than r[1] or smaller than
+r[0].
+
+</Accordion>
+
+<Accordion title="Side">
+```go
+func (Pos) Side(face Face) Pos
+```
+
+Side returns the position on the side of this block position, at a specific
+face.
+
+</Accordion>
+
+<Accordion title="String">
+```go
+func (Pos) String() string
+```
+
+String converts the Pos to a string in the format (1,2,3) and returns it.
+
+</Accordion>
+
+<Accordion title="Sub">
+```go
+func (Pos) Sub(pos Pos) Pos
+```
+
+Sub subtracts pos from p and returns a new one with the subtracted values.
+
+</Accordion>
+
+<Accordion title="Vec3">
+```go
+func (Pos) Vec3() mgl64.Vec3
+```
+
+Vec3 returns a vec3 holding the same coordinates as the block position.
+
+</Accordion>
+
+<Accordion title="Vec3Centre">
+```go
+func (Pos) Vec3Centre() mgl64.Vec3
+```
+
+Vec3Centre returns a Vec3 holding the coordinates of the block position with
+0.5 added on all axes.
+
+</Accordion>
+
+<Accordion title="Vec3Middle">
+```go
+func (Pos) Vec3Middle() mgl64.Vec3
+```
+
+Vec3Middle returns a Vec3 holding the coordinates of the block position with
+0.5 added on both horizontal axes.
+
+</Accordion>
+
+<Accordion title="X">
+```go
+func (Pos) X() int
+```
+
+X returns the X coordinate of the block position.
+
+</Accordion>
+
+<Accordion title="Y">
+```go
+func (Pos) Y() int
+```
+
+Y returns the Y coordinate of the block position.
+
+</Accordion>
+
+<Accordion title="Z">
+```go
+func (Pos) Z() int
+```
+
+Z returns the Z coordinate of the block position.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Range
+
+
+
+
+```go
+type Range [2]int
+```
+
+
+
+Range represents the height range of a Dimension in blocks. The first value
+of the Range holds the minimum Y value, the second value holds the maximum Y
+value.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Height">
+```go
+func (Range) Height() int
+```
+
+Height returns the total height of the Range, the difference between Max and
+Min.
+
+</Accordion>
+
+<Accordion title="Max">
+```go
+func (Range) Max() int
+```
+
+Max returns the maximum Y value of a Range. It is equivalent to Range[1].
+
+</Accordion>
+
+<Accordion title="Min">
+```go
+func (Range) Min() int
+```
+
+Min returns the minimum Y value of a Range. It is equivalent to Range[0].
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Rotation
+
+
+
+
+```go
+type Rotation [2]float64
+```
+
+
+
+Rotation describes the rotation of an object in the world in degrees. It
+holds a yaw (r[0]) and pitch value (r[1]). Yaw is in the range (-180, 180)
+while pitch is in the range (-90, 90). A positive pitch implies an entity is
+looking downwards, while a negative pitch implies it is looking upwards.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Add">
+```go
+func (Rotation) Add(r2 Rotation) Rotation
+```
+
+Add adds the values of two Rotations element-wise and returns a new Rotation.
+If the yaw or pitch would otherwise exceed their respective range as
+described, they are 'overflown' to the other end of the allowed range.
+
+</Accordion>
+
+<Accordion title="Direction">
+```go
+func (Rotation) Direction() Direction
+```
+
+Direction returns the horizontal Direction that r points towards based on the
+yaw of r.
+
+</Accordion>
+
+<Accordion title="Elem">
+```go
+func (Rotation) Elem() (yaw, pitch float64)
+```
+
+Elem extracts the elements of the Rotation for direct value assignment.
+
+</Accordion>
+
+<Accordion title="Neg">
+```go
+func (Rotation) Neg() Rotation
+```
+
+Neg returns the negation of the Rotation. It is equivalent to creating a new
+Rotation{-r[0], -r[1]}.
+
+</Accordion>
+
+<Accordion title="Opposite">
+```go
+func (Rotation) Opposite() Rotation
+```
+
+Opposite returns the Rotation opposite r, so that
+r.Vec3().Add(r.Opposite().Vec3()).Len() is equal to 0.
+
+</Accordion>
+
+<Accordion title="Orientation">
+```go
+func (Rotation) Orientation() Orientation
+```
+
+Orientation returns an Orientation value that most closely matches the yaw
+of r.
+
+</Accordion>
+
+<Accordion title="Pitch">
+```go
+func (Rotation) Pitch() float64
+```
+
+Pitch returns the pitch of r (r[1]).
+
+</Accordion>
+
+<Accordion title="Vec3">
+```go
+func (Rotation) Vec3() mgl64.Vec3
+```
+
+Vec3 returns the direction vector of r. The length of the mgl64.Vec3 returned
+is always 1.
+
+</Accordion>
+
+<Accordion title="Yaw">
+```go
+func (Rotation) Yaw() float64
+```
+
+Yaw returns the yaw of r (r[0]).
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

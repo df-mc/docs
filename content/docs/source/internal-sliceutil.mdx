@@ -1,0 +1,79 @@
+---
+title: "sliceutil"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# sliceutil
+
+
+```go
+import "github.com/df-mc/dragonfly/server/internal/sliceutil"
+```
+
+
+
+
+
+
+
+
+
+## Functions
+
+<Accordions>
+
+<Accordion title="Convert">
+```go
+func Convert(v S) []A
+```
+
+
+Convert converts a slice of type B to a slice of type A. Convert panics if B
+cannot be type asserted to type A.
+
+</Accordion>
+
+<Accordion title="DeleteVal">
+```go
+func DeleteVal(s []E, v E) []E
+```
+
+
+DeleteVal deletes the first occurrence of a value in a slice of the type E
+and returns a new slice without the value.
+
+</Accordion>
+
+<Accordion title="Filter">
+```go
+func Filter(s []E, c func(E) bool) []E
+```
+
+
+Filter iterates over elements of collection, returning an array of all
+elements function c returns true for.
+
+</Accordion>
+
+<Accordion title="SearchValue">
+```go
+func SearchValue(v S, f func(a A) bool) (a A, ok bool)
+```
+
+
+SearchValue iterates through slice v, calling function f for every element.
+If true is returned in this function, the respective element is returned and
+ok is true. If the function f does not return true for any element, false is
+returned.
+
+</Accordion>
+
+</Accordions>
+
+
+

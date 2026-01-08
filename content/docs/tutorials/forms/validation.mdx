@@ -1,0 +1,306 @@
+---
+title: Validation
+description: Validating form input in Dragonfly.
+---
+
+# Form Validation
+
+Dragonfly forms include built-in validation for element constraints, but you should always validate user input in your `Submit` handler.
+
+## Built-in Validation
+
+The form system automatically validates:
+
+- **Slider**: Values are clamped to `min`/`max` and snapped to `stepSize`
+- **Dropdown**: Index is validated against the options array length
+- **StepSlider**: Same as Dropdown validation
+
+Invalid submissions from modified clients are rejected before reaching your handler.
+
+## Server-Side Validation
+
+Always validate input in your `Submit` method. Never trust client data.
+
+### String Validation
+
+```go title="string_validation.go"
+type ProfileForm struct {
+    Username form.Input
+    Bio      form.Input
+}
+
+func (f *ProfileForm) Submit(submitter form.Submitter, tx *world.Tx) {
+    username := strings.TrimSpace(f.Username.Value())
+    bio := strings.TrimSpace(f.Bio.Value())
+
+    // Length validation
+    if len(username) < 3 || len(username) > 16 {
+        sendError(submitter, "Username must be 3-16 characters")
+        return
+    }
+
+    // Character validation
+    if !isAlphanumeric(username) {
+        sendError(submitter, "Username can only contain letters and numbers")
+        return
+    }
+
+    // Content validation
+    if containsProfanity(bio) {
+        sendError(submitter, "Bio contains inappropriate content")
+        return
+    }
+
+    // Valid - proceed
+    saveProfile(submitter, username, bio)
+}
+
+func isAlphanumeric(s string) bool {
+    for _, r := range s {
+        if !unicode.IsLetter(r) && !unicode.IsDigit(r) {
+            return false
+        }
+    }
+    return true
+}
+```
+
+### Numeric Validation
+
+```go title="numeric_validation.go"
+type TransferForm struct {
+    Amount form.Slider
+    Target form.Dropdown
+}
+
+func (f *TransferForm) Submit(submitter form.Submitter, tx *world.Tx) {
+    amount := int(f.Amount.Value())
+
+    p, ok := submitter.(*player.Player)
+    if !ok {
+        return
+    }
+
+    // Business logic validation
+    balance := getBalance(p)
+    if amount > balance {
+        p.Message("Insufficient funds!")
+        return
+    }
+
+    if amount <= 0 {
+        p.Message("Amount must be positive")
+        return
+    }
+
+    // Valid - process transfer
+    processTransfer(p, amount, f.Target.Value())
+}
+```
+
+### Selection Validation
+
+```go title="selection_validation.go"
+type TeamSelectForm struct {
+    Team form.Dropdown
+}
+
+func (f *TeamSelectForm) Submit(submitter form.Submitter, tx *world.Tx) {
+    teamIndex := f.Team.Value()
+    teams := []string{"Red", "Blue", "Green", "Yellow"}
+
+    // Bounds check (already done by Dragonfly, but good practice)
+    if teamIndex < 0 || teamIndex >= len(teams) {
+        return
+    }
+
+    selectedTeam := teams[teamIndex]
+
+    // Business logic validation
+    if isTeamFull(selectedTeam) {
+        sendError(submitter, fmt.Sprintf("%s team is full!", selectedTeam))
+        return
+    }
+
+    joinTeam(submitter, selectedTeam)
+}
+```
+
+## Re-showing Forms on Error
+
+When validation fails, re-display the form with an error message and preserved values:
+
+```go title="reshow_on_error.go"
+type LoginForm struct {
+    Username form.Input
+    Password form.Input
+}
+
+func (f *LoginForm) Submit(submitter form.Submitter, tx *world.Tx) {
+    username := f.Username.Value()
+    password := f.Password.Value()
+
+    if !authenticate(username, password) {
+        // Re-show with error, preserve username
+        showLoginForm(submitter, username, "Invalid username or password")
+        return
+    }
+
+    // Success
+    onLogin(submitter, username)
+}
+
+func showLoginForm(submitter form.Submitter, username, errorMsg string) {
+    title := "Login"
+    if errorMsg != "" {
+        title = fmt.Sprintf("Login\n\u00a7c%s", errorMsg) // Red error text
+    }
+
+    f := form.New(&LoginForm{
+        Username: form.NewInput("Username", username, ""),
+        Password: form.NewInput("Password", "", ""),
+    }, title)
+
+    submitter.SendForm(f)
+}
+```
+
+## Validation Helper Functions
+
+Create reusable validation utilities:
+
+```go title="validation_helpers.go"
+// Validation result
+type ValidationResult struct {
+    Valid   bool
+    Message string
+}
+
+func OK() ValidationResult {
+    return ValidationResult{Valid: true}
+}
+
+func Fail(msg string) ValidationResult {
+    return ValidationResult{Valid: false, Message: msg}
+}
+
+// Validators
+func ValidateUsername(username string) ValidationResult {
+    username = strings.TrimSpace(username)
+
+    if len(username) < 3 {
+        return Fail("Username must be at least 3 characters")
+    }
+    if len(username) > 16 {
+        return Fail("Username must be 16 characters or less")
+    }
+    if !regexp.MustCompile(`^[a-zA-Z0-9_]+$`).MatchString(username) {
+        return Fail("Username can only contain letters, numbers, and underscores")
+    }
+    return OK()
+}
+
+func ValidateAge(age float64) ValidationResult {
+    if age < 13 {
+        return Fail("You must be at least 13 years old")
+    }
+    if age > 120 {
+        return Fail("Please enter a valid age")
+    }
+    return OK()
+}
+
+// Usage in form
+func (f *RegistrationForm) Submit(submitter form.Submitter, tx *world.Tx) {
+    if result := ValidateUsername(f.Username.Value()); !result.Valid {
+        showError(submitter, result.Message)
+        return
+    }
+
+    if result := ValidateAge(f.Age.Value()); !result.Valid {
+        showError(submitter, result.Message)
+        return
+    }
+
+    // All valid
+    register(submitter, f.Username.Value(), int(f.Age.Value()))
+}
+```
+
+## Rate Limiting
+
+Prevent form spam by tracking submission times:
+
+```go title="rate_limiting.go"
+var formCooldowns = make(map[uuid.UUID]time.Time)
+var cooldownMu sync.RWMutex
+
+func canSubmitForm(p *player.Player, cooldown time.Duration) bool {
+    cooldownMu.RLock()
+    lastSubmit, exists := formCooldowns[p.UUID()]
+    cooldownMu.RUnlock()
+
+    if exists && time.Since(lastSubmit) < cooldown {
+        return false
+    }
+
+    cooldownMu.Lock()
+    formCooldowns[p.UUID()] = time.Now()
+    cooldownMu.Unlock()
+
+    return true
+}
+
+func (f *ReportForm) Submit(submitter form.Submitter, tx *world.Tx) {
+    p, ok := submitter.(*player.Player)
+    if !ok {
+        return
+    }
+
+    if !canSubmitForm(p, 30*time.Second) {
+        p.Message("Please wait before submitting another report")
+        return
+    }
+
+    // Process report
+    submitReport(p, f.Message.Value())
+}
+```
+
+## Sanitization
+
+Clean input before using or storing it:
+
+```go title="sanitization.go"
+import "html"
+
+func sanitizeInput(s string) string {
+    // Trim whitespace
+    s = strings.TrimSpace(s)
+
+    // Remove control characters
+    s = strings.Map(func(r rune) rune {
+        if unicode.IsControl(r) && r != '\n' {
+            return -1
+        }
+        return r
+    }, s)
+
+    // Escape HTML entities if storing for web display
+    s = html.EscapeString(s)
+
+    return s
+}
+
+func (f *MessageForm) Submit(submitter form.Submitter, tx *world.Tx) {
+    message := sanitizeInput(f.Content.Value())
+
+    if len(message) == 0 {
+        sendError(submitter, "Message cannot be empty")
+        return
+    }
+
+    // Safe to use
+    broadcastMessage(message)
+}
+```

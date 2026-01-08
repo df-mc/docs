@@ -1,0 +1,129 @@
+---
+title: "blockinternal"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# blockinternal
+
+
+```go
+import "github.com/df-mc/dragonfly/server/internal/blockinternal"
+```
+
+
+
+
+
+
+
+
+
+## Functions
+
+<Accordions>
+
+<Accordion title="Components">
+```go
+func Components(identifier string, b world.CustomBlock, blockID int32) map[string]any
+```
+
+
+Components returns all the components for the custom block, including permutations and properties.
+
+</Accordion>
+
+</Accordions>
+
+
+
+## Types
+
+
+### ComponentBuilder
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ComponentBuilder struct {
+	permutations	map[string]map[string]any
+	properties	[]map[string]any
+	components	map[string]any
+	blockID		int32
+
+	identifier	string
+	menuCategory	category.Category
+}
+```
+
+
+
+ComponentBuilder represents a builder that can be used to construct a block components map to be sent to a client.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AddComponent">
+```go
+func (*ComponentBuilder) AddComponent(name string, value any)
+```
+
+AddComponent adds the provided component to the builder. If the component already exists, it will be overwritten.
+
+</Accordion>
+
+<Accordion title="AddPermutation">
+```go
+func (*ComponentBuilder) AddPermutation(condition string, components map[string]any)
+```
+
+AddPermutation adds a permutation to the builder. If there is already an existing permutation for the provided
+condition, the new components will be added to the existing permutation.
+
+</Accordion>
+
+<Accordion title="AddProperty">
+```go
+func (*ComponentBuilder) AddProperty(name string, values []any)
+```
+
+AddProperty adds the provided block property to the builder.
+
+</Accordion>
+
+<Accordion title="Construct">
+```go
+func (*ComponentBuilder) Construct() map[string]any
+```
+
+Construct constructs the final block components map that is ready to be sent to the client.
+
+</Accordion>
+
+<Accordion title="SetMenuCategory">
+```go
+func (*ComponentBuilder) SetMenuCategory(category category.Category)
+```
+
+SetMenuCategory sets the creative category for the current block.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

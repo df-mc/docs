@@ -1,0 +1,113 @@
+---
+title: Migration from PM/Nukkit
+icon: ArrowRightLeft
+---
+
+If you're coming from PocketMine-MP or Nukkit, welcome. Dragonfly is going to feel very different.
+
+This isn't a bad thing—Go and Dragonfly's design philosophy lead to faster, more reliable servers. But there's a learning curve.
+
+## What's Different?
+
+Almost everything. Here are the big ones:
+
+### No Plugin System
+Dragonfly is a library, not a plugin loader. You write the main program. There's no `plugin.yml`, no `onEnable`, no `onDisable`. You control the entire lifecycle.
+
+[Read the Project Structure guide →](/docs/migration/project-structure)
+
+### No Traditional Event System
+There are no global event listeners. Instead, each player has their own handler that processes their actions. This is more modular but requires rethinking how you structure code.
+
+[Read the Event System guide →](/docs/core-concepts/event-system)
+
+### Commands Are Structs
+Forget `onCommand` and `plugin.yml` registration. Commands are Go structs with typed parameters. The system handles parsing, validation, and tab completion automatically.
+
+[Read the Commands guide →](/docs/migration/commands)
+
+### No Error Exceptions
+Go doesn't have `try/catch`. Functions return errors as values. You check `if err != nil` after every call that can fail.
+
+[Read the Error Handling guide →](/docs/migration/error-handling)
+
+### Concurrency Everywhere
+Go has goroutines. Dragonfly runs many things in parallel by default. You can write blocking database queries in handlers without freezing the server.
+
+[Read the Concurrency guide →](/docs/migration/concurrency)
+
+### Everything Is Typed
+Items, blocks, entities—they're all typed structs. No IDs, no meta values, no magic numbers. This is more verbose but infinitely more reliable.
+
+[Read the Items & Inventories guide →](/docs/migration/items-inventories)  
+[Read the Blocks guide →](/docs/migration/blocks)  
+[Read the Entities guide →](/docs/migration/entities)
+
+### No Built-In Config or Permissions
+Dragonfly doesn't force a configuration or permission system on you. You build your own using whatever format and structure fits your needs.
+
+[Read the Configuration guide →](/docs/migration/configuration)  
+[Read the Permissions guide →](/docs/migration/permissions)
+
+## The Philosophy Difference
+
+PocketMine-MP and Nukkit are frameworks. They provide structure and abstractions to make plugin development easy. You follow their patterns.
+
+Dragonfly is a library. It gives you primitives—players, worlds, handlers, commands—and lets you build however you want. There's less hand-holding, but more freedom.
+
+This means:
+- No enforced project structure
+- No plugin dependency system
+- No "recommended practices" baked into the API
+- Complete control over your server's behavior
+
+It's more work upfront, but it scales better and gives you full ownership.
+
+## What Stays the Same?
+
+Not everything is different:
+
+- **Minecraft protocol**: It's still Minecraft Bedrock Edition. Clients connect the same way.
+- **Core concepts**: Players, worlds, items, blocks, entities—they all exist. They just work differently.
+- **Chat formatting**: `§` color codes work the same.
+- **Block and item names**: They use the same `minecraft:*` identifiers.
+
+## Should You Migrate?
+
+Dragonfly is a great choice if:
+- You want better performance and scalability
+- You're comfortable learning Go
+- You want full control over your server's architecture
+- You're building something that will grow and need to be maintained long-term
+
+Dragonfly might not be for you if:
+- You want a quick plug-and-play solution
+- You're not a programmer or don't want to learn Go
+- You rely on PM/Nukkit plugins and don't want to rewrite them
+
+## Where to Start
+
+1. **Learn Go basics**: If you're new to Go, spend a few hours on [A Tour of Go](https://go.dev/tour/). Focus on syntax, structs, interfaces, goroutines, and error handling.
+
+2. **Read the high-priority migration guides**:
+   - [Project Structure](/docs/migration/project-structure)
+   - [Commands](/docs/migration/commands)
+   - [Concurrency](/docs/migration/concurrency)
+   - [Error Handling](/docs/migration/error-handling)
+   - [Items & Inventories](/docs/migration/items-inventories)
+
+3. **Set up a basic server**: Follow the [Setup guide](/docs/getting-started/setup) to get a server running.
+
+4. **Read the rest of the docs**: Work through the other migration guides and Dragonfly-specific topics as you need them.
+
+5. **Join the Discord**: The [Bedrock Gophers Discord](https://discord.gg/U4kFWHhTNR) is the best place to ask questions.
+
+## What to Expect
+
+The first week will be frustrating. Things that took 5 minutes in PM/Nukkit will take an hour. You'll fight the compiler. You'll miss exceptions.
+
+By the second week, things click. You'll start to appreciate the type safety. You'll write goroutines without thinking. You'll realize how much boilerplate you're *not* writing.
+
+By the third week, you won't want to go back.
+
+Dragonfly isn't PM/Nukkit in Go. It's a different way of building Minecraft servers. Give it a fair shot, and you'll see why.

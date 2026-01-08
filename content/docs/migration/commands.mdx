@@ -1,0 +1,264 @@
+---
+title: Commands
+icon: Terminal
+---
+
+If you're coming from PocketMine-MP or Nukkit, forget everything you know about commands. There's no `onCommand`, no `plugin.yml` registration, no `CommandExecutor` interface. Dragonfly does commands completely differently.
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+## How PM/Nukkit vs Dragonfly Commands Work
+
+In PocketMine-MP, you register commands in `plugin.yml` and handle them in `onCommand`. In Dragonfly, you define typed structs and register them in code.
+
+<Tabs items={["PocketMine (PHP)", "Dragonfly (Go)"]}>
+  <Tab value="PocketMine (PHP)">
+    ```yaml title="plugin.yml"
+    commands:
+      kit:
+        description: "Get a kit"
+        usage: "/kit <name>"
+        permission: myplugin.kit
+    ```
+
+    ```php title="Main.php"
+    public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
+        if ($command->getName() === "kit") {
+            if (!isset($args[0])) {
+                $sender->sendMessage("Usage: /kit <name>");
+                return false;
+            }
+            // Handle kit logic...
+            return true;
+        }
+        return false;
+    }
+    ```
+  </Tab>
+  <Tab value="Dragonfly (Go)">
+    ```go title="kit.go"
+    package main
+
+    import (
+        "github.com/df-mc/dragonfly/server/cmd"
+        "github.com/df-mc/dragonfly/server/player"
+    )
+
+    type KitCommand struct {
+        Name string `cmd:"name"`
+    }
+
+    func (c KitCommand) Run(source cmd.Source, output *cmd.Output) {
+        p, ok := source.(*player.Player)
+        if !ok {
+            output.Error("This command can only be used by players")
+            return
+        }
+
+        // Handle kit logic...
+        output.Printf("Giving you the %s kit!", c.Name)
+    }
+    ```
+  </Tab>
+</Tabs>
+
+Dragonfly's approach:
+- **Typed Parameters:** The struct field `Name string` automatically handles parsing.
+- **Auto Validation:** The system ensures arguments are provided.
+- **No Boilerplate:** No more `isset($args[0])` or strict index checks.
+
+## Registering Commands
+
+In PM/Nukkit, commands are registered through `plugin.yml`. In Dragonfly, you register them in code:
+
+```go title="main.go"
+func main() {
+    conf, err := dragonfly.DefaultConfig()
+    if err != nil {
+        panic(err)
+    }
+
+    srv := conf.New()
+    srv.CloseOnProgramEnd()
+
+    // Register your command
+    cmd.Register(KitCommand{})
+
+    if err := srv.Start(); err != nil {
+        panic(err)
+    }
+
+    for srv.Accept(nil) {
+    }
+}
+```
+
+## Command Parameters
+
+This is where Dragonfly shines. Instead of manually parsing `args[0]`, `args[1]`, etc., you define typed struct fields:
+
+```go title="teleport.go"
+type TeleportCommand struct {
+    Target  cmd.Target `cmd:"player"`
+    X, Y, Z float64    `cmd:"x,y,z"`
+}
+
+func (c TeleportCommand) Run(source cmd.Source, output *cmd.Output) {
+    p := c.Target.(*player.Player)
+    p.Teleport(mgl64.Vec3{c.X, c.Y, c.Z})
+    output.Printf("Teleported %s to %.1f %.1f %.1f", p.Name(), c.X, c.Y, c.Z)
+}
+```
+
+The command system automatically:
+- Validates that the target player exists
+- Parses the coordinates as floats
+- Provides tab completion for player names
+- Handles errors if the input is invalid
+
+### Supported Types
+
+Common parameter types:
+
+- `string` - Any text
+- `int`, `float64` - Numbers
+- `cmd.Target` - Player selector (with tab completion)
+- `cmd.Position` - Block position (xyz)
+- Custom types (by implementing `cmd.Parameter`)
+
+### Optional Parameters
+
+Use pointers for optional parameters:
+
+```go title="kit.go"
+type KitCommand struct {
+    Name   string        `cmd:"name"`
+    Target *cmd.Target   `cmd:"target"`  // Optional
+}
+
+func (c KitCommand) Run(source cmd.Source, output *cmd.Output) {
+    recipient := source.(*player.Player)
+    if c.Target != nil {
+        recipient = (*c.Target).(*player.Player)
+    }
+    // Give kit to recipient...
+}
+```
+
+### Sub-Commands
+
+In PM/Nukkit, handling sub-commands usually involves nested `if/else` checks on `$args[0]`. In Dragonfly, you use nested structs.
+
+<Tabs items={["PocketMine (PHP)", "Dragonfly (Go)"]}>
+  <Tab value="PocketMine (PHP)">
+    ```php title="Main.php"
+    public function onCommand(...) {
+        if (!isset($args[0])) return false;
+        
+        switch ($args[0]) {
+            case "list":
+                $sender->sendMessage("Available kits: ...");
+                break;
+            case "get":
+                if (!isset($args[1])) {
+                    $sender->sendMessage("Usage: /kit get <name>");
+                    return false;
+                }
+                // give kit
+                break;
+        }
+    }
+    ```
+  </Tab>
+  <Tab value="Dragonfly (Go)">
+    ```go title="kit.go"
+    type KitCommand struct {
+        Sub cmd.SubCommand `cmd:"sub"`
+    }
+
+    type KitList struct{}
+    type KitGet struct {
+        Name string `cmd:"name"`
+    }
+
+    func (c KitCommand) Run(source cmd.Source, output *cmd.Output) {
+        switch sub := c.Sub.(type) {
+        case KitList:
+            output.Print("Available kits: warrior, archer, tank")
+        case KitGet:
+            output.Printf("Giving you the %s kit!", sub.Name)
+        }
+    }
+
+    func (KitCommand) SubCommands() []cmd.Command {
+        return []cmd.Command{KitList{}, KitGet{}}
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Player-Only Commands
+
+In PM/Nukkit, you'd check `if (!$sender instanceof Player)`. In Dragonfly, use `cmd.Source`:
+
+```go title="kit.go"
+func (c KitCommand) Run(source cmd.Source, output *cmd.Output) {
+    p, ok := source.(*player.Player)
+    if !ok {
+        output.Error("This command can only be used by players")
+        return
+    }
+    // Use p...
+}
+```
+
+## Permissions
+
+Dragonfly doesn't have a built-in permission system (we'll cover this in the Permissions section). For now, you can check permissions manually:
+
+```go title="kit.go"
+func (c KitCommand) Run(source cmd.Source, output *cmd.Output) {
+    p, ok := source.(*player.Player)
+    if !ok {
+        output.Error("This command can only be used by players")
+        return
+    }
+
+    if !hasPermission(p, "myplugin.kit") {
+        output.Error("You don't have permission to use this command")
+        return
+    }
+
+    // Handle command...
+}
+```
+
+## Restricting Command Sources
+
+Sometimes you want a command to be available only to players, or only to the console. You can enforce this by implementing the `cmd.Allower` interface.
+
+```go title="allower.go"
+type PlayerOnlyCommand struct{}
+
+func (PlayerOnlyCommand) Allow(src cmd.Source) bool {
+    _, ok := src.(*player.Player)
+    return ok
+}
+
+type MyCommand struct {
+    PlayerOnlyCommand
+    // ... params
+}
+```
+
+If `Allow` returns false, the user receives an error message and `Run` is never called. This is cleaner than manual type assertions in every `Run` method.
+
+## Key Takeaways
+
+- No `plugin.yml`, no `onCommand`. Commands are Go structs.
+- Parameters are typed fields. The system handles parsing and validation.
+- Use `cmd.Source` to check who ran the command.
+- Tab completion and error messages are automatic.
+- Sub-commands use the `Sub` field, not manual string checking.
+
+If this feels weird at first, that's normal. Once you build a few commands, you'll realize how much boilerplate this eliminates.

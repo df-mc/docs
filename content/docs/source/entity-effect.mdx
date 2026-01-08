@@ -1,0 +1,515 @@
+---
+title: "effect"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# effect
+
+
+```go
+import "github.com/df-mc/dragonfly/server/entity/effect"
+```
+
+
+
+
+
+
+
+
+
+## Functions
+
+<Accordions>
+
+<Accordion title="ID">
+```go
+func ID(e Type) (int, bool)
+```
+
+
+ID attempts to return the ID an effect was registered with. If found, the id is returned and
+the bool true.
+
+</Accordion>
+
+<Accordion title="Register">
+```go
+func Register(id int, e Type)
+```
+
+
+Register registers an Effect with a specific ID to translate from and to on disk and network. An Effect
+instance may be created by creating a struct instance in this package like
+effect.regeneration{}.
+
+</Accordion>
+
+<Accordion title="ResultingColour">
+```go
+func ResultingColour(effects []Effect) (color.RGBA, bool)
+```
+
+
+ResultingColour calculates the resulting colour of the effects passed and returns a bool specifying if the
+effects were ambient effects, which will cause their particles to display less frequently.
+
+</Accordion>
+
+</Accordions>
+
+
+
+## Types
+
+
+### Effect
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Effect struct {
+	t				Type
+	d				time.Duration
+	lvl				int
+	potency				float64
+	ambient, particlesHidden	bool
+	infinite			bool
+	tick				int
+}
+```
+
+
+
+Effect is an effect that can be added to an entity. Effects are either
+instant (applying the effect only once) or lasting (applying the effect
+every tick).
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Ambient">
+```go
+func (Effect) Ambient() bool
+```
+
+Ambient returns whether the Effect is an ambient effect, leading to reduced particles shown to the client. False is
+always returned if the Effect was created using New or NewInstant.
+
+</Accordion>
+
+<Accordion title="Duration">
+```go
+func (Effect) Duration() time.Duration
+```
+
+Duration returns the leftover duration of the Effect. The duration returned is always 0 if NewInstant or NewInfinite
+were used to create the effect.
+
+</Accordion>
+
+<Accordion title="Infinite">
+```go
+func (Effect) Infinite() bool
+```
+
+Infinite returns if the Effect duration is infinite.
+
+</Accordion>
+
+<Accordion title="Level">
+```go
+func (Effect) Level() int
+```
+
+Level returns the level of the Effect.
+
+</Accordion>
+
+<Accordion title="ParticlesHidden">
+```go
+func (Effect) ParticlesHidden() bool
+```
+
+ParticlesHidden returns true if the Effect had its particles hidden by calling WithoutParticles.
+
+</Accordion>
+
+<Accordion title="Tick">
+```go
+func (Effect) Tick() int
+```
+
+Tick returns the current tick of the Effect. This is the number of ticks that
+the Effect has been applied for.
+
+</Accordion>
+
+<Accordion title="TickDuration">
+```go
+func (Effect) TickDuration() Effect
+```
+
+TickDuration ticks the effect duration, subtracting time.Second/20 from the leftover time and returning the resulting
+Effect.
+
+</Accordion>
+
+<Accordion title="Type">
+```go
+func (Effect) Type() Type
+```
+
+Type returns the underlying type of the Effect. It is either of the type Type or LastingType, depending on whether it
+was created using New or NewAmbient, or NewInstant.
+
+</Accordion>
+
+<Accordion title="WithoutParticles">
+```go
+func (Effect) WithoutParticles() Effect
+```
+
+WithoutParticles returns the same Effect with particles disabled. Adding the effect to players will not display the
+particles around the player.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### InstantDamageSource
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type InstantDamageSource struct{}
+```
+
+
+
+InstantDamageSource is used for damage caused by an effect.instantDamage
+applied to an entity.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Fire">
+```go
+func (InstantDamageSource) Fire() bool
+```
+
+</Accordion>
+
+<Accordion title="IgnoreTotem">
+```go
+func (InstantDamageSource) IgnoreTotem() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByArmour">
+```go
+func (InstantDamageSource) ReducedByArmour() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByResistance">
+```go
+func (InstantDamageSource) ReducedByResistance() bool
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### InstantHealingSource
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type InstantHealingSource struct{}
+```
+
+
+
+InstantHealingSource is a healing source used when an entity regains
+health from an effect.instantHealth.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="HealingSource">
+```go
+func (InstantHealingSource) HealingSource()
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### LastingType
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type LastingType interface {
+	Type
+	// Start is called for lasting effects when they are initially added.
+	Start(e world.Entity, lvl int)
+	// End is called for lasting effects when they are removed.
+	End(e world.Entity, lvl int)
+}
+```
+
+
+
+LastingType represents an effect type that can have a duration. An effect
+can be made using it by calling effect.New with the LastingType.
+
+
+
+
+
+
+---
+
+### PoisonDamageSource
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type PoisonDamageSource struct {
+	// Fatal specifies if the damage was caused by effect.fatalPoison and if
+	// the damage could therefore kill the entity.
+	Fatal bool
+}
+```
+
+
+
+PoisonDamageSource is used for damage caused by an effect.poison or
+effect.fatalPoison applied to an entity.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Fatal: {
+      description: 'Fatal specifies if the damage was caused by effect.fatalPoison and if the damage could therefore kill the entity.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Fire">
+```go
+func (PoisonDamageSource) Fire() bool
+```
+
+</Accordion>
+
+<Accordion title="IgnoreTotem">
+```go
+func (PoisonDamageSource) IgnoreTotem() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByArmour">
+```go
+func (PoisonDamageSource) ReducedByArmour() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByResistance">
+```go
+func (PoisonDamageSource) ReducedByResistance() bool
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### RegenerationHealingSource
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type RegenerationHealingSource struct{}
+```
+
+
+
+RegenerationHealingSource is a healing source used when an entity regenerates
+health from an effect.regeneration.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="HealingSource">
+```go
+func (RegenerationHealingSource) HealingSource()
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Type
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Type interface {
+	// RGBA returns the colour of the effect. If multiple effects are present,
+	// the colours will be mixed together to form a new colour.
+	RGBA() color.RGBA
+	// Apply applies the effect to an entity. Apply is called only once for
+	// instant effects, such as instantHealth, while it is called every tick for
+	// lasting effects. The Effect holding the Type is passed along with the
+	// current tick.
+	Apply(e world.Entity, eff Effect)
+}
+```
+
+
+
+Type is an effect implementation that can be applied to an entity.
+
+
+
+
+
+
+---
+
+### WitherDamageSource
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type WitherDamageSource struct{}
+```
+
+
+
+WitherDamageSource is used for damage caused by an effect.wither applied
+to an entity.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Fire">
+```go
+func (WitherDamageSource) Fire() bool
+```
+
+</Accordion>
+
+<Accordion title="IgnoreTotem">
+```go
+func (WitherDamageSource) IgnoreTotem() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByArmour">
+```go
+func (WitherDamageSource) ReducedByArmour() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByResistance">
+```go
+func (WitherDamageSource) ReducedByResistance() bool
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

@@ -1,0 +1,124 @@
+---
+title: Inheritance
+icon: GitMerge
+---
+
+Go doesn't have inheritance. If you're coming from Java or PHP, this might feel like a limitation at first, but it's actually a deliberate design choice that leads to simpler, more maintainable code.
+
+## The OOP Way
+
+In traditional OOP, you'd create class hierarchies like this:
+
+Java:
+```java title="Entity.java"
+public class Entity {
+    protected int health;
+
+    public void damage(int amount) {
+        this.health -= amount;
+    }
+}
+
+public class Player extends Entity {
+    private String name;
+
+    public Player(String name) {
+        this.name = name;
+        this.health = 20;
+    }
+}
+
+public class Zombie extends Entity {
+    public Zombie() {
+        this.health = 20;
+    }
+
+    @Override
+    public void damage(int amount) {
+        // Zombies take half damage
+        super.damage(amount / 2);
+    }
+}
+```
+
+This creates a tree of types where `Player` and `Zombie` inherit from `Entity`. Sounds clean until you need a `FlyingZombie` that inherits from both `Zombie` and some `Flying` class. Now you're dealing with diamond problems and complexity.
+
+## The Go Way: Composition
+
+Go uses composition instead of inheritance. You embed types inside other types:
+
+```go title="composition.go"
+type Entity struct {
+    Health int
+}
+
+func (e *Entity) Damage(amount int) {
+    e.Health -= amount
+}
+
+type Player struct {
+    Entity // Embedded - Player "has an" Entity
+    Name   string
+}
+
+type Zombie struct {
+    Entity
+}
+
+func (z *Zombie) Damage(amount int) {
+    // Zombies take half damage
+    z.Entity.Damage(amount / 2)
+}
+```
+
+When you embed `Entity` into `Player`, the `Player` struct gets all of `Entity`'s fields and methods promoted to it. You can call `player.Damage(5)` directly - you don't need `player.Entity.Damage(5)` (though that works too).
+
+```go title="main.go"
+func main() {
+    p := &Player{
+        Entity: Entity{Health: 20},
+        Name:   "Steve",
+    }
+
+    p.Damage(5)           // Works - promoted from Entity
+    fmt.Println(p.Health) // 15 - also promoted
+}
+```
+
+## Why This Matters for Dragonfly
+
+Dragonfly uses composition extensively. Take a look at how handlers work:
+
+```go title="handler_embedding.go"
+type MyHandler struct {
+    player.NopHandler // Embed the no-op handler
+}
+
+func (h *MyHandler) HandleChat(ctx *event.Context[*player.Player], message *string) {
+    // Only override what you need
+}
+```
+
+By embedding `player.NopHandler`, your handler automatically satisfies the `player.Handler` interface without implementing every single method. You only override the ones you care about.
+
+## Composition Over Inheritance
+
+The key mental shift is:
+- OOP: "A Player **is an** Entity"
+- Go: "A Player **has an** Entity"
+
+This might seem like semantics, but it makes a real difference. With composition:
+- No complex inheritance hierarchies to navigate
+- No hidden behavior from parent classes
+- Easy to combine multiple behaviors without diamond problems
+- Clear, explicit relationships between types
+
+```go title="multiple_embedding.go"
+// Need something that can fly and swim? Just embed both.
+type FlyingFish struct {
+    Flying
+    Swimming
+}
+```
+
+No need to choose a single parent class or deal with multiple inheritance headaches.

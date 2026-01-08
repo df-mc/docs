@@ -1,0 +1,274 @@
+---
+title: Error Handling
+icon: TriangleAlert
+---
+
+Go doesn't have exceptions. There's no `try/catch`, no `throw`. If you're coming from PHP, this is going to feel strange at first.
+
+## How PM/Nukkit Handles Errors
+
+In PocketMine-MP, you use exceptions:
+
+```php title="pm_exception.php"
+try {
+    $data = $this->database->query("SELECT * FROM players WHERE uuid = ?", [$uuid]);
+    if ($data === null) {
+        throw new \Exception("Player not found");
+    }
+    return $data;
+} catch (\Exception $e) {
+    $this->getLogger()->error("Database error: " . $e->getMessage());
+    return null;
+}
+```
+
+Exceptions can bubble up the call stack until they're caught. This is convenient but has downsides:
+- It's not obvious which functions can throw
+- Uncaught exceptions crash the program
+- Exception handling is expensive
+
+## How Go Handles Errors
+
+In Go, functions return errors as values:
+
+```go title="go_error_check.go"
+data, err := database.Query("SELECT * FROM players WHERE uuid = ?", uuid)
+if err != nil {
+    log.Println("Database error:", err)
+    return nil, err
+}
+```
+
+Every function that can fail returns an `error` as its last return value. You check if it's `nil` (meaning no error) and handle it immediately.
+
+This is more verbose, but it's explicit. You know exactly where errors can occur by looking at the function signature.
+
+## The if err != nil Pattern
+
+You're going to write this a lot:
+
+```go title="error_pattern.go"
+result, err := someFunction()
+if err != nil {
+    // Handle error
+}
+```
+
+At first, this feels repetitive. But it forces you to think about error handling at every step, which leads to more robust code.
+
+## Creating Errors
+
+Use `errors.New` or `fmt.Errorf`:
+
+```go title="creating_errors.go"
+import (
+    "errors"
+    "fmt"
+)
+
+func getKit(name string) (*Kit, error) {
+    kit, exists := kits[name]
+    if !exists {
+        return nil, fmt.Errorf("kit %q does not exist", name)
+    }
+    return kit, nil
+}
+```
+
+`fmt.Errorf` allows formatting like `fmt.Sprintf`, which is useful for including context.
+
+## Wrapping Errors
+
+When an error passes through multiple layers, you want to preserve context. Use `fmt.Errorf` with `%w`:
+
+```go title="wrapping_errors.go"
+func LoadPlayer(uuid string) (*PlayerData, error) {
+    data, err := database.Query("SELECT * FROM players WHERE uuid = ?", uuid)
+    if err != nil {
+        return nil, fmt.Errorf("failed to load player %s: %w", uuid, err)
+    }
+    return data, nil
+}
+```
+
+The `%w` verb wraps the original error. You can unwrap it later with `errors.Unwrap` or check for specific errors with `errors.Is`.
+
+## Checking for Specific Errors
+
+Use `errors.Is` to check if an error matches a specific error:
+
+```go title="sentinel_error_check.go"
+import "errors"
+
+var ErrPlayerNotFound = errors.New("player not found")
+
+func LoadPlayer(uuid string) (*PlayerData, error) {
+    data, err := database.Query("SELECT * FROM players WHERE uuid = ?", uuid)
+    if err != nil {
+        return nil, err
+    }
+    if data == nil {
+        return nil, ErrPlayerNotFound
+    }
+    return data, nil
+}
+
+// Later...
+data, err := LoadPlayer(uuid)
+if errors.Is(err, ErrPlayerNotFound) {
+    // Handle player not found
+}
+```
+
+This is cleaner than string matching.
+
+## Error Types
+
+You can define custom error types for richer errors:
+
+```go title="custom_error.go"
+type DatabaseError struct {
+    Query string
+    Err   error
+}
+
+func (e *DatabaseError) Error() string {
+    return fmt.Sprintf("database error on query %q: %v", e.Query, e.Err)
+}
+
+func (e *DatabaseError) Unwrap() error {
+    return e.Err
+}
+```
+
+Any type with an `Error() string` method implements the `error` interface.
+
+## Panic and Recover
+
+Go does have `panic`, but it's not like exceptions. Panics are for unrecoverable errors (e.g., indexing out of bounds, nil pointer dereference).
+
+You rarely call `panic` yourself. If you do, it's for programmer errors, not expected failures.
+
+```go title="panic_example.go"
+func MustLoadConfig() *Config {
+    conf, err := LoadConfig()
+    if err != nil {
+        panic("failed to load config: " + err.Error())
+    }
+    return conf
+}
+```
+
+The `Must` prefix is a convention for functions that panic on error. Only use this during initialization, not during normal operation.
+
+### Recovering from Panics
+
+You can catch panics with `recover`, but this is rare:
+
+```go title="recover_example.go"
+func SafeHandler(p *player.Player) {
+    defer func() {
+        if r := recover(); r != nil {
+            log.Printf("Handler panicked: %v", r)
+            p.Disconnect("An internal error occurred")
+        }
+    }()
+
+    // Handler logic that might panic
+}
+```
+
+This is useful for isolating player handlers so one player's panic doesn't crash the server. Dragonfly's handler system already does this for you in most cases.
+
+## Errors in Handlers
+
+Dragonfly handlers can return errors, but most methods don't. Instead, you handle errors inline:
+
+```go title="handler_error.go"
+type LobbyHandler struct {
+    player *player.Player
+}
+
+func (h *LobbyHandler) HandleJoin() {
+    data, err := database.LoadPlayer(h.player.UUID())
+    if err != nil {
+        log.Printf("Failed to load player %s: %v", h.player.Name(), err)
+        h.player.Disconnect("Failed to load your data")
+        return
+    }
+
+    h.player.SendMessage(fmt.Sprintf("Welcome back! You have %d coins.", data.Coins))
+}
+```
+
+Notice there's no `throws` in the signature. You handle the error where it happens.
+
+## Errors in Commands
+
+Command handlers use `cmd.Output` for errors:
+
+```go title="command_error.go"
+func (c KitCommand) Run(source cmd.Source, output *cmd.Output) {
+    p, ok := source.(*player.Player)
+    if !ok {
+        output.Error("This command can only be used by players")
+        return
+    }
+
+    kit, err := getKit(c.Name)
+    if err != nil {
+        output.Errorf("Failed to get kit: %v", err)
+        return
+    }
+
+    kit.Apply(p)
+    output.Printf("Gave you the %s kit!", c.Name)
+}
+```
+
+`output.Error` and `output.Errorf` are for user-facing errors. Don't log stack traces there.
+
+## Logging Errors
+
+Use Go's `log` package or a third-party logger like `logrus` or `zap`:
+
+```go title="logging_errors.go"
+import "log"
+
+data, err := database.LoadPlayer(uuid)
+if err != nil {
+    log.Printf("Failed to load player %s: %v", uuid, err)
+    return nil
+}
+```
+
+Prefer `log.Printf` over `log.Fatal` (which calls `os.Exit`) unless the error is truly unrecoverable.
+
+## Sentinel Errors
+
+Define common errors as package-level variables:
+
+```go title="sentinel_errors.go"
+package database
+
+import "errors"
+
+var (
+    ErrPlayerNotFound = errors.New("player not found")
+    ErrDuplicateEntry = errors.New("duplicate entry")
+    ErrConnectionFailed = errors.New("connection failed")
+)
+```
+
+This makes it easy to check for specific errors without string matching.
+
+## Key Takeaways
+
+- Go doesn't have exceptions. Functions return errors as values.
+- Check `if err != nil` immediately after calling a function that can fail.
+- Use `fmt.Errorf` with `%w` to wrap errors and add context.
+- Use `errors.Is` to check for specific errors.
+- Panics are for programmer errors, not expected failures.
+- Handle errors inline in handlers and commands. Don't let them bubble up uncaught.
+
+The `if err != nil` pattern feels awkward at first. Give it time. You'll come to appreciate the explicitness, and it'll become second nature.

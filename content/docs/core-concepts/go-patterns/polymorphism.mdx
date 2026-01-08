@@ -1,0 +1,195 @@
+---
+title: Polymorphism
+icon: Cable
+---
+
+Polymorphism means "many forms" - the ability to treat different types uniformly through a shared interface. In OOP languages, this usually comes through inheritance. In Go, it's all about interfaces.
+
+## The OOP Approach
+
+Java:
+```java title="Item.java"
+public abstract class Item {
+    public abstract void use(Player player);
+}
+
+public class Sword extends Item {
+    @Override
+    public void use(Player player) {
+        player.attack();
+    }
+}
+
+public class Potion extends Item {
+    @Override
+    public void use(Player player) {
+        player.heal(10);
+    }
+}
+
+// Polymorphism in action
+public void useItem(Item item, Player player) {
+    item.use(player); // Works for any Item subclass
+}
+```
+
+## Go's Interface-Based Polymorphism
+
+Go achieves the same thing through interfaces, but without inheritance:
+
+```go title="polymorphism_go.go"
+type Usable interface {
+    Use(p *player.Player)
+}
+
+type Sword struct{}
+
+func (s Sword) Use(p *player.Player) {
+    // Attack logic
+}
+
+type Potion struct {
+    HealAmount int
+}
+
+func (p Potion) Use(pl *player.Player) {
+    // Heal logic
+}
+
+// Polymorphism in action
+func useItem(item Usable, p *player.Player) {
+    item.Use(p) // Works for any type implementing Usable
+}
+```
+
+The key difference: Go interfaces are satisfied implicitly. You don't declare that `Sword` implements `Usable` - it just does, because it has the right method signature.
+
+## Practical Example: Blocks in Dragonfly
+
+Dragonfly's block system is a great example of polymorphism in action. All blocks implement the `world.Block` interface:
+
+```go title="block_interface.go"
+type Block interface {
+    EncodeBlock() (string, map[string]any)
+    Hash() uint64
+}
+```
+
+But many blocks implement additional interfaces for specific behaviors:
+
+```go title="specialized_interfaces.go"
+// Blocks that can be broken
+type Breakable interface {
+    BreakInfo() BreakInfo
+}
+
+// Blocks that emit light
+type LightEmitter interface {
+    LightEmissionLevel() uint8
+}
+
+// Blocks that can burn
+type Flammable interface {
+    FlammabilityInfo() FlammabilityInfo
+}
+```
+
+A `Torch` implements both `Block` and `LightEmitter`. A `Log` implements `Block`, `Breakable`, and `Flammable`. The world doesn't care about concrete types - it just checks if a block satisfies the interface it needs:
+
+```go title="interface_check.go"
+func getLightLevel(b world.Block) uint8 {
+    if emitter, ok := b.(LightEmitter); ok {
+        return emitter.LightEmissionLevel()
+    }
+    return 0
+}
+```
+
+## Type Assertions and Type Switches
+
+When you have an interface value but need the concrete type, use type assertions:
+
+```go title="type_assertion.go"
+func handleBlock(b world.Block) {
+    // Single type assertion
+    if chest, ok := b.(block.Chest); ok {
+        // b is definitely a Chest
+        fmt.Println(chest.Inventory())
+    }
+}
+```
+
+For multiple types, a type switch is cleaner:
+
+```go title="type_switch.go"
+func describe(b world.Block) string {
+    switch b := b.(type) {
+    case block.Chest:
+        return fmt.Sprintf("Chest with %d items", len(b.Inventory().Items()))
+    case block.Furnace:
+        return "Furnace"
+    case block.Torch:
+        return "Torch"
+    default:
+        return "Unknown block"
+    }
+}
+```
+
+## Interface Composition
+
+Go interfaces can embed other interfaces:
+
+```go title="interface_embedding.go"
+type ReadWriter interface {
+    Reader
+    Writer
+}
+```
+
+This lets you build up complex behaviors from simple ones. In Dragonfly, you'll see patterns like:
+
+```go title="composition_example.go"
+type Container interface {
+    Inventory() *inventory.Inventory
+}
+
+type Openable interface {
+    Open(p *player.Player)
+    Close(p *player.Player)
+}
+
+// A chest is both
+type Chest struct {
+    // ...
+}
+
+func (c Chest) Inventory() *inventory.Inventory { ... }
+func (c Chest) Open(p *player.Player) { ... }
+func (c Chest) Close(p *player.Player) { ... }
+```
+
+## Empty Interface
+
+The empty interface `interface{}` (or `any` in Go 1.18+) matches any type:
+
+```go title="any_type.go"
+func printAnything(v any) {
+    fmt.Println(v)
+}
+```
+
+Use it sparingly. It throws away type safety. You'll need type assertions to do anything useful with the value, and the compiler can't catch mistakes.
+
+## Key Takeaways
+
+1. **Interfaces are implicit** - No `implements` keyword. If a type has the methods, it satisfies the interface.
+
+2. **Small interfaces are better** - `io.Reader` has one method. This makes it easy for types to satisfy and compose.
+
+3. **Check interface satisfaction at compile time** - Add a blank assignment to verify:
+```go title="compile_time_check.go"
+var _ Usable = (*Sword)(nil) // Compile error if Sword doesn't implement Usable
+```
+
+4. **Use type switches for branching on concrete types** - Cleaner than chains of type assertions.

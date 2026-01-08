@@ -1,0 +1,111 @@
+---
+title: "hud"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# hud
+
+
+```go
+import "github.com/df-mc/dragonfly/server/player/hud"
+```
+
+
+
+
+
+
+
+
+
+
+
+## Types
+
+
+### Element
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Element struct {
+	element
+}
+```
+
+
+
+Element represents a HUD element in the game that can either be hidden or shown.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    element: {
+      description: '',
+      type: 'element',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Uint8">
+```go
+func (Element) Uint8() uint8
+```
+
+Uint8 returns the element type as a uint8.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Renderer
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Renderer interface {
+	// ShowHudElement shows a HUD element to the renderer if it is not already shown.
+	ShowHudElement(e Element)
+	// HideHudElement hides a HUD element from the renderer if it is not already hidden.
+	HideHudElement(e Element)
+	// HudElementHidden checks if a HUD element is currently hidden from the renderer.
+	HudElementHidden(e Element) bool
+}
+```
+
+
+
+Renderer represents an interface that can manage HUD elements for a player.
+
+
+
+
+
+
+---
+
+

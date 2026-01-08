@@ -1,0 +1,3688 @@
+---
+title: "world"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# world
+
+
+```go
+import "github.com/df-mc/dragonfly/server/world"
+```
+
+
+
+
+
+
+
+## Variables
+
+<Accordions>
+
+<Accordion title="DifficultyPeaceful">
+```go
+var DifficultyPeaceful difficultyPeaceful
+```
+
+</Accordion>
+
+<Accordion title="DifficultyEasy">
+```go
+var DifficultyEasy difficultyEasy
+```
+
+</Accordion>
+
+<Accordion title="DifficultyNormal">
+```go
+var DifficultyNormal difficultyNormal
+```
+
+</Accordion>
+
+<Accordion title="DifficultyHard">
+```go
+var DifficultyHard difficultyHard
+```
+
+</Accordion>
+
+<Accordion title="Overworld">
+```go
+var Overworld overworld
+```
+
+</Accordion>
+
+<Accordion title="Nether">
+```go
+var Nether nether
+```
+
+</Accordion>
+
+<Accordion title="End">
+```go
+var End end
+```
+
+</Accordion>
+
+<Accordion title="GameModeSurvival">
+```go
+var GameModeSurvival survival
+```
+
+</Accordion>
+
+<Accordion title="GameModeCreative">
+```go
+var GameModeCreative creative
+```
+
+</Accordion>
+
+<Accordion title="GameModeAdventure">
+```go
+var GameModeAdventure adventure
+```
+
+</Accordion>
+
+<Accordion title="GameModeSpectator">
+```go
+var GameModeSpectator spectator
+```
+
+</Accordion>
+
+</Accordions>
+
+
+
+## Functions
+
+<Accordions>
+
+<Accordion title="BiomeDefinitions">
+```go
+func BiomeDefinitions() ([]protocol.BiomeDefinition, []string)
+```
+
+
+BiomeDefinitions returns the list of biome definitions along with the associated StringList.
+
+</Accordion>
+
+<Accordion title="BlockHash">
+```go
+func BlockHash(b Block) uint64
+```
+
+
+BlockHash returns a unique identifier of the block including the block states. This function is used internally
+to convert a block to a single integer which can be used in map lookups. The hash produced therefore does not
+need to match anything in the game, but it must be unique among all registered blocks.
+The tool in `/cmd/blockhash` may be used to automatically generate block hashes of blocks in a package.
+
+</Accordion>
+
+<Accordion title="BlockRuntimeID">
+```go
+func BlockRuntimeID(b Block) uint32
+```
+
+
+BlockRuntimeID attempts to return a runtime ID of a block previously registered using RegisterBlock().
+If the runtime ID cannot be found because the Block wasn't registered, BlockRuntimeID will panic.
+
+</Accordion>
+
+<Accordion title="CustomBlocks">
+```go
+func CustomBlocks() map[string]CustomBlock
+```
+
+
+CustomBlocks returns a map of all custom blocks registered with their names as keys.
+
+</Accordion>
+
+<Accordion title="DifficultyID">
+```go
+func DifficultyID(diff Difficulty) (int, bool)
+```
+
+
+DifficultyID looks up the ID that a Difficulty was registered with. If not
+found, false is returned.
+
+</Accordion>
+
+<Accordion title="DimensionID">
+```go
+func DimensionID(dim Dimension) (int, bool)
+```
+
+
+DimensionID looks up the ID that a Dimension was registered with. If not
+found, false is returned.
+
+</Accordion>
+
+<Accordion title="GameModeID">
+```go
+func GameModeID(mode GameMode) (int, bool)
+```
+
+
+GameModeID looks up the ID that a GameMode was registered with. If not
+found, false is returned.
+
+</Accordion>
+
+<Accordion title="ItemRuntimeID">
+```go
+func ItemRuntimeID(i Item) (rid int32, meta int16, ok bool)
+```
+
+
+ItemRuntimeID attempts to return the runtime ID of the Item passed. False is returned if the Item is not
+registered.
+
+</Accordion>
+
+<Accordion title="RegisterBiome">
+```go
+func RegisterBiome(b Biome)
+```
+
+
+RegisterBiome registers a biome to the map so that it can be saved and loaded with the world.
+
+</Accordion>
+
+<Accordion title="RegisterBlock">
+```go
+func RegisterBlock(b Block)
+```
+
+
+RegisterBlock registers the Block passed. The EncodeBlock method will be used to encode and decode the
+block passed. RegisterBlock panics if the block properties returned were not valid, existing properties.
+
+</Accordion>
+
+<Accordion title="RegisterItem">
+```go
+func RegisterItem(item Item)
+```
+
+
+RegisterItem registers an item with the ID and meta passed. Once registered, items may be obtained from an
+ID and metadata value using itemByID().
+If an item with the ID and meta passed already exists, RegisterItem panics.
+
+</Accordion>
+
+</Accordions>
+
+
+
+## Types
+
+
+### Biome
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Biome interface {
+	// Temperature returns the temperature of the biome.
+	Temperature() float64
+	// Rainfall returns the rainfall of the biome.
+	Rainfall() float64
+	// Depth returns the depth of the biome.
+	Depth() float64
+	// Scale returns the scale of the biome.
+	Scale() float64
+	// WaterColour returns the water colour of the biome.
+	WaterColour() color.RGBA
+	// Tags returns the tags for the biome.
+	Tags() []string
+	// String returns the biome name as a string.
+	String() string
+	// EncodeBiome encodes the biome into an int value that is used to identify the biome over the network.
+	EncodeBiome() int
+}
+```
+
+
+
+Biome is a region in a world with distinct geographical features, flora, temperatures, humidity ratings,
+and sky, water, grass and foliage colours.
+
+
+
+
+
+
+---
+
+### Block
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Block interface {
+	// EncodeBlock encodes the block to a string ID such as 'minecraft:grass' and properties associated
+	// with the block.
+	EncodeBlock() (string, map[string]any)
+	// Hash returns two different identifiers for the block. The first is the base hash which is unique for
+	// each type of block at runtime. For vanilla blocks, this is an auto-incrementing constant and for custom
+	// blocks, you can call block.NextHash() to get a unique identifier. The second is the hash of the block's
+	// own state and does not need to worry about colliding with other types of blocks. This is later combined
+	// with the base hash to create a unique identifier for the full block.
+	Hash() (uint64, uint64)
+	// Model returns the BlockModel of the Block.
+	Model() BlockModel
+}
+```
+
+
+
+Block is a block that may be placed or found in a world. In addition, the block may also be added to an
+inventory: It is also an item.
+Every Block implementation must be able to be hashed as key in a map.
+
+
+
+
+
+
+---
+
+### BlockAction
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type BlockAction interface {
+	BlockAction()
+}
+```
+
+
+
+BlockAction represents an action that may be performed by a block. Typically, these actions are sent to
+viewers in a world so that they can see these actions.
+
+
+
+
+
+
+---
+
+### BlockModel
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type BlockModel interface {
+	// BBox returns the bounding boxes that a block with this model can be collided with.
+	BBox(pos cube.Pos, s BlockSource) []cube.BBox
+	// FaceSolid checks if a specific face of a block at the position in a world passed is solid. Blocks may
+	// be attached to these faces.
+	FaceSolid(pos cube.Pos, face cube.Face, s BlockSource) bool
+}
+```
+
+
+
+BlockModel represents the model of a block. These models specify the ways a block can be collided with and
+whether specific faces are solid wrt. being able to, for example, place torches onto those sides.
+
+
+
+
+
+
+---
+
+### BlockSource
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type BlockSource interface {
+	// Block returns the block at the given position in the block source.
+	Block(cube.Pos) Block
+}
+```
+
+
+
+BlockSource represents a source for obtaining blocks.
+
+
+
+
+
+
+---
+
+### ChunkPos
+
+
+
+
+```go
+type ChunkPos [2]int32
+```
+
+
+
+ChunkPos holds the position of a chunk. The type is provided as a utility struct for keeping track of a
+chunk's position. Chunks do not themselves keep track of that. Chunk positions are different from block
+positions in the way that increasing the X/Z by one means increasing the absolute value on the X/Z axis in
+terms of blocks by 16.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="String">
+```go
+func (ChunkPos) String() string
+```
+
+String implements fmt.Stringer and returns (x, z).
+
+</Accordion>
+
+<Accordion title="X">
+```go
+func (ChunkPos) X() int32
+```
+
+X returns the X coordinate of the chunk position.
+
+</Accordion>
+
+<Accordion title="Z">
+```go
+func (ChunkPos) Z() int32
+```
+
+Z returns the Z coordinate of the chunk position.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Column
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Column struct {
+	modified	bool
+
+	*chunk.Chunk
+	Entities	[]*EntityHandle
+	BlockEntities	map[cube.Pos]Block
+
+	viewers	[]Viewer
+	loaders	[]*Loader
+}
+```
+
+
+
+Column represents the data of a chunk including the (block) entities and
+viewers and loaders.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    "*chunk.Chunk": {
+      description: '',
+      type: '*chunk.Chunk',
+      typeLink: '../world-chunk.mdx#chunk',
+    },
+    Entities: {
+      description: '',
+      type: '[]*EntityHandle',
+      typeLink: '../world.mdx#entityhandle',
+    },
+    BlockEntities: {
+      description: '',
+      type: 'map[cube.Pos]Block',
+    },
+  }}
+/>
+
+
+
+
+
+---
+
+### Config
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Config struct {
+	// Log is the Logger that will be used to log errors and debug messages to.
+	// If set to nil, slog.Default() is set.
+	Log	*slog.Logger
+	// Dim is the Dimension of the World. If set to nil, the World will use
+	// Overworld as its dimension. The dimension set here influences, among
+	// others, the sky colour, weather/time and liquid behaviour in that World.
+	Dim	Dimension
+	// PortalDestination is a function that returns the destination World for a
+	// portal of a specific Dimension type. If set to nil, no portals will
+	// function. If the function returns a nil world for a Dimension, only
+	// portals of that specific Dimension type will not function.
+	PortalDestination	func(dim Dimension) *World
+	// Provider is the Provider implementation used to read and write World
+	// data. If set to nil, the Provider used will be NopProvider, which does
+	// not store any data to disk.
+	Provider	Provider
+	// Generator is the Generator implementation used to generate new areas of
+	// the World. If set to nil, the Generator used will be NopGenerator, which
+	// generates completely empty chunks.
+	Generator	Generator
+	// ReadOnly specifies if the World should be read-only, meaning no new data
+	// will be written to the Provider.
+	ReadOnly	bool
+	// SaveInterval specifies how often a World should be automatically saved to
+	// disk. This includes chunks, entities and level.dat data. If ReadOnly is
+	// set to false, changing SaveInterval will have no effect.
+	// By default, SaveInterval is set to 10 minutes. Setting SaveInterval to
+	// a negative number disables automatic saving entirely.
+	SaveInterval	time.Duration
+	// RandomTickSpeed specifies the rate at which blocks should be ticked in
+	// the World. By default, each sub chunk has 3 blocks randomly ticked per
+	// sub chunk, so the default value is 3. Setting this value to -1 or lower
+	// will stop random ticking altogether, while setting it higher results in
+	// faster ticking.
+	RandomTickSpeed	int
+	// RandSource is the rand.Source used for generation of random numbers in a
+	// World, such as when selecting blocks to tick or when deciding where to
+	// strike lightning. If set to nil, RandSource defaults to a `rand.PCG`
+	// source seeded with `time.Now().UnixNano()`. PCG is significantly faster
+	// than `rand.ChaCha8` on 64-bit systems at the expense of poorer
+	// statistical distribution, which is acceptable here.
+	// See https://go.dev/blog/chacha8rand.
+	RandSource	rand.Source
+	// Entities is an EntityRegistry with all Entity types registered that may
+	// be added to the World.
+	Entities	EntityRegistry
+}
+```
+
+
+
+Config may be used to create a new World. It holds a variety of fields that
+influence the World.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Log: {
+      description: 'Log is the Logger that will be used to log errors and debug messages to. If set to nil, slog.Default() is set.',
+      type: '*slog.Logger',
+    },
+    Dim: {
+      description: 'Dim is the Dimension of the World. If set to nil, the World will use Overworld as its dimension. The dimension set here influences, among others, the sky colour, weather/time and liquid behaviour in that World.',
+      type: 'Dimension',
+      typeLink: '../world.mdx#dimension',
+    },
+    PortalDestination: {
+      description: 'PortalDestination is a function that returns the destination World for a portal of a specific Dimension type. If set to nil, no portals will function. If the function returns a nil world for a Dimension, only portals of that specific Dimension type will not function.',
+      type: 'func(dim Dimension) *World',
+    },
+    Provider: {
+      description: 'Provider is the Provider implementation used to read and write World data. If set to nil, the Provider used will be NopProvider, which does not store any data to disk.',
+      type: 'Provider',
+      typeLink: '../world.mdx#provider',
+    },
+    Generator: {
+      description: 'Generator is the Generator implementation used to generate new areas of the World. If set to nil, the Generator used will be NopGenerator, which generates completely empty chunks.',
+      type: 'Generator',
+      typeLink: '../world.mdx#generator',
+    },
+    ReadOnly: {
+      description: 'ReadOnly specifies if the World should be read-only, meaning no new data will be written to the Provider.',
+      type: 'bool',
+    },
+    SaveInterval: {
+      description: 'SaveInterval specifies how often a World should be automatically saved to disk. This includes chunks, entities and level.dat data. If ReadOnly is set to false, changing SaveInterval will have no effect. By default, SaveInterval is set to 10 minutes. Setting SaveInterval to a negative number disables automatic saving entirely.',
+      type: 'time.Duration',
+    },
+    RandomTickSpeed: {
+      description: 'RandomTickSpeed specifies the rate at which blocks should be ticked in the World. By default, each sub chunk has 3 blocks randomly ticked per sub chunk, so the default value is 3. Setting this value to -1 or lower will stop random ticking altogether, while setting it higher results in faster ticking.',
+      type: 'int',
+    },
+    RandSource: {
+      description: 'RandSource is the rand.Source used for generation of random numbers in a World, such as when selecting blocks to tick or when deciding where to strike lightning. If set to nil, RandSource defaults to a `rand.PCG` source seeded with `time.Now().UnixNano()`. PCG is significantly faster than `rand.ChaCha8` on 64-bit systems at the expense of poorer statistical distribution, which is acceptable here. See https://go.dev/blog/chacha8rand.',
+      type: 'rand.Source',
+    },
+    Entities: {
+      description: 'Entities is an EntityRegistry with all Entity types registered that may be added to the World.',
+      type: 'EntityRegistry',
+      typeLink: '../world.mdx#entityregistry',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="New">
+```go
+func (Config) New() *World
+```
+
+New creates a new World using the Config conf. The World returned will start
+ticking as soon as a viewer is added to it and is otherwise ready for use.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Context
+
+
+
+
+```go
+type Context = event.Context[*Tx]
+```
+
+
+
+
+
+
+
+
+---
+
+### CustomBlock
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type CustomBlock interface {
+	Block
+	Properties() customblock.Properties
+}
+```
+
+
+
+CustomBlock represents a block that is non-vanilla and requires a resource pack and extra steps to show it to the
+client.
+
+
+
+
+
+
+---
+
+### CustomBlockBuildable
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type CustomBlockBuildable interface {
+	CustomBlock
+	// Name is the name displayed to clients using the block.
+	Name() string
+	// Geometry is the geometries for the block that define the shape of the block. If false is returned, no custom
+	// geometry will be applied. Permutation-specific geometry can be defined by returning a map of permutations to
+	// geometry.
+	Geometry() []byte
+	// Textures is a map of images indexed by their target, used to map textures on to the block. Permutation-specific
+	// textures can be defined by returning a map of permutations to textures.
+	Textures() map[string]image.Image
+}
+```
+
+
+
+
+
+
+
+
+---
+
+### CustomItem
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type CustomItem interface {
+	Item
+	// Name is the name that will be displayed on the item to all clients.
+	Name() string
+	// Texture is the Image of the texture for this item.
+	Texture() image.Image
+	// Category is the category the item will be listed under in the creative inventory.
+	Category() category.Category
+}
+```
+
+
+
+CustomItem represents an item that is non-vanilla and requires a resource pack and extra steps to show it
+to the client.
+
+
+
+
+
+
+---
+
+### DamageSource
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type DamageSource interface {
+	// ReducedByArmour checks if the source of damage may be reduced if the
+	// receiver of the damage is wearing armour.
+	ReducedByArmour() bool
+	// ReducedByResistance specifies if the Source is affected by the resistance
+	// effect. If false, damage dealt to an Entity with this source will not be
+	// lowered if the Entity has the resistance effect.
+	ReducedByResistance() bool
+	// Fire specifies if the Source is fire related and should be ignored when
+	// an Entity has the fire resistance effect.
+	Fire() bool
+	// IgnoreTotem specifies whether the totem will be ignored if the damage is lethal.
+	IgnoreTotem() bool
+}
+```
+
+
+
+DamageSource represents the source of the damage dealt to an Entity. This
+source may be passed to the Hurt() method of an Entity in order to deal
+damage to an Entity with a specific source.
+
+
+
+
+
+
+---
+
+### Difficulty
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Difficulty interface {
+	// FoodRegenerates specifies if players' food levels should automatically
+	// regenerate with this difficulty.
+	FoodRegenerates() bool
+	// StarvationHealthLimit specifies the amount of health at which a player
+	// will no longer receive damage from starvation.
+	StarvationHealthLimit() float64
+	// FireSpreadIncrease returns a number that increases the rate at which fire
+	// spreads.
+	FireSpreadIncrease() int
+}
+```
+
+
+
+Difficulty represents the difficulty of a Minecraft world. The difficulty of
+a world influences all kinds of aspects of the world, such as the damage
+enemies deal to players, the way hunger depletes, whether hostile monsters
+spawn or not and more.
+
+
+
+
+
+
+---
+
+### Dimension
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Dimension interface {
+	// Range returns the lowest and highest valid Y coordinates of a block
+	// in the Dimension.
+	Range() cube.Range
+	WaterEvaporates() bool
+	LavaSpreadDuration() time.Duration
+	WeatherCycle() bool
+	TimeCycle() bool
+}
+```
+
+
+
+Dimension is a dimension of a World. It influences a variety of
+properties of a World such as the building range, the sky colour and the
+behaviour of liquid blocks.
+
+
+
+
+
+
+---
+
+### Entity
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Entity interface {
+	io.Closer
+	// H returns the EntityHandle that points to the entity.
+	H() *EntityHandle
+	// Position returns the current position of the Entity in the world.
+	Position() mgl64.Vec3
+	// Rotation returns the yaw (horizontal rotation) and pitch (vertical
+	// rotation) of the entity in degrees.
+	Rotation() cube.Rotation
+}
+```
+
+
+
+Entity represents an Entity in the world, typically an object that may be moved around and can be
+interacted with by other entities.
+Viewers of a world may view an Entity when near it.
+
+
+
+
+
+
+---
+
+### EntityAction
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type EntityAction interface {
+	EntityAction()
+}
+```
+
+
+
+EntityAction represents an action that may be performed by an Entity. Typically, these actions are sent to
+viewers in a world so that they can see these actions.
+
+
+
+
+
+
+---
+
+### EntityAnimation
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type EntityAnimation struct {
+	name		string
+	nextState	string
+	controller	string
+	stopCondition	string
+}
+```
+
+
+
+EntityAnimation represents an animation that may be played on an entity from an active resource pack on
+the client.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Controller">
+```go
+func (EntityAnimation) Controller() string
+```
+
+Controller returns the name of the controller to be used for the animation.
+
+</Accordion>
+
+<Accordion title="Name">
+```go
+func (EntityAnimation) Name() string
+```
+
+Name returns the name of the animation to be played.
+
+</Accordion>
+
+<Accordion title="NextState">
+```go
+func (EntityAnimation) NextState() string
+```
+
+NextState returns the state to transition to after the animation has finished playing within the
+animation controller.
+
+</Accordion>
+
+<Accordion title="StopCondition">
+```go
+func (EntityAnimation) StopCondition() string
+```
+
+StopCondition returns the condition that must be met for the animation to stop playing. This is often
+a Molang expression that can be used to query various entity properties to determine when the animation
+should stop playing.
+
+</Accordion>
+
+<Accordion title="WithController">
+```go
+func (EntityAnimation) WithController(controller string) EntityAnimation
+```
+
+WithController returns a copy of the EntityAnimation with the provided animation controller. An animation
+controller with the same name must be defined in a resource pack for it to work.
+
+</Accordion>
+
+<Accordion title="WithNextState">
+```go
+func (EntityAnimation) WithNextState(state string) EntityAnimation
+```
+
+WithNextState returns a copy of the EntityAnimation with the provided state to transition to after the
+animation has finished playing within the animation controller.
+
+</Accordion>
+
+<Accordion title="WithStopCondition">
+```go
+func (EntityAnimation) WithStopCondition(condition string) EntityAnimation
+```
+
+WithStopCondition returns a copy of the EntityAnimation with the provided stop condition. The stop condition
+is a Molang expression that can be used to query various entity properties to determine when the animation
+should stop playing.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### EntityConfig
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type EntityConfig interface {
+	Apply(data *EntityData)
+}
+```
+
+
+
+EntityConfig is used to configure the initial settings of an Entity upon
+creation using NewEntity.
+
+
+
+
+
+
+---
+
+### EntityData
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type EntityData struct {
+	Pos, Vel	mgl64.Vec3
+	Rot		cube.Rotation
+	Name		string
+	FireDuration	time.Duration
+	Age		time.Duration
+
+	Data	any
+}
+```
+
+
+
+EntityData holds data shared by every entity. It is kept in an EntityHandle.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Pos: {
+      description: '',
+      type: 'mgl64.Vec3',
+    },
+    Vel: {
+      description: '',
+      type: 'mgl64.Vec3',
+    },
+    Rot: {
+      description: '',
+      type: 'cube.Rotation',
+      typeLink: '../block-cube.mdx#rotation',
+    },
+    Name: {
+      description: '',
+      type: 'string',
+    },
+    FireDuration: {
+      description: '',
+      type: 'time.Duration',
+    },
+    Age: {
+      description: '',
+      type: 'time.Duration',
+    },
+    Data: {
+      description: '',
+      type: 'any',
+    },
+  }}
+/>
+
+
+
+
+
+---
+
+### EntityHandle
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type EntityHandle struct {
+	id	uuid.UUID
+	t	EntityType
+
+	cond		*sync.Cond
+	worldless	*atomic.Bool
+	weakTxActive	bool
+	w		*World
+
+	data	EntityData
+}
+```
+
+
+
+EntityHandle is a persistent identifier of an entity. It holds data of the
+entity that can be transformed into an Entity implementation in the context
+of a transaction.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Close">
+```go
+func (*EntityHandle) Close() error
+```
+
+Close closes the EntityHandle. Any subsequent call to ExecWorld will return
+immediately without the transaction function being called. Close always
+returns nil.
+
+</Accordion>
+
+<Accordion title="Entity">
+```go
+func (*EntityHandle) Entity(tx *Tx) (Entity, bool)
+```
+
+Entity attempts to convert an EntityHandle to an Entity using the Tx passed.
+A non-nil Entity is returned only if the entity's world matches the world of
+the Tx. If they do not match, false is returned.
+
+</Accordion>
+
+<Accordion title="ExecWorld">
+```go
+func (*EntityHandle) ExecWorld(f func(tx *Tx, e Entity)) bool
+```
+
+ExecWorld obtains the EntityHandle's World in a thread-safe way and opens a
+transaction in it when it does. If the EntityHandle has not been added to a
+world, ExecWorld will block until the EntityHandle is added to a World and
+run the transaction function once it is. If the Entity is closed before
+ExecWorld is called, ExecWorld will return false immediately without running
+the transaction function.
+
+</Accordion>
+
+<Accordion title="Type">
+```go
+func (*EntityHandle) Type() EntityType
+```
+
+Type returns the EntityType of the EntityHandle.
+
+</Accordion>
+
+<Accordion title="UUID">
+```go
+func (*EntityHandle) UUID() uuid.UUID
+```
+
+UUID returns the identifier of the EntityHandle.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### EntityRegistry
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type EntityRegistry struct {
+	conf	EntityRegistryConfig
+	ent	map[string]EntityType
+}
+```
+
+
+
+EntityRegistry is a mapping that EntityTypes may be registered to. It is used
+for loading entities from disk in a World's Provider.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Config">
+```go
+func (EntityRegistry) Config() EntityRegistryConfig
+```
+
+Config returns the EntityRegistryConfig that was used to create the
+EntityRegistry.
+
+</Accordion>
+
+<Accordion title="Lookup">
+```go
+func (EntityRegistry) Lookup(name string) (EntityType, bool)
+```
+
+Lookup looks up an EntityType by its name. If found, the EntityType is
+returned and the bool is true. The bool is false otherwise.
+
+</Accordion>
+
+<Accordion title="Types">
+```go
+func (EntityRegistry) Types() []EntityType
+```
+
+Types returns all EntityTypes passed upon construction of the EntityRegistry.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### EntityRegistryConfig
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type EntityRegistryConfig struct {
+	Item			func(opts EntitySpawnOpts, it any) *EntityHandle
+	FallingBlock		func(opts EntitySpawnOpts, bl Block) *EntityHandle
+	TNT			func(opts EntitySpawnOpts, fuse time.Duration) *EntityHandle
+	BottleOfEnchanting	func(opts EntitySpawnOpts, owner Entity) *EntityHandle
+	Arrow			func(opts EntitySpawnOpts, damage float64, owner Entity, critical, disallowPickup, obtainArrowOnPickup bool, punchLevel int, tip any) *EntityHandle
+	Egg			func(opts EntitySpawnOpts, owner Entity) *EntityHandle
+	EnderPearl		func(opts EntitySpawnOpts, owner Entity) *EntityHandle
+	Firework		func(opts EntitySpawnOpts, firework Item, owner Entity, sidewaysVelocityMultiplier, upwardsAcceleration float64, attached bool) *EntityHandle
+	LingeringPotion		func(opts EntitySpawnOpts, t any, owner Entity) *EntityHandle
+	Snowball		func(opts EntitySpawnOpts, owner Entity) *EntityHandle
+	SplashPotion		func(opts EntitySpawnOpts, t any, owner Entity) *EntityHandle
+	Lightning		func(opts EntitySpawnOpts) *EntityHandle
+}
+```
+
+
+
+EntityRegistryConfig holds functions used by the block and item packages to
+create entities as a result of their behaviour. ALL functions of
+EntityRegistryConfig must be filled out for the behaviour of these blocks and
+items not to fail.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Item: {
+      description: '',
+      type: 'func(opts EntitySpawnOpts, it any) *EntityHandle',
+    },
+    FallingBlock: {
+      description: '',
+      type: 'func(opts EntitySpawnOpts, bl Block) *EntityHandle',
+    },
+    TNT: {
+      description: '',
+      type: 'func(opts EntitySpawnOpts, fuse time.Duration) *EntityHandle',
+    },
+    BottleOfEnchanting: {
+      description: '',
+      type: 'func(opts EntitySpawnOpts, owner Entity) *EntityHandle',
+    },
+    Arrow: {
+      description: '',
+      type: 'func(opts EntitySpawnOpts, damage float64, owner Entity, critical, disallowPickup, obtainArrowOnPickup bool, punchLevel int, tip any) *EntityHandle',
+    },
+    Egg: {
+      description: '',
+      type: 'func(opts EntitySpawnOpts, owner Entity) *EntityHandle',
+    },
+    EnderPearl: {
+      description: '',
+      type: 'func(opts EntitySpawnOpts, owner Entity) *EntityHandle',
+    },
+    Firework: {
+      description: '',
+      type: 'func(opts EntitySpawnOpts, firework Item, owner Entity, sidewaysVelocityMultiplier, upwardsAcceleration float64, attached bool) *EntityHandle',
+    },
+    LingeringPotion: {
+      description: '',
+      type: 'func(opts EntitySpawnOpts, t any, owner Entity) *EntityHandle',
+    },
+    Snowball: {
+      description: '',
+      type: 'func(opts EntitySpawnOpts, owner Entity) *EntityHandle',
+    },
+    SplashPotion: {
+      description: '',
+      type: 'func(opts EntitySpawnOpts, t any, owner Entity) *EntityHandle',
+    },
+    Lightning: {
+      description: '',
+      type: 'func(opts EntitySpawnOpts) *EntityHandle',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="New">
+```go
+func (EntityRegistryConfig) New(ent []EntityType) EntityRegistry
+```
+
+New creates an EntityRegistry using conf and the EntityTypes passed.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### EntitySpawnOpts
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type EntitySpawnOpts struct {
+	// Position is the position that an Entity should be spawned at.
+	Position	mgl64.Vec3
+	// Rotation is the rotation that an Entity should be spawned with.
+	Rotation	cube.Rotation
+	// Velocity specifies the initial velocity of the Entity.
+	Velocity	mgl64.Vec3
+	// ID specifies the UUID of an entity. This field should usually be left
+	// empty, as a valid UUID is generated when not set. Non-player entities
+	// only have the last 8 bytes of the UUID set.
+	ID	uuid.UUID
+	// NameTag is the name tag that the entity is spawned with.
+	NameTag	string
+}
+```
+
+
+
+EntitySpawnOpts holds spawning related options for entities created.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Position: {
+      description: 'Position is the position that an Entity should be spawned at.',
+      type: 'mgl64.Vec3',
+    },
+    Rotation: {
+      description: 'Rotation is the rotation that an Entity should be spawned with.',
+      type: 'cube.Rotation',
+      typeLink: '../block-cube.mdx#rotation',
+    },
+    Velocity: {
+      description: 'Velocity specifies the initial velocity of the Entity.',
+      type: 'mgl64.Vec3',
+    },
+    ID: {
+      description: 'ID specifies the UUID of an entity. This field should usually be left empty, as a valid UUID is generated when not set. Non-player entities only have the last 8 bytes of the UUID set.',
+      type: 'uuid.UUID',
+    },
+    NameTag: {
+      description: 'NameTag is the name tag that the entity is spawned with.',
+      type: 'string',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="New">
+```go
+func (EntitySpawnOpts) New(t EntityType, conf EntityConfig) *EntityHandle
+```
+
+New creates an EntityHandle using an EntityType and EntityConfig passed. The
+EntityHandle may be added to a world by calling Tx.AddEntity().
+The spawn conditions depend on the options set in opts.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### EntityType
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type EntityType interface {
+	// Open returns an Entity implementation in the context of a transaction.
+	Open(tx *Tx, handle *EntityHandle, data *EntityData) Entity
+
+	// EncodeEntity converts the Entity to its encoded representation: It
+	// returns the type of the Minecraft Entity, for example
+	// 'minecraft:falling_block'.
+	EncodeEntity() string
+	// BBox returns the bounding box of an Entity with this EntityType.
+	BBox(e Entity) cube.BBox
+	// DecodeNBT reads the fields from the NBT data map passed and converts it
+	// to an Entity of the same EntityType.
+	DecodeNBT(m map[string]any, data *EntityData)
+	// EncodeNBT encodes the Entity of the same EntityType passed to a map of
+	// properties that can be encoded to NBT.
+	EncodeNBT(data *EntityData) map[string]any
+}
+```
+
+
+
+EntityType is the type of Entity. It specifies the name, encoded Entity
+ID and bounding box of an Entity.
+
+
+
+
+
+
+---
+
+### ExecFunc
+
+
+
+
+```go
+type ExecFunc func(tx *Tx)
+```
+
+
+
+ExecFunc is a function that performs a synchronised transaction on a World.
+
+
+
+
+
+
+---
+
+### GameMode
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type GameMode interface {
+	// AllowsEditing specifies if a player with this GameMode can edit the World it's in.
+	AllowsEditing() bool
+	// AllowsTakingDamage specifies if a player with this GameMode can take damage from other entities.
+	AllowsTakingDamage() bool
+	// CreativeInventory specifies if a player with this GameMode has access to the creative inventory.
+	CreativeInventory() bool
+	// HasCollision specifies if a player with this GameMode can collide with blocks or entities in the world.
+	HasCollision() bool
+	// AllowsFlying specifies if a player with this GameMode can fly freely.
+	AllowsFlying() bool
+	// AllowsInteraction specifies if a player with this GameMode can interact with the world through entities or if it
+	// can use items in the world.
+	AllowsInteraction() bool
+	// Visible specifies if a player with this GameMode can be visible to other players. If false, the player will be
+	// invisible under any circumstance.
+	Visible() bool
+}
+```
+
+
+
+GameMode represents a game mode that may be assigned to a player. Upon joining the world, players will be
+given the default game mode that the world holds.
+Game modes specify the way that a player interacts with and plays in the world.
+
+
+
+
+
+
+---
+
+### Generator
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Generator interface {
+	// GenerateChunk generates a chunk at a chunk position passed. The generator sets blocks in the chunk that
+	// is passed to the method.
+	GenerateChunk(pos ChunkPos, chunk *chunk.Chunk)
+}
+```
+
+
+
+Generator handles the generating of newly created chunks. Worlds have one generator which is used to
+generate chunks when the provider of the world cannot find a chunk at a given chunk position.
+
+
+
+
+
+
+---
+
+### Handler
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Handler interface {
+	// HandleLiquidFlow handles the flowing of a liquid from one block position
+	// from into another block position into. The liquid that will replace the
+	// block is also passed. This replaced block might also be a Liquid. The
+	// Liquid's depth and falling state can be checked to see if the resulting
+	// liquid is a new source block (in the case of water).
+	HandleLiquidFlow(ctx *Context, from, into cube.Pos, liquid Liquid, replaced Block)
+	// HandleLiquidDecay handles the decaying of a Liquid block at a position.
+	// Liquid decaying happens when there is no Liquid that can serve as the
+	// source block neighbouring it. The state of the Liquid before and after
+	// the decaying is passed. The Liquid after is nil if the liquid is
+	// completely removed as a result of the decay.
+	HandleLiquidDecay(ctx *Context, pos cube.Pos, before, after Liquid)
+	// HandleLiquidHarden handles the hardening of a liquid at hardenedPos. The
+	// liquid that was hardened, liquidHardened, and the liquid that caused it
+	// to harden, otherLiquid, are passed. The block created as a result is also
+	// passed.
+	HandleLiquidHarden(ctx *Context, hardenedPos cube.Pos, liquidHardened, otherLiquid, newBlock Block)
+	// HandleSound handles a Sound being played in the World at a specific
+	// position. ctx.Cancel() may be called to stop the Sound from playing to
+	// viewers of the position.
+	HandleSound(ctx *Context, s Sound, pos mgl64.Vec3)
+	// HandleFireSpread handles when a fire block spreads from one block to
+	// another block. When this event handler gets called, both the position of
+	// the original fire will be passed, and the position where it will spread
+	// to after the event. The age of the fire may also be altered by changing
+	// the underlying value of the newFireAge pointer, which decides how long
+	// the fire will stay before burning out.
+	HandleFireSpread(ctx *Context, from, to cube.Pos)
+	// HandleBlockBurn handles a block at a cube.Pos being burnt by fire. This
+	// event may be called for blocks such as wood, that can be broken by fire.
+	// HandleBlockBurn is often succeeded by HandleFireSpread, when fire spreads
+	// to the position of the original block and the Context is not cancelled in
+	// HandleBlockBurn.
+	HandleBlockBurn(ctx *Context, pos cube.Pos)
+	// HandleCropTrample handles an Entity trampling a crop.
+	HandleCropTrample(ctx *Context, pos cube.Pos)
+	// HandleLeavesDecay handles the decaying of a Leaves block at a position.
+	// Leaves decaying happens when there is no wood block neighbouring it.
+	// ctx.Cancel() may be called to prevent leaves from decaying.
+	HandleLeavesDecay(ctx *Context, pos cube.Pos)
+	// HandleEntitySpawn handles an Entity being spawned into a World through a
+	// call to Tx.AddEntity.
+	HandleEntitySpawn(tx *Tx, e Entity)
+	// HandleEntityDespawn handles an Entity being despawned from a World
+	// through a call to Tx.RemoveEntity.
+	HandleEntityDespawn(tx *Tx, e Entity)
+	// HandleExplosion handles an explosion in the world. ctx.Cancel() may be called
+	// to cancel the explosion.
+	// The affected entities, affected blocks, item drop chance, and whether the
+	// explosion spawns fire may be altered.
+	HandleExplosion(ctx *Context, position mgl64.Vec3, entities *[]Entity, blocks *[]cube.Pos, itemDropChance *float64, spawnFire *bool)
+	// HandleClose handles the World being closed. HandleClose may be used as a
+	// moment to finish code running on other goroutines that operates on the
+	// World specifically. HandleClose is called directly before the World stops
+	// ticking and before any chunks are saved to disk.
+	HandleClose(tx *Tx)
+}
+```
+
+
+
+Handler handles events that are called by a world. Implementations of
+Handler may be used to listen to specific events such as when an Entity is
+added to the world.
+
+
+
+
+
+
+---
+
+### HealingSource
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type HealingSource interface {
+	HealingSource()
+}
+```
+
+
+
+HealingSource represents a source of healing for an Entity. This source may
+be passed to the Heal() method of a living Entity.
+
+
+
+
+
+
+---
+
+### Item
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Item interface {
+	// EncodeItem encodes the item to its Minecraft representation, which consists of a numerical ID and a
+	// metadata value.
+	EncodeItem() (name string, meta int16)
+}
+```
+
+
+
+Item represents an item that may be added to an inventory. It has a method to encode the item to an ID and
+a metadata value.
+
+
+
+
+
+
+---
+
+### Liquid
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Liquid interface {
+	Block
+	// LiquidDepth returns the current depth of the liquid.
+	LiquidDepth() int
+	// SpreadDecay returns the amount of depth that is subtracted from the liquid's depth when it spreads to
+	// a next block.
+	SpreadDecay() int
+	// WithDepth returns the liquid with the depth passed.
+	WithDepth(depth int, falling bool) Liquid
+	// LiquidFalling checks if the liquid is currently considered falling down.
+	LiquidFalling() bool
+	// BlastResistance is the blast resistance of the liquid, which influences the liquid's ability to withstand an
+	// explosive blast.
+	BlastResistance() float64
+	// LiquidType returns an int unique for the liquid, used to check if two liquids are considered to be
+	// of the same type.
+	LiquidType() string
+	// Harden checks if the block should harden when looking at the surrounding blocks and sets the position
+	// to the hardened block when adequate. If the block was hardened, the method returns true.
+	Harden(pos cube.Pos, tx *Tx, flownIntoBy *cube.Pos) bool
+}
+```
+
+
+
+Liquid represents a block that can be moved through and which can flow in the world after placement. There
+are two liquids in vanilla, which are lava and water.
+
+
+
+
+
+
+---
+
+### LiquidDisplacer
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type LiquidDisplacer interface {
+	// CanDisplace specifies if the block is able to displace the liquid passed.
+	CanDisplace(b Liquid) bool
+	// SideClosed checks if a position on the side of the block placed in the world at a specific position is
+	// closed. When this returns true (for example, when the side is below the position and the block is a
+	// slab), liquid inside the displacer won't flow from pos into side.
+	SideClosed(pos, side cube.Pos, tx *Tx) bool
+}
+```
+
+
+
+LiquidDisplacer represents a block that is able to displace a liquid to a different world layer, without
+fully removing the liquid.
+
+
+
+
+
+
+---
+
+### Loader
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Loader struct {
+	r	int
+	w	*World
+	viewer	Viewer
+
+	mu		sync.RWMutex
+	pos		ChunkPos
+	loadQueue	[]ChunkPos
+	loaded		map[ChunkPos]*Column
+
+	closed	bool
+}
+```
+
+
+
+Loader implements the loading of the world. A loader can typically be moved around the world to load
+different parts of the world. An example usage is the player, which uses a loader to load chunks around it
+so that it can view them.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="ChangeRadius">
+```go
+func (*Loader) ChangeRadius(tx *Tx, new int)
+```
+
+ChangeRadius changes the maximum chunk radius of the Loader.
+
+</Accordion>
+
+<Accordion title="ChangeWorld">
+```go
+func (*Loader) ChangeWorld(tx *Tx, new *World)
+```
+
+ChangeWorld changes the World of the Loader. The currently loaded chunks are reset and any future loading
+is done from the new World.
+
+</Accordion>
+
+<Accordion title="Chunk">
+```go
+func (*Loader) Chunk(pos ChunkPos) (*Column, bool)
+```
+
+Chunk attempts to return a chunk at the given ChunkPos. If the chunk is not loaded, the second return value will
+be false.
+
+</Accordion>
+
+<Accordion title="Close">
+```go
+func (*Loader) Close(tx *Tx)
+```
+
+Close closes the loader. It unloads all chunks currently loaded for the viewer, and hides all entities that
+are currently shown to it.
+
+</Accordion>
+
+<Accordion title="Load">
+```go
+func (*Loader) Load(tx *Tx, n int)
+```
+
+Load loads n chunks around the centre of the chunk, starting with the middle and working outwards. For
+every chunk loaded, the Viewer passed through construction in New has its ViewChunk method called.
+Load does nothing for n &lt;= 0.
+
+</Accordion>
+
+<Accordion title="Move">
+```go
+func (*Loader) Move(tx *Tx, pos mgl64.Vec3)
+```
+
+Move moves the loader to the position passed. The position is translated to a chunk position to load
+
+</Accordion>
+
+<Accordion title="World">
+```go
+func (*Loader) World() *World
+```
+
+World returns the World that the Loader is in.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### NBTer
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type NBTer interface {
+	// DecodeNBT returns the (new) item, block or Entity, depending on which of those the NBTer was, with the NBT data
+	// decoded into it.
+	DecodeNBT(data map[string]any) any
+	// EncodeNBT encodes the Entity into a map which can then be encoded as NBT to be written.
+	EncodeNBT() map[string]any
+}
+```
+
+
+
+NBTer represents either an item or a block which may decode NBT data and encode to NBT data. Typically,
+this is done to store additional data.
+
+
+
+
+
+
+---
+
+### NeighbourUpdateTicker
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type NeighbourUpdateTicker interface {
+	// NeighbourUpdateTick handles a neighbouring block being updated. The position of that block and the
+	// position of this block is passed.
+	NeighbourUpdateTick(pos, changedNeighbour cube.Pos, tx *Tx)
+}
+```
+
+
+
+NeighbourUpdateTicker represents a block that is updated when a block adjacent to it is updated, either
+through placement or being broken.
+
+
+
+
+
+
+---
+
+### NopGenerator
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type NopGenerator struct{}
+```
+
+
+
+NopGenerator is the default generator a world. It places no blocks in the world which results in a void
+world.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="GenerateChunk">
+```go
+func (NopGenerator) GenerateChunk(ChunkPos, *chunk.Chunk)
+```
+
+GenerateChunk ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### NopHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type NopHandler struct{}
+```
+
+
+
+NopHandler implements the Handler interface but does not execute any code
+when an event is called. The default Handler of worlds is set to NopHandler.
+Users may embed NopHandler to avoid having to implement each method.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="HandleBlockBurn">
+```go
+func (NopHandler) HandleBlockBurn(*Context, cube.Pos)
+```
+
+</Accordion>
+
+<Accordion title="HandleClose">
+```go
+func (NopHandler) HandleClose(*Tx)
+```
+
+</Accordion>
+
+<Accordion title="HandleCropTrample">
+```go
+func (NopHandler) HandleCropTrample(*Context, cube.Pos)
+```
+
+</Accordion>
+
+<Accordion title="HandleEntityDespawn">
+```go
+func (NopHandler) HandleEntityDespawn(*Tx, Entity)
+```
+
+</Accordion>
+
+<Accordion title="HandleEntitySpawn">
+```go
+func (NopHandler) HandleEntitySpawn(*Tx, Entity)
+```
+
+</Accordion>
+
+<Accordion title="HandleExplosion">
+```go
+func (NopHandler) HandleExplosion(*Context, mgl64.Vec3, *[]Entity, *[]cube.Pos, *float64, *bool)
+```
+
+</Accordion>
+
+<Accordion title="HandleFireSpread">
+```go
+func (NopHandler) HandleFireSpread(*Context, cube.Pos, cube.Pos)
+```
+
+</Accordion>
+
+<Accordion title="HandleLeavesDecay">
+```go
+func (NopHandler) HandleLeavesDecay(*Context, cube.Pos)
+```
+
+</Accordion>
+
+<Accordion title="HandleLiquidDecay">
+```go
+func (NopHandler) HandleLiquidDecay(*Context, cube.Pos, Liquid, Liquid)
+```
+
+</Accordion>
+
+<Accordion title="HandleLiquidFlow">
+```go
+func (NopHandler) HandleLiquidFlow(*Context, cube.Pos, cube.Pos, Liquid, Block)
+```
+
+</Accordion>
+
+<Accordion title="HandleLiquidHarden">
+```go
+func (NopHandler) HandleLiquidHarden(*Context, cube.Pos, Block, Block, Block)
+```
+
+</Accordion>
+
+<Accordion title="HandleSound">
+```go
+func (NopHandler) HandleSound(*Context, Sound, mgl64.Vec3)
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### NopProvider
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type NopProvider struct {
+	Set *Settings
+}
+```
+
+
+
+NopProvider implements a Provider that does not perform any disk I/O. It generates values on the run and
+dynamically, instead of reading and writing data, and otherwise returns empty values. A Settings struct can be passed
+to initialize a world with specific settings. Since Settings is a pointer, using the same NopProvider for multiple
+worlds means those worlds will share the same settings.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Set: {
+      description: '',
+      type: '*Settings',
+      typeLink: '../world.mdx#settings',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Close">
+```go
+func (NopProvider) Close() error
+```
+
+</Accordion>
+
+<Accordion title="LoadColumn">
+```go
+func (NopProvider) LoadColumn(ChunkPos, Dimension) (*chunk.Column, error)
+```
+
+</Accordion>
+
+<Accordion title="LoadPlayerSpawnPosition">
+```go
+func (NopProvider) LoadPlayerSpawnPosition(uuid.UUID) (cube.Pos, bool, error)
+```
+
+</Accordion>
+
+<Accordion title="SavePlayerSpawnPosition">
+```go
+func (NopProvider) SavePlayerSpawnPosition(uuid.UUID, cube.Pos) error
+```
+
+</Accordion>
+
+<Accordion title="SaveSettings">
+```go
+func (NopProvider) SaveSettings(*Settings)
+```
+
+</Accordion>
+
+<Accordion title="Settings">
+```go
+func (NopProvider) Settings() *Settings
+```
+
+</Accordion>
+
+<Accordion title="StoreColumn">
+```go
+func (NopProvider) StoreColumn(ChunkPos, Dimension, *chunk.Column) error
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### NopViewer
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type NopViewer struct{}
+```
+
+
+
+NopViewer is a Viewer implementation that does not implement any behaviour. It may be embedded by other structs to
+prevent having to implement all of Viewer's methods.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="HideEntity">
+```go
+func (NopViewer) HideEntity(Entity)
+```
+
+</Accordion>
+
+<Accordion title="ViewBlockAction">
+```go
+func (NopViewer) ViewBlockAction(cube.Pos, BlockAction)
+```
+
+</Accordion>
+
+<Accordion title="ViewBlockUpdate">
+```go
+func (NopViewer) ViewBlockUpdate(cube.Pos, Block, int)
+```
+
+</Accordion>
+
+<Accordion title="ViewBrewingUpdate">
+```go
+func (NopViewer) ViewBrewingUpdate(time.Duration, time.Duration, int32, int32, int32, int32)
+```
+
+</Accordion>
+
+<Accordion title="ViewChunk">
+```go
+func (NopViewer) ViewChunk(ChunkPos, Dimension, map[cube.Pos]Block, *chunk.Chunk)
+```
+
+</Accordion>
+
+<Accordion title="ViewEmote">
+```go
+func (NopViewer) ViewEmote(Entity, uuid.UUID)
+```
+
+</Accordion>
+
+<Accordion title="ViewEntity">
+```go
+func (NopViewer) ViewEntity(Entity)
+```
+
+</Accordion>
+
+<Accordion title="ViewEntityAction">
+```go
+func (NopViewer) ViewEntityAction(Entity, EntityAction)
+```
+
+</Accordion>
+
+<Accordion title="ViewEntityAnimation">
+```go
+func (NopViewer) ViewEntityAnimation(Entity, EntityAnimation)
+```
+
+</Accordion>
+
+<Accordion title="ViewEntityArmour">
+```go
+func (NopViewer) ViewEntityArmour(Entity)
+```
+
+</Accordion>
+
+<Accordion title="ViewEntityGameMode">
+```go
+func (NopViewer) ViewEntityGameMode(Entity)
+```
+
+</Accordion>
+
+<Accordion title="ViewEntityItems">
+```go
+func (NopViewer) ViewEntityItems(Entity)
+```
+
+</Accordion>
+
+<Accordion title="ViewEntityMovement">
+```go
+func (NopViewer) ViewEntityMovement(Entity, mgl64.Vec3, cube.Rotation, bool)
+```
+
+</Accordion>
+
+<Accordion title="ViewEntityState">
+```go
+func (NopViewer) ViewEntityState(Entity)
+```
+
+</Accordion>
+
+<Accordion title="ViewEntityTeleport">
+```go
+func (NopViewer) ViewEntityTeleport(Entity, mgl64.Vec3)
+```
+
+</Accordion>
+
+<Accordion title="ViewEntityVelocity">
+```go
+func (NopViewer) ViewEntityVelocity(Entity, mgl64.Vec3)
+```
+
+</Accordion>
+
+<Accordion title="ViewFurnaceUpdate">
+```go
+func (NopViewer) ViewFurnaceUpdate(time.Duration, time.Duration, time.Duration, time.Duration, time.Duration, time.Duration)
+```
+
+</Accordion>
+
+<Accordion title="ViewParticle">
+```go
+func (NopViewer) ViewParticle(mgl64.Vec3, Particle)
+```
+
+</Accordion>
+
+<Accordion title="ViewSkin">
+```go
+func (NopViewer) ViewSkin(Entity)
+```
+
+</Accordion>
+
+<Accordion title="ViewSound">
+```go
+func (NopViewer) ViewSound(mgl64.Vec3, Sound)
+```
+
+</Accordion>
+
+<Accordion title="ViewTime">
+```go
+func (NopViewer) ViewTime(int)
+```
+
+</Accordion>
+
+<Accordion title="ViewTimeCycle">
+```go
+func (NopViewer) ViewTimeCycle(bool)
+```
+
+</Accordion>
+
+<Accordion title="ViewWeather">
+```go
+func (NopViewer) ViewWeather(bool, bool)
+```
+
+</Accordion>
+
+<Accordion title="ViewWorldSpawn">
+```go
+func (NopViewer) ViewWorldSpawn(cube.Pos)
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Particle
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Particle interface {
+	// Spawn spawns the particle at the position passed. Particles may execute any additional actions here,
+	// such as spawning different particles.
+	Spawn(w *World, pos mgl64.Vec3)
+}
+```
+
+
+
+Particle represents a particle that may be added to the world. These particles are then rendered client-
+side, with the server having no control over it after sending.
+
+
+
+
+
+
+---
+
+### Provider
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Provider interface {
+	io.Closer
+	// Settings loads the settings for a World and returns them.
+	Settings() *Settings
+	// SaveSettings saves the settings of a World.
+	SaveSettings(*Settings)
+
+	// LoadPlayerSpawnPosition loads the player spawn point if found, otherwise an error will be returned.
+	LoadPlayerSpawnPosition(uuid uuid.UUID) (pos cube.Pos, exists bool, err error)
+	// SavePlayerSpawnPosition saves the player spawn point. In vanilla, this can be done with beds in the overworld
+	// or respawn anchors in the nether.
+	SavePlayerSpawnPosition(uuid uuid.UUID, pos cube.Pos) error
+	// LoadColumn reads a world.Column from the DB at a position and dimension
+	// in the DB. If no column at that position exists, errors.Is(err,
+	// leveldb.ErrNotFound) equals true.
+	LoadColumn(pos ChunkPos, dim Dimension) (*chunk.Column, error)
+	// StoreColumn stores a world.Column at a position and dimension in the DB.
+	// An error is returned if storing was unsuccessful.
+	StoreColumn(pos ChunkPos, dim Dimension, col *chunk.Column) error
+}
+```
+
+
+
+Provider represents a value that may provide world data to a World value. It usually does the reading and
+writing of the world data so that the World may use it.
+
+
+
+
+
+
+---
+
+### RandomTicker
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type RandomTicker interface {
+	// RandomTick handles a random tick of the block at the position passed. Additionally, a rand.RandSource
+	// instance is passed which may be used to generate values randomly without locking.
+	RandomTick(pos cube.Pos, tx *Tx, r *rand.Rand)
+}
+```
+
+
+
+RandomTicker represents a block that executes an action when it is ticked randomly. Every 20th of a second,
+one random block in each sub chunk are picked to receive a random tick.
+
+
+
+
+
+
+---
+
+### ScheduledTicker
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type ScheduledTicker interface {
+	// ScheduledTick handles a scheduled tick initiated by an event in one of the neighbouring blocks, such as
+	// when a block is placed or broken. Additionally, a rand.RandSource instance is passed which may be used to
+	// generate values randomly without locking.
+	ScheduledTick(pos cube.Pos, tx *Tx, r *rand.Rand)
+}
+```
+
+
+
+ScheduledTicker represents a block that executes an action when it has a block update scheduled, such as
+when a block adjacent to it is broken.
+
+
+
+
+
+
+---
+
+### SetOpts
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type SetOpts struct {
+	// DisableBlockUpdates makes SetBlock not update any neighbouring blocks as
+	// a result of the SetBlock call.
+	DisableBlockUpdates	bool
+	// DisableLiquidDisplacement disables the displacement of liquid blocks to
+	// the second layer (or back to the first layer, if it already was on the
+	// second layer). Disabling this is not widely recommended unless
+	// performance is very important, or where it is known no liquid can be
+	// present anyway.
+	DisableLiquidDisplacement	bool
+}
+```
+
+
+
+SetOpts holds several parameters that may be set to disable updates in the
+World of different kinds as a result of a call to SetBlock.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    DisableBlockUpdates: {
+      description: 'DisableBlockUpdates makes SetBlock not update any neighbouring blocks as a result of the SetBlock call.',
+      type: 'bool',
+    },
+    DisableLiquidDisplacement: {
+      description: 'DisableLiquidDisplacement disables the displacement of liquid blocks to the second layer (or back to the first layer, if it already was on the second layer). Disabling this is not widely recommended unless performance is very important, or where it is known no liquid can be present anyway.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+
+---
+
+### Settings
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Settings struct {
+	sync.Mutex
+	ref	atomic.Int32
+
+	// Name is the display name of the World.
+	Name	string
+	// Spawn is the spawn position of the World. New players that join the world will be spawned here.
+	Spawn	cube.Pos
+	// Time is the current time of the World. It advances every tick if TimeCycle is set to true.
+	Time	int64
+	// TimeCycle specifies if the time should advance every tick. If set to false, time won't change.
+	TimeCycle	bool
+	// RainTime is the current rain time of the World. It advances every tick if WeatherCycle is set to true.
+	RainTime	int64
+	// Raining is the current rain level of the World.
+	Raining	bool
+	// ThunderTime is the current thunder time of the World. It advances every tick if WeatherCycle is set to true.
+	ThunderTime	int64
+	// Thunder is the current thunder level of the World.
+	Thundering	bool
+	// WeatherCycle specifies if weather should be enabled in this world. If set to false, weather will be disabled.
+	WeatherCycle	bool
+	// CurrentTick is the current tick of the world. This is similar to the Time, except that it has no visible effect
+	// to the client. It can also not be changed through commands and will only ever go up.
+	CurrentTick	int64
+	// DefaultGameMode is the GameMode assigned to players that join the World for the first time.
+	DefaultGameMode	GameMode
+	// Difficulty is the difficulty of the World. Behaviour of hunger, regeneration and monsters differs based on the
+	// difficulty of the world.
+	Difficulty	Difficulty
+	// TickRange is the radius in chunks around a Viewer that has its blocks and entities ticked when the world is
+	// ticked. If set to 0, blocks and entities will never be ticked.
+	TickRange	int32
+}
+```
+
+
+
+Settings holds the settings of a World. These are typically saved to a level.dat file. It is safe to pass the same
+Settings to multiple worlds created using New, in which case the Settings are synchronised between the worlds.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    "sync.Mutex": {
+      description: '',
+      type: 'sync.Mutex',
+    },
+    Name: {
+      description: 'Name is the display name of the World.',
+      type: 'string',
+    },
+    Spawn: {
+      description: 'Spawn is the spawn position of the World. New players that join the world will be spawned here.',
+      type: 'cube.Pos',
+      typeLink: '../block-cube.mdx#pos',
+    },
+    Time: {
+      description: 'Time is the current time of the World. It advances every tick if TimeCycle is set to true.',
+      type: 'int64',
+    },
+    TimeCycle: {
+      description: 'TimeCycle specifies if the time should advance every tick. If set to false, time won\'t change.',
+      type: 'bool',
+    },
+    RainTime: {
+      description: 'RainTime is the current rain time of the World. It advances every tick if WeatherCycle is set to true.',
+      type: 'int64',
+    },
+    Raining: {
+      description: 'Raining is the current rain level of the World.',
+      type: 'bool',
+    },
+    ThunderTime: {
+      description: 'ThunderTime is the current thunder time of the World. It advances every tick if WeatherCycle is set to true.',
+      type: 'int64',
+    },
+    Thundering: {
+      description: 'Thunder is the current thunder level of the World.',
+      type: 'bool',
+    },
+    WeatherCycle: {
+      description: 'WeatherCycle specifies if weather should be enabled in this world. If set to false, weather will be disabled.',
+      type: 'bool',
+    },
+    CurrentTick: {
+      description: 'CurrentTick is the current tick of the world. This is similar to the Time, except that it has no visible effect to the client. It can also not be changed through commands and will only ever go up.',
+      type: 'int64',
+    },
+    DefaultGameMode: {
+      description: 'DefaultGameMode is the GameMode assigned to players that join the World for the first time.',
+      type: 'GameMode',
+      typeLink: '../world.mdx#gamemode',
+    },
+    Difficulty: {
+      description: 'Difficulty is the difficulty of the World. Behaviour of hunger, regeneration and monsters differs based on the difficulty of the world.',
+      type: 'Difficulty',
+      typeLink: '../world.mdx#difficulty',
+    },
+    TickRange: {
+      description: 'TickRange is the radius in chunks around a Viewer that has its blocks and entities ticked when the world is ticked. If set to 0, blocks and entities will never be ticked.',
+      type: 'int32',
+    },
+  }}
+/>
+
+
+
+
+
+---
+
+### Sound
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Sound interface {
+	// Play plays the sound. This function may play other sounds too. It is always called when World.PlaySound
+	// is called with the sound.
+	Play(w *World, pos mgl64.Vec3)
+}
+```
+
+
+
+Sound represents a sound that may be added to the world. When done, viewers of the world may be able to
+hear the sound.
+
+
+
+
+
+
+---
+
+### Structure
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Structure interface {
+	// Dimensions returns the dimensions of the structure. It returns an int array with the width, height and
+	// length respectively.
+	Dimensions() [3]int
+	// At returns the block at a specific location in the structure. When the structure is placed in the
+	// world, this method is called for every location within the dimensions of the structure. Additionally,
+	// At can return a Liquid to be placed in the same place as the block.
+	// At can return nil to not place any block at the position. Returning Air will set any block at that
+	// position to air, but returning nil will not do anything.
+	// In addition to the coordinates, At will have a function passed that may be used to get a block at a
+	// specific position. In scope of At(), structures should use this over World.Block(), due to the way
+	// chunks are locked.
+	At(x, y, z int, blockAt func(x, y, z int) Block) (Block, Liquid)
+}
+```
+
+
+
+Structure represents a structure which may be placed in the world. It has fixed dimensions.
+
+
+
+
+
+
+---
+
+### SubChunkPos
+
+
+
+
+```go
+type SubChunkPos [3]int32
+```
+
+
+
+SubChunkPos holds the position of a sub-chunk. The type is provided as a utility struct for keeping track of a
+sub-chunk's position. Sub-chunks do not themselves keep track of that. Sub-chunk positions are different from
+block positions in the way that increasing the X/Y/Z by one means increasing the absolute value on the X/Y/Z axis in
+terms of blocks by 16.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="String">
+```go
+func (SubChunkPos) String() string
+```
+
+String implements fmt.Stringer and returns (x, y, z).
+
+</Accordion>
+
+<Accordion title="X">
+```go
+func (SubChunkPos) X() int32
+```
+
+X returns the X coordinate of the sub-chunk position.
+
+</Accordion>
+
+<Accordion title="Y">
+```go
+func (SubChunkPos) Y() int32
+```
+
+Y returns the Y coordinate of the sub-chunk position.
+
+</Accordion>
+
+<Accordion title="Z">
+```go
+func (SubChunkPos) Z() int32
+```
+
+Z returns the Z coordinate of the sub-chunk position.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### TickerBlock
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type TickerBlock interface {
+	NBTer
+	Tick(currentTick int64, pos cube.Pos, tx *Tx)
+}
+```
+
+
+
+TickerBlock is an implementation of NBTer with an additional Tick method that is called on every world
+tick for loaded blocks that implement this interface.
+
+
+
+
+
+
+---
+
+### TickerEntity
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type TickerEntity interface {
+	Entity
+	// Tick ticks the Entity with the current World and tick passed.
+	Tick(tx *Tx, current int64)
+}
+```
+
+
+
+TickerEntity represents an Entity that has a Tick method which should be called every time the Entity is
+ticked every 20th of a second.
+
+
+
+
+
+
+---
+
+### Tx
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Tx struct {
+	w	*World
+	closed	bool
+}
+```
+
+
+
+Tx represents a synchronised transaction performed on a World. Most
+operations on a World can only be called through a transaction. Tx is not
+safe for use by multiple goroutines concurrently.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AddEntity">
+```go
+func (*Tx) AddEntity(e *EntityHandle) Entity
+```
+
+AddEntity adds an EntityHandle to a World. The Entity will be visible to all
+viewers of the World that have the chunk at the EntityHandle's position. If
+the chunk that the EntityHandle is in is not yet loaded, it will first be
+loaded. AddEntity panics if the EntityHandle is already in a world.
+AddEntity returns the Entity created by the EntityHandle.
+
+</Accordion>
+
+<Accordion title="AddParticle">
+```go
+func (*Tx) AddParticle(pos mgl64.Vec3, p Particle)
+```
+
+AddParticle spawns a Particle at a given position in the World. Viewers that
+are viewing the chunk will be shown the particle.
+
+</Accordion>
+
+<Accordion title="Biome">
+```go
+func (*Tx) Biome(pos cube.Pos) Biome
+```
+
+Biome reads the Biome at the position passed. If a chunk is not yet loaded
+at that position, the chunk is loaded, or generated if it could not be found
+in the world save, and the Biome returned.
+
+</Accordion>
+
+<Accordion title="Block">
+```go
+func (*Tx) Block(pos cube.Pos) Block
+```
+
+Block reads a block from the position passed. If a chunk is not yet loaded
+at that position, the chunk is loaded, or generated if it could not be found
+in the world save, and the block returned.
+
+</Accordion>
+
+<Accordion title="BuildStructure">
+```go
+func (*Tx) BuildStructure(pos cube.Pos, s Structure)
+```
+
+BuildStructure builds a Structure passed at a specific position in the
+world. Unlike SetBlock, it takes a Structure implementation, which provides
+blocks to be placed at a specific location. BuildStructure is specifically
+optimised to be able to process a large batch of chunks simultaneously and
+will do so within much less time than separate SetBlock calls would. The
+method operates on a per-chunk basis, setting all blocks within a single
+chunk part of the Structure before moving on to the next chunk.
+
+</Accordion>
+
+<Accordion title="Entities">
+```go
+func (*Tx) Entities() iter.Seq[Entity]
+```
+
+Entities returns an iterator that yields all entities in the World.
+
+</Accordion>
+
+<Accordion title="EntitiesWithin">
+```go
+func (*Tx) EntitiesWithin(box cube.BBox) iter.Seq[Entity]
+```
+
+EntitiesWithin returns an iterator that yields all entities contained within
+the cube.BBox passed.
+
+</Accordion>
+
+<Accordion title="HighestBlock">
+```go
+func (*Tx) HighestBlock(x, z int) int
+```
+
+HighestBlock looks up the highest non-air block in the World at a specific x
+and z. The y value of the highest block is returned, or 0 if no blocks were
+present in the column.
+
+</Accordion>
+
+<Accordion title="HighestLightBlocker">
+```go
+func (*Tx) HighestLightBlocker(x, z int) int
+```
+
+HighestLightBlocker gets the Y value of the highest fully light blocking
+block at the x and z values passed in the World.
+
+</Accordion>
+
+<Accordion title="Light">
+```go
+func (*Tx) Light(pos cube.Pos) uint8
+```
+
+Light returns the light level at the position passed. This is the highest of
+the sky- and block light. The light value returned is a value in the range
+0-15, where 0 means there is no light present, whereas 15 means the block is
+fully lit.
+
+</Accordion>
+
+<Accordion title="Liquid">
+```go
+func (*Tx) Liquid(pos cube.Pos) (Liquid, bool)
+```
+
+Liquid attempts to return a Liquid block at the position passed. This
+Liquid may be in the foreground or in any other layer. If found, the Liquid
+is returned. If not, the bool returned is false.
+
+</Accordion>
+
+<Accordion title="PlayEntityAnimation">
+```go
+func (*Tx) PlayEntityAnimation(e Entity, a EntityAnimation)
+```
+
+PlayEntityAnimation plays an animation on an entity in the World. The animation is played for all viewers
+of the entity.
+
+</Accordion>
+
+<Accordion title="PlaySound">
+```go
+func (*Tx) PlaySound(pos mgl64.Vec3, s Sound)
+```
+
+PlaySound plays a sound at a specific position in the World. Viewers of that
+position will be able to hear the sound if they are close enough.
+
+</Accordion>
+
+<Accordion title="Players">
+```go
+func (*Tx) Players() iter.Seq[Entity]
+```
+
+Players returns an iterator that yields all player entities in the World.
+
+</Accordion>
+
+<Accordion title="RainingAt">
+```go
+func (*Tx) RainingAt(pos cube.Pos) bool
+```
+
+RainingAt checks if it is raining at a specific cube.Pos in the World. True
+is returned if it is raining, if the temperature is high enough in the biome
+for it not to be snow and if the block is above the top-most obstructing
+block.
+
+</Accordion>
+
+<Accordion title="Range">
+```go
+func (*Tx) Range() cube.Range
+```
+
+Range returns the lower and upper bounds of the World that the Tx is
+operating on.
+
+</Accordion>
+
+<Accordion title="RemoveEntity">
+```go
+func (*Tx) RemoveEntity(e Entity) *EntityHandle
+```
+
+RemoveEntity removes an Entity from the World that is currently present in
+it. Any viewers of the Entity will no longer be able to see it.
+RemoveEntity returns the EntityHandle of the Entity. After removing an Entity
+from the World, the Entity is no longer usable.
+
+</Accordion>
+
+<Accordion title="ScheduleBlockUpdate">
+```go
+func (*Tx) ScheduleBlockUpdate(pos cube.Pos, b Block, delay time.Duration)
+```
+
+ScheduleBlockUpdate schedules a block update at the position passed for the
+block type passed after a specific delay. If the block at that position does
+not handle block updates, nothing will happen.
+Block updates are both block and position specific. A block update is only
+scheduled if no block update with the same position and block type is
+already scheduled at a later time than the newly scheduled update.
+
+</Accordion>
+
+<Accordion title="SetBiome">
+```go
+func (*Tx) SetBiome(pos cube.Pos, b Biome)
+```
+
+SetBiome sets the Biome at the position passed. If a chunk is not yet loaded
+at that position, the chunk is first loaded or generated if it could not be
+found in the world save.
+
+</Accordion>
+
+<Accordion title="SetBlock">
+```go
+func (*Tx) SetBlock(pos cube.Pos, b Block, opts *SetOpts)
+```
+
+SetBlock writes a block to the position passed. If a chunk is not yet loaded
+at that position, the chunk is first loaded or generated if it could not be
+found in the world save. SetBlock panics if the block passed has not yet
+been registered using RegisterBlock(). Nil may be passed as the block to set
+the block to air.
+
+A SetOpts struct may be passed to additionally modify behaviour of SetBlock,
+specifically to improve performance under specific circumstances. Nil should
+be passed where performance is not essential, to make sure the world is
+updated adequately.
+
+SetBlock should be avoided in situations where performance is critical when
+needing to set a lot of blocks to the world. BuildStructure may be used
+instead.
+
+</Accordion>
+
+<Accordion title="SetLiquid">
+```go
+func (*Tx) SetLiquid(pos cube.Pos, b Liquid)
+```
+
+SetLiquid sets a Liquid at a specific position in the World. Unlike
+SetBlock, SetLiquid will not necessarily overwrite any existing blocks. It
+will instead be in the same position as a block currently there, unless
+there already is a Liquid at that position, in which case it will be
+overwritten. If nil is passed for the Liquid, any Liquid currently present
+will be removed.
+
+</Accordion>
+
+<Accordion title="SkyLight">
+```go
+func (*Tx) SkyLight(pos cube.Pos) uint8
+```
+
+SkyLight returns the skylight level at the position passed. This light level
+is not influenced by blocks that emit light, such as torches. The light
+value, similarly to Light, is a value in the range 0-15, where 0 means no
+light is present.
+
+</Accordion>
+
+<Accordion title="SnowingAt">
+```go
+func (*Tx) SnowingAt(pos cube.Pos) bool
+```
+
+SnowingAt checks if it is snowing at a specific cube.Pos in the World. True
+is returned if the temperature in the Biome at that position is sufficiently
+low, if it is raining and if it's above the top-most obstructing block.
+
+</Accordion>
+
+<Accordion title="Temperature">
+```go
+func (*Tx) Temperature(pos cube.Pos) float64
+```
+
+Temperature returns the temperature in the World at a specific position.
+Higher altitudes and different biomes influence the temperature returned.
+
+</Accordion>
+
+<Accordion title="ThunderingAt">
+```go
+func (*Tx) ThunderingAt(pos cube.Pos) bool
+```
+
+ThunderingAt checks if it is thundering at a specific cube.Pos in the World.
+True is returned if RainingAt returns true and if it is thundering in the
+world.
+
+</Accordion>
+
+<Accordion title="Viewers">
+```go
+func (*Tx) Viewers(pos mgl64.Vec3) []Viewer
+```
+
+Viewers returns all viewers viewing the position passed.
+
+</Accordion>
+
+<Accordion title="World">
+```go
+func (*Tx) World() *World
+```
+
+World returns the World of the Tx. It panics if the transaction was already
+marked complete.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Viewer
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Viewer interface {
+	// ViewEntity views the Entity passed. It is called for every Entity that the viewer may encounter in the
+	// world, either by moving entities or by moving the viewer using a world.Loader.
+	ViewEntity(e Entity)
+	// HideEntity stops viewing the Entity passed. It is called for every Entity that leaves the viewing range
+	// of the viewer, either by its movement or the movement of the viewer using a world.Loader.
+	HideEntity(e Entity)
+	// ViewEntityGameMode views the game mode of the Entity passed. This is necessary for game-modes like spectator,
+	// which may update how the Entity is viewed for others.
+	ViewEntityGameMode(e Entity)
+	// ViewEntityMovement views the movement of an Entity. The Entity is moved with a delta position, yaw and
+	// pitch, which, when applied to the respective values of the Entity, will result in the final values.
+	ViewEntityMovement(e Entity, pos mgl64.Vec3, rot cube.Rotation, onGround bool)
+	// ViewEntityVelocity views the velocity of an Entity. It is called right before a call to
+	// ViewEntityMovement so that the Viewer may interpolate the movement itself.
+	ViewEntityVelocity(e Entity, vel mgl64.Vec3)
+	// ViewEntityTeleport views the teleportation of an Entity. The Entity is immediately moved to a different
+	// target position.
+	ViewEntityTeleport(e Entity, pos mgl64.Vec3)
+	// ViewFurnaceUpdate updates a furnace for the associated session based on previous times.
+	ViewFurnaceUpdate(prevCookTime, cookTime, prevRemainingFuelTime, remainingFuelTime, prevMaxFuelTime, maxFuelTime time.Duration)
+	// ViewBrewingUpdate updates a brewing stand for the associated session based on previous times.
+	ViewBrewingUpdate(prevBrewTime, brewTime time.Duration, prevFuelAmount, fuelAmount, prevFuelTotal, fuelTotal int32)
+	// ViewChunk views the chunk passed at a particular position. It is called for every chunk loaded using
+	// the world.Loader.
+	ViewChunk(pos ChunkPos, dim Dimension, blockEntities map[cube.Pos]Block, c *chunk.Chunk)
+	// ViewTime views the time of the world. It is called every time the time is changed or otherwise every
+	// second.
+	ViewTime(t int)
+	// ViewTimeCycle controls the automatic time-of-day cycle (day and night) in the world for this viewer.
+	ViewTimeCycle(doDayLightCycle bool)
+	// ViewEntityItems views the items currently held by an Entity that is able to equip items.
+	ViewEntityItems(e Entity)
+	// ViewEntityArmour views the items currently equipped as armour by the Entity.
+	ViewEntityArmour(e Entity)
+	// ViewEntityAction views an action performed by an Entity. Available actions may be found in the `action`
+	// package, and include things such as swinging an arm.
+	ViewEntityAction(e Entity, a EntityAction)
+	// ViewEntityState views the current state of an Entity. It is called whenever an Entity changes its
+	// physical appearance, for example when sprinting.
+	ViewEntityState(e Entity)
+	// ViewEntityAnimation starts viewing an animation performed by an Entity.
+	ViewEntityAnimation(e Entity, a EntityAnimation)
+	// ViewParticle views a particle spawned at a given position in the world. It is called when a particle,
+	// for example a block breaking particle, is spawned near the player.
+	ViewParticle(pos mgl64.Vec3, p Particle)
+	// ViewSound is called when a sound is played in the world.
+	ViewSound(pos mgl64.Vec3, s Sound)
+	// ViewBlockUpdate views the updating of a block. It is called when a block is set at the position passed
+	// to the method.
+	ViewBlockUpdate(pos cube.Pos, b Block, layer int)
+	// ViewBlockAction views an action performed by a block. Available actions may be found in the `action`
+	// package, and include things such as a chest opening.
+	ViewBlockAction(pos cube.Pos, a BlockAction)
+	// ViewEmote views an emote being performed by another Entity.
+	ViewEmote(e Entity, emote uuid.UUID)
+	// ViewSkin views the current skin of a player.
+	ViewSkin(e Entity)
+	// ViewWorldSpawn views the current spawn location of the world.
+	ViewWorldSpawn(pos cube.Pos)
+	// ViewWeather views the weather of the world, including rain and thunder.
+	ViewWeather(raining, thunder bool)
+}
+```
+
+
+
+Viewer is a viewer in the world. It can view changes that are made in the world, such as the addition of
+entities and the changes of blocks.
+
+
+
+
+
+
+---
+
+### World
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type World struct {
+	conf	Config
+	ra	cube.Range
+
+	queue		chan transaction
+	queueClosing	chan struct{}
+	queueing	sync.WaitGroup
+
+	// advance is a bool that specifies if this World should advance the current
+	// tick, time and weather saved in the Settings struct held by the World.
+	advance	bool
+
+	o	sync.Once
+
+	set	*Settings
+	handler	atomic.Pointer[Handler]
+
+	weather
+
+	closing	chan struct{}
+	running	sync.WaitGroup
+
+	// chunks holds a cache of chunks currently loaded. These chunks are cleared
+	// from this map after some time of not being used.
+	chunks	map[ChunkPos]*Column
+
+	// entities holds a map of entities currently loaded and the last ChunkPos
+	// that the Entity was in. These are tracked so that a call to RemoveEntity
+	// can find the correct Entity.
+	entities	map[*EntityHandle]ChunkPos
+
+	r	*rand.Rand
+
+	// scheduledUpdates is a map of tick time values indexed by the block
+	// position at which an update is scheduled. If the current tick exceeds the
+	// tick value passed, the block update will be performed and the entry will
+	// be removed from the map.
+	scheduledUpdates	*scheduledTickQueue
+	neighbourUpdates	[]neighbourUpdate
+
+	viewerMu	sync.Mutex
+	viewers		map[*Loader]Viewer
+}
+```
+
+
+
+World implements a Minecraft world. It manages all aspects of what players
+can see, such as blocks, entities and particles. World generally provides a
+synchronised state: All entities, blocks and players usually operate in this
+world, so World ensures that all its methods will always be safe for
+simultaneous calls. A nil *World is safe to use but not functional.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    weather: {
+      description: '',
+      type: 'weather',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Close">
+```go
+func (*World) Close() error
+```
+
+Close closes the world and saves all chunks currently loaded.
+
+</Accordion>
+
+<Accordion title="DefaultGameMode">
+```go
+func (*World) DefaultGameMode() GameMode
+```
+
+DefaultGameMode returns the default game mode of the world. When players
+join, they are given this game mode. The default game mode may be changed
+using SetDefaultGameMode().
+
+</Accordion>
+
+<Accordion title="Difficulty">
+```go
+func (*World) Difficulty() Difficulty
+```
+
+Difficulty returns the difficulty of the world. Properties of mobs in the
+world and the player's hunger will depend on this difficulty.
+
+</Accordion>
+
+<Accordion title="Dimension">
+```go
+func (*World) Dimension() Dimension
+```
+
+Dimension returns the Dimension assigned to the World in world.New. The sky
+colour and behaviour of a variety of world features differ based on the
+Dimension.
+
+</Accordion>
+
+<Accordion title="EntityRegistry">
+```go
+func (*World) EntityRegistry() EntityRegistry
+```
+
+EntityRegistry returns the EntityRegistry that was passed to the World's
+Config upon construction.
+
+</Accordion>
+
+<Accordion title="Exec">
+```go
+func (*World) Exec(f ExecFunc) <-chan struct{}
+```
+
+Exec performs a synchronised transaction f on a World. Exec returns a channel
+that is closed once the transaction is complete.
+
+</Accordion>
+
+<Accordion title="Handle">
+```go
+func (*World) Handle(h Handler)
+```
+
+Handle changes the current Handler of the world. As a result, events called
+by the world will call the methods of the Handler passed. Handle sets the
+world's Handler to NopHandler if nil is passed.
+
+</Accordion>
+
+<Accordion title="Handler">
+```go
+func (*World) Handler() Handler
+```
+
+Handler returns the Handler of the world.
+
+</Accordion>
+
+<Accordion title="Name">
+```go
+func (*World) Name() string
+```
+
+Name returns the display name of the world. Generally, this name is
+displayed at the top of the player list in the pause screen in-game. If a
+provider is set, the name will be updated according to the name that it
+provides.
+
+</Accordion>
+
+<Accordion title="PlayerSpawn">
+```go
+func (*World) PlayerSpawn(id uuid.UUID) cube.Pos
+```
+
+PlayerSpawn returns the spawn position of a player with a UUID in this World.
+
+</Accordion>
+
+<Accordion title="PortalDestination">
+```go
+func (*World) PortalDestination(dim Dimension) *World
+```
+
+PortalDestination returns the destination World for a portal of a specific
+Dimension. If no destination World could be found, the current World is
+returned. Calling PortalDestination(Nether) on an Overworld World returns
+Nether, while calling PortalDestination(Nether) on a Nether World will
+return the Overworld, for instance.
+
+</Accordion>
+
+<Accordion title="Range">
+```go
+func (*World) Range() cube.Range
+```
+
+Range returns the range in blocks of the World (min and max). It is
+equivalent to calling World.Dimension().Range().
+
+</Accordion>
+
+<Accordion title="Save">
+```go
+func (*World) Save()
+```
+
+Save saves the World to the provider.
+
+</Accordion>
+
+<Accordion title="SetDefaultGameMode">
+```go
+func (*World) SetDefaultGameMode(mode GameMode)
+```
+
+SetDefaultGameMode changes the default game mode of the world. When players
+join, they are then given that game mode.
+
+</Accordion>
+
+<Accordion title="SetDifficulty">
+```go
+func (*World) SetDifficulty(d Difficulty)
+```
+
+SetDifficulty changes the difficulty of a world.
+
+</Accordion>
+
+<Accordion title="SetPlayerSpawn">
+```go
+func (*World) SetPlayerSpawn(id uuid.UUID, pos cube.Pos)
+```
+
+SetPlayerSpawn sets the spawn position of a player with a UUID in this
+World. If the player has a spawn in the world, the player will be teleported
+to this location on respawn.
+
+</Accordion>
+
+<Accordion title="SetSpawn">
+```go
+func (*World) SetSpawn(pos cube.Pos)
+```
+
+SetSpawn sets the spawn of the world to a different position. The player
+will be spawned in the center of this position when newly joining.
+
+</Accordion>
+
+<Accordion title="SetTickRange">
+```go
+func (*World) SetTickRange(v int)
+```
+
+SetTickRange sets the range in chunks around each Viewer that will have the
+chunks (their blocks and entities) ticked when the World is ticked.
+
+</Accordion>
+
+<Accordion title="SetTime">
+```go
+func (*World) SetTime(new int)
+```
+
+SetTime sets the new time of the world. SetTime will always work, regardless
+of whether the time is stopped or not.
+
+</Accordion>
+
+<Accordion title="Spawn">
+```go
+func (*World) Spawn() cube.Pos
+```
+
+Spawn returns the spawn of the world. Every new player will by default spawn
+on this position in the world when joining.
+
+</Accordion>
+
+<Accordion title="StartRaining">
+```go
+func (World) StartRaining(dur time.Duration)
+```
+
+StartRaining makes it rain in the World. The time.Duration passed will
+determine how long it will rain.
+
+</Accordion>
+
+<Accordion title="StartThundering">
+```go
+func (World) StartThundering(dur time.Duration)
+```
+
+StartThundering makes it thunder in the World. The time.Duration passed will
+determine how long it will thunder. StartThundering will also make it rain
+if it wasn't already raining. In this case the rain will, like the thunder,
+last for the time.Duration passed.
+
+</Accordion>
+
+<Accordion title="StartTime">
+```go
+func (*World) StartTime()
+```
+
+StartTime restarts the time in the world. When called, the time will start
+cycling again and the day/night cycle will continue. The time may be stopped
+again by calling World.StopTime().
+
+</Accordion>
+
+<Accordion title="StartWeatherCycle">
+```go
+func (World) StartWeatherCycle()
+```
+
+StartWeatherCycle enables weather cycle of the World.
+
+</Accordion>
+
+<Accordion title="StopRaining">
+```go
+func (World) StopRaining()
+```
+
+StopRaining makes it stop raining in the World.
+
+</Accordion>
+
+<Accordion title="StopThundering">
+```go
+func (World) StopThundering()
+```
+
+StopThundering makes it stop thundering in the current world.
+
+</Accordion>
+
+<Accordion title="StopTime">
+```go
+func (*World) StopTime()
+```
+
+StopTime stops the time in the world. When called, the time will no longer
+cycle and the world will remain at the time when StopTime is called. The
+time may be restarted by calling World.StartTime().
+
+</Accordion>
+
+<Accordion title="StopWeatherCycle">
+```go
+func (World) StopWeatherCycle()
+```
+
+StopWeatherCycle disables weather cycle of the World.
+
+</Accordion>
+
+<Accordion title="Time">
+```go
+func (*World) Time() int
+```
+
+Time returns the current time of the world. The time is incremented every
+1/20th of a second, unless World.StopTime() is called.
+
+</Accordion>
+
+<Accordion title="TimeCycle">
+```go
+func (*World) TimeCycle() bool
+```
+
+TimeCycle returns whether time cycle is enabled.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

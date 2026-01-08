@@ -1,0 +1,906 @@
+---
+title: "cmd"
+description: "Package cmd implements a Minecraft specific command system, which may be used simply by 'plugging' it in"
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# cmd
+
+
+```go
+import "github.com/df-mc/dragonfly/server/cmd"
+```
+
+
+
+Package cmd implements a Minecraft specific command system, which may be used simply by 'plugging' it in
+and sending commands registered in an AvailableCommandsPacket.
+
+The cmd package handles commands in a specific way: It requires a struct to be passed to the cmd.New()
+function, which implements the Runnable interface. For every exported field in the struct, executing the
+command will result in the parsing of the arguments using the types of the fields of the struct, in the
+order that they appear in. Fields unexported or ignored using the `cmd:"-"` struct tag (see below) have
+their values copied but retained.
+
+A Runnable may have exported fields only of the following types:
+int8, int16, int32, int64, int, uint8, uint16, uint32, uint64, uint,
+float32, float64, string, bool, mgl64.Vec3, Varargs, []Target, cmd.SubCommand, Optional[T] (to make a parameter
+optional), or a type that implements the cmd.Parameter or cmd.Enum interface. cmd.Enum implementations must be of the
+type string.
+Fields in the Runnable struct may have `cmd:` struct tag to specify the name and suffix of a parameter as such:
+
+```go
+type T struct {
+    Param int `cmd:"name,suffix"`
+}
+```
+
+If no name is set, the field name is used. Additionally, the name as specified in the struct tag may be '-' to make
+the parser ignore the field. In this case, the field does not have to be of one of the types above.
+
+Commands may be registered using the cmd.Register() method. By itself, this method will not ensure that the
+client will be able to use the command: The user of the cmd package must handle commands itself and run the
+appropriate one using the cmd.ByAlias function.
+
+
+
+
+
+## Variables
+
+<Accordions>
+
+<Accordion title="MessageBooleanInvalid">
+```go
+var MessageBooleanInvalid 
+```
+
+</Accordion>
+
+<Accordion title="MessageNoTargets">
+```go
+var MessageNoTargets 
+```
+
+</Accordion>
+
+<Accordion title="MessageNumberInvalid">
+```go
+var MessageNumberInvalid 
+```
+
+</Accordion>
+
+<Accordion title="MessageParameterInvalid">
+```go
+var MessageParameterInvalid 
+```
+
+</Accordion>
+
+<Accordion title="MessagePlayerNotFound">
+```go
+var MessagePlayerNotFound 
+```
+
+</Accordion>
+
+<Accordion title="MessageSyntax">
+```go
+var MessageSyntax 
+```
+
+</Accordion>
+
+<Accordion title="MessageUnknown">
+```go
+var MessageUnknown 
+```
+
+</Accordion>
+
+<Accordion title="MessageUsage">
+```go
+var MessageUsage 
+```
+
+</Accordion>
+
+</Accordions>
+
+
+
+## Functions
+
+<Accordions>
+
+<Accordion title="Commands">
+```go
+func Commands() map[string]Command
+```
+
+
+Commands returns a map of all registered commands indexed by the alias they were registered with.
+
+</Accordion>
+
+<Accordion title="Register">
+```go
+func Register(command Command)
+```
+
+
+Register registers a command with its name and all aliases that it has. Any command with the same name or
+aliases will be overwritten.
+
+</Accordion>
+
+</Accordions>
+
+
+
+## Types
+
+
+### Allower
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Allower interface {
+	// Allow checks if the Source passed is allowed to execute the command. True is returned if the Source is
+	// allowed to execute the command.
+	Allow(src Source) bool
+}
+```
+
+
+
+Allower may be implemented by a type also implementing Runnable to limit the sources that may run the
+command.
+
+
+
+
+
+
+---
+
+### Command
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Command struct {
+	v		[]reflect.Value
+	name		string
+	description	string
+	usage		string
+	aliases		[]string
+}
+```
+
+
+
+Command is a wrapper around a Runnable. It provides additional identity and utility methods for the actual
+runnable command so that it may be identified more easily.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Aliases">
+```go
+func (Command) Aliases() []string
+```
+
+Aliases returns a list of aliases for the command. In addition to the name of the command, the command may
+be called using one of these aliases.
+
+</Accordion>
+
+<Accordion title="Description">
+```go
+func (Command) Description() string
+```
+
+Description returns the description of the command. The description is shown in the /help list, and
+provides information on the functionality of a command.
+
+</Accordion>
+
+<Accordion title="Execute">
+```go
+func (Command) Execute(args string, source Source, tx *world.Tx)
+```
+
+Execute executes the Command as a source with the args passed. The args are parsed assuming they do not
+start with the command name. Execute will attempt to parse and execute one Runnable at a time. If one of
+the Runnable was able to parse args correctly, it will be executed and no more Runnables will be attempted
+to be run.
+If parsing of all Runnables was unsuccessful, a command output with an error message is sent to the Source
+passed, and the Run method of the Runnables are not called.
+The Source passed must not be nil. The method will panic if a nil Source is passed.
+
+</Accordion>
+
+<Accordion title="Name">
+```go
+func (Command) Name() string
+```
+
+Name returns the name of the command. The name is guaranteed to be lowercase and will never have spaces in
+it. This name is used to call the command, and is shown in the /help list.
+
+</Accordion>
+
+<Accordion title="Params">
+```go
+func (Command) Params(src Source) [][]ParamInfo
+```
+
+Params returns a list of all parameters of the runnables. No assumptions should be done on the values that
+they hold: Only the types are guaranteed to be consistent.
+
+</Accordion>
+
+<Accordion title="Runnables">
+```go
+func (Command) Runnables(src Source) map[int]Runnable
+```
+
+Runnables returns a map of all Runnable implementations of the Command that a Source can execute.
+
+</Accordion>
+
+<Accordion title="String">
+```go
+func (Command) String() string
+```
+
+String returns the usage of the command. The usage will be roughly equal to the one showed by the client
+in-game.
+
+</Accordion>
+
+<Accordion title="Usage">
+```go
+func (Command) Usage() string
+```
+
+Usage returns the usage of the command. The usage will be roughly equal to the one showed by the client
+in-game.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Enum
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Enum interface {
+	// Type returns the type of the enum. This type shows up client-side in the command usage, in the spot
+	// where parameter types otherwise are.
+	// Type names returned are used as an identifier for this enum type. Different Enum implementations must
+	// return a different string in the Type method.
+	Type() string
+	// Options should return a list of options that show up on the client side. The command will ensure that
+	// the argument passed to the enum parameter will be equal to one of these options. The provided Source
+	// can also be used to change the enums for each player.
+	Options(source Source) []string
+}
+```
+
+
+
+Enum is an interface for enum-type parameters. Users may have types as command parameters that implement
+this parameter in order to allow a specific set of options only.
+Enum implementations must be of the type string, for example:
+
+```go
+type GameMode string
+func (GameMode) Type() string { return "GameMode" }
+func (GameMode) Options(Source) []string { return []string{"survival", "creative"} }
+```
+
+Their values will then automatically be set to whichever option returned in Enum.Options is selected by
+the user.
+
+
+
+
+
+
+---
+
+### Line
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Line struct {
+	args	[]string
+	seen	[]string
+	src	Source
+	cmd	Command
+}
+```
+
+
+
+Line represents a command line holding command arguments that were passed upon the execution of the
+command. It is a convenience wrapper around a string slice.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Leftover">
+```go
+func (*Line) Leftover() []string
+```
+
+Leftover takes the leftover arguments from the command line.
+
+</Accordion>
+
+<Accordion title="Len">
+```go
+func (*Line) Len() int
+```
+
+Len returns the leftover length of the arguments in the command line.
+
+</Accordion>
+
+<Accordion title="Next">
+```go
+func (*Line) Next() (string, bool)
+```
+
+Next reads the next argument from the command line and returns it. If there were no more arguments to
+consume, false is returned.
+
+</Accordion>
+
+<Accordion title="NextN">
+```go
+func (*Line) NextN(n int) ([]string, bool)
+```
+
+NextN reads the next N arguments from the command line and returns them. If there were not enough arguments
+(n arguments), false is returned.
+
+</Accordion>
+
+<Accordion title="RemoveN">
+```go
+func (*Line) RemoveN(n int)
+```
+
+RemoveN consumes the next N arguments from the command line.
+
+</Accordion>
+
+<Accordion title="RemoveNext">
+```go
+func (*Line) RemoveNext()
+```
+
+RemoveNext consumes the next argument from the command line.
+
+</Accordion>
+
+<Accordion title="SyntaxError">
+```go
+func (*Line) SyntaxError() error
+```
+
+SyntaxError returns a translated syntax error.
+
+</Accordion>
+
+<Accordion title="UsageError">
+```go
+func (*Line) UsageError() error
+```
+
+UsageError returns a translated usage error.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### NamedTarget
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type NamedTarget interface {
+	Target
+	// Name returns a name of the Target. Note that this name needs not to be and is not unique for a Target.
+	Name() string
+}
+```
+
+
+
+NamedTarget is a Target that has a name.
+
+
+
+
+
+
+---
+
+### Optional
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Optional[T any] struct {
+	val	T
+	set	bool
+}
+```
+
+
+
+Optional is an argument type that may be used to make any of the available parameter types optional. Optional command
+parameters may only occur at the end of the Runnable struct. No non-optional parameter is allowed after an optional
+parameter.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Load">
+```go
+func (Optional[T]) Load() (T, bool)
+```
+
+Load returns the value specified upon executing the command and a bool that is true if the parameter was filled out
+by the Source.
+
+</Accordion>
+
+<Accordion title="LoadOr">
+```go
+func (Optional[T]) LoadOr(or T) T
+```
+
+LoadOr returns the value specified upon executing the command, or a value 'or' if the parameter was not filled out
+by the Source.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Output
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Output struct {
+	errors		[]error
+	messages	[]fmt.Stringer
+}
+```
+
+
+
+Output holds the output of a command execution. It holds success messages
+and error messages, which the source of a command execution gets sent.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Error">
+```go
+func (*Output) Error(a ...any)
+```
+
+Error formats an error message and adds it to the command output.
+
+</Accordion>
+
+<Accordion title="ErrorCount">
+```go
+func (*Output) ErrorCount() int
+```
+
+ErrorCount returns the count of errors that the command output has.
+
+</Accordion>
+
+<Accordion title="Errorf">
+```go
+func (*Output) Errorf(format string, a ...any)
+```
+
+Errorf formats an error message and adds it to the command output.
+
+</Accordion>
+
+<Accordion title="Errors">
+```go
+func (*Output) Errors() []error
+```
+
+Errors returns a list of all errors added to the command output. Usually
+only one error message is set: After one error message, execution of a
+command typically terminates.
+
+</Accordion>
+
+<Accordion title="Errort">
+```go
+func (*Output) Errort(t chat.Translation, a ...any)
+```
+
+Errort adds a translation as an error message and parameterises it using the
+arguments passed. Errort panics if the number of arguments is incorrect.
+
+</Accordion>
+
+<Accordion title="MessageCount">
+```go
+func (*Output) MessageCount() int
+```
+
+MessageCount returns the count of (success) messages that the command output
+has.
+
+</Accordion>
+
+<Accordion title="Messages">
+```go
+func (*Output) Messages() []fmt.Stringer
+```
+
+Messages returns a list of all messages added to the command output. The
+amount of messages present depends on the command called.
+
+</Accordion>
+
+<Accordion title="Print">
+```go
+func (*Output) Print(a ...any)
+```
+
+Print formats a (success) message and adds it to the command output.
+
+</Accordion>
+
+<Accordion title="Printf">
+```go
+func (*Output) Printf(format string, a ...any)
+```
+
+Printf formats a (success) message and adds it to the command output.
+
+</Accordion>
+
+<Accordion title="Printt">
+```go
+func (*Output) Printt(t chat.Translation, a ...any)
+```
+
+Printt adds a translation as a (success) message and parameterises it using
+the arguments passed. Printt panics if the number of arguments is incorrect.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ParamDescriber
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type ParamDescriber interface {
+	DescribeParams(src Source) []ParamInfo
+}
+```
+
+
+
+ParamDescriber may be implemented by a Runnable to programmatically describe its parameters
+without relying on struct field reflection.
+
+
+
+
+
+
+---
+
+### ParamInfo
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ParamInfo struct {
+	Name		string
+	Value		any
+	Optional	bool
+	Suffix		string
+}
+```
+
+
+
+ParamInfo holds the information of a parameter in a Runnable. Information of a parameter may be obtained
+by calling Command.Params().
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Name: {
+      description: '',
+      type: 'string',
+    },
+    Value: {
+      description: '',
+      type: 'any',
+    },
+    Optional: {
+      description: '',
+      type: 'bool',
+    },
+    Suffix: {
+      description: '',
+      type: 'string',
+    },
+  }}
+/>
+
+
+
+
+
+---
+
+### Parameter
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Parameter interface {
+	// Parse takes an arbitrary amount of arguments from the command Line passed and parses it, so that it can
+	// store it to value v. If the arguments cannot be parsed from the Line, an error should be returned.
+	Parse(line *Line, v reflect.Value) error
+	// Type returns the type of the parameter. It will show up in the usage of the command, and, if one of the
+	// known type names, will also show up client-side.
+	Type() string
+}
+```
+
+
+
+Parameter is an interface for a generic parameters. Users may have types as command parameters that
+implement this parameter.
+
+
+
+
+
+
+---
+
+### Runnable
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Runnable interface {
+	// Run runs the Command, using the arguments passed to the Command. The source is passed to the method,
+	// which is the source of the Command execution, and the output is passed, to which messages may be
+	// added which get sent to the source.
+	Run(src Source, o *Output, tx *world.Tx)
+}
+```
+
+
+
+Runnable represents a Command that may be run by a Command source. The Command must be a struct type and
+its fields represent the parameters of the Command. When the Run method is called, these fields are set
+and may be used for behaviour in the Command. Fields unexported or ignored using the `cmd:"-"` struct tag (see
+below) have their values copied but retained.
+A Runnable may have exported fields only of the following types:
+int8, int16, int32, int64, int, uint8, uint16, uint32, uint64, uint,
+float32, float64, string, bool, mgl64.Vec3, Varargs, []Target, cmd.SubCommand, Optional[T] (to make a parameter
+optional), or a type that implements the cmd.Parameter or cmd.Enum interface. cmd.Enum implementations must be of the
+type string.
+Fields in the Runnable struct may have `cmd:` struct tag to specify the name and suffix of a parameter as such:
+
+```go
+type T struct {
+    Param int `cmd:"name,suffix"`
+}
+```
+
+If no name is set, the field name is used. Additionally, the name as specified in the struct tag may be '-' to make
+the parser ignore the field. In this case, the field does not have to be of one of the types above.
+
+
+
+
+
+
+---
+
+### Source
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Source interface {
+	Target
+	// SendCommandOutput sends a command output to the source. The way the output is applied, depends on what
+	// kind of source it is.
+	// SendCommandOutput is called by a Command automatically after being run.
+	SendCommandOutput(o *Output)
+}
+```
+
+
+
+Source represents a source of a command execution. Commands may limit the sources that can run them by
+implementing the Allower interface.
+Source implements Target. A Source must always be able to target itself.
+
+
+
+
+
+
+---
+
+### SubCommand
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type SubCommand struct{}
+```
+
+
+
+SubCommand represents a subcommand that may be added as a static value that must be written. Adding
+multiple Runnable implementations to the command in New with different SubCommand fields as the
+first parameter allows for commands with subcommands.
+
+
+
+
+
+
+---
+
+### Target
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Target interface {
+	// Position returns the position of the Target as an mgl64.Vec3.
+	Position() mgl64.Vec3
+}
+```
+
+
+
+Target represents the target of a command. A []Target may be used as command parameter
+types to allow passing targets to the command.
+
+
+
+
+
+
+---
+
+### Varargs
+
+
+
+
+```go
+type Varargs string
+```
+
+
+
+Varargs is an argument type that may be used to capture all arguments that follow. This is useful for,
+for example, messages and names.
+
+
+
+
+
+
+---
+
+

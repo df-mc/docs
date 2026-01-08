@@ -1,0 +1,99 @@
+---
+title: "category"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# category
+
+
+```go
+import "github.com/df-mc/dragonfly/server/item/category"
+```
+
+
+
+
+
+
+
+
+
+
+
+## Types
+
+
+### Category
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Category struct {
+	group		string
+	category	uint8
+}
+```
+
+
+
+Category represents the category a custom item will be displayed in, in the creative inventory.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Group">
+```go
+func (Category) Group() string
+```
+
+Group ...
+
+</Accordion>
+
+<Accordion title="String">
+```go
+func (Category) String() string
+```
+
+String ...
+
+</Accordion>
+
+<Accordion title="Uint8">
+```go
+func (Category) Uint8() uint8
+```
+
+Uint8 ...
+
+</Accordion>
+
+<Accordion title="WithGroup">
+```go
+func (Category) WithGroup(group string) Category
+```
+
+WithGroup returns the category with the provided subgroup. This can be used to put an item inside a group such as
+swords, food or different types of blocks.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

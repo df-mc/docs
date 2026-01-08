@@ -1,0 +1,975 @@
+---
+title: "chunk"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# chunk
+
+
+```go
+import "github.com/df-mc/dragonfly/server/world/chunk"
+```
+
+
+
+
+
+## Constants
+
+<Accordions>
+
+<Accordion title="SubChunkVersion">
+```go
+const SubChunkVersion  = 9
+```
+
+</Accordion>
+
+<Accordion title="CurrentBlockVersion">
+```go
+const CurrentBlockVersion int32 = 18040335
+```
+
+</Accordion>
+
+</Accordions>
+
+
+
+## Variables
+
+<Accordions>
+
+<Accordion title="RuntimeIDToState">
+```go
+var RuntimeIDToState func(runtimeID uint32) (name string, properties map[string]any, found bool)
+```
+
+</Accordion>
+
+<Accordion title="DiskEncoding">
+```go
+var DiskEncoding diskEncoding
+```
+
+</Accordion>
+
+<Accordion title="NetworkEncoding">
+```go
+var NetworkEncoding networkEncoding
+```
+
+</Accordion>
+
+<Accordion title="BiomePaletteEncoding">
+```go
+var BiomePaletteEncoding biomePaletteEncoding
+```
+
+</Accordion>
+
+<Accordion title="BlockPaletteEncoding">
+```go
+var BlockPaletteEncoding blockPaletteEncoding
+```
+
+</Accordion>
+
+<Accordion title="SkyLight">
+```go
+var SkyLight skyLight
+```
+
+</Accordion>
+
+<Accordion title="BlockLight">
+```go
+var BlockLight blockLight
+```
+
+</Accordion>
+
+<Accordion title="LightBlocks">
+```go
+var LightBlocks 
+```
+
+</Accordion>
+
+<Accordion title="FilteringBlocks">
+```go
+var FilteringBlocks 
+```
+
+</Accordion>
+
+<Accordion title="StateToRuntimeID">
+```go
+var StateToRuntimeID func(name string, properties map[string]any) (runtimeID uint32, found bool)
+```
+
+StateToRuntimeID must hold a function to convert a name and its state properties to a runtime ID.
+
+</Accordion>
+
+</Accordions>
+
+
+
+## Functions
+
+<Accordions>
+
+<Accordion title="EncodeBiomes">
+```go
+func EncodeBiomes(c *Chunk, e Encoding) []byte
+```
+
+
+EncodeBiomes encodes the biomes of a chunk into bytes. An Encoding may be passed to encode either for network or
+disk purposed, the most notable difference being that the network encoding generally uses varints and no NBT.
+
+</Accordion>
+
+<Accordion title="EncodeSubChunk">
+```go
+func EncodeSubChunk(c *Chunk, e Encoding, ind int) []byte
+```
+
+
+EncodeSubChunk encodes a sub-chunk from a chunk into bytes. An Encoding may be passed to encode either for network or
+disk purposed, the most notable difference being that the network encoding generally uses varints and no NBT.
+
+</Accordion>
+
+</Accordions>
+
+
+
+## Types
+
+
+### BlockEntity
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BlockEntity struct {
+	Pos	cube.Pos
+	Data	map[string]any
+}
+```
+
+
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Pos: {
+      description: '',
+      type: 'cube.Pos',
+      typeLink: '../block-cube.mdx#pos',
+    },
+    Data: {
+      description: '',
+      type: 'map[string]any',
+    },
+  }}
+/>
+
+
+
+
+
+---
+
+### Chunk
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Chunk struct {
+	// r holds the (vertical) range of the Chunk. It includes both the minimum and maximum coordinates.
+	r	cube.Range
+	// air is the runtime ID of air.
+	air	uint32
+	// recalculateHeightMap is true if the chunk's height map should be recalculated on the next call to the HeightMap
+	// function.
+	recalculateHeightMap	bool
+	// heightMap is the height map of the chunk.
+	heightMap	HeightMap
+	// sub holds all sub chunks part of the chunk. The pointers held by the array are nil if no sub chunk is
+	// allocated at the indices.
+	sub	[]*SubChunk
+	// biomes is an array of biome IDs. There is one biome ID for every column in the chunk.
+	biomes	[]*PalettedStorage
+}
+```
+
+
+
+Chunk is a segment in the world with a size of 16x16x256 blocks. A chunk contains multiple sub chunks
+and stores other information such as biomes.
+It is not safe to call methods on Chunk simultaneously from multiple goroutines.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Biome">
+```go
+func (*Chunk) Biome(x uint8, y int16, z uint8) uint32
+```
+
+Biome returns the biome ID at a specific column in the chunk.
+
+</Accordion>
+
+<Accordion title="Block">
+```go
+func (*Chunk) Block(x uint8, y int16, z uint8, layer uint8) uint32
+```
+
+Block returns the runtime ID of the block at a given x, y and z in a chunk at the given layer. If no
+sub chunk exists at the given y, the block is assumed to be air.
+
+</Accordion>
+
+<Accordion title="Compact">
+```go
+func (*Chunk) Compact()
+```
+
+Compact compacts the chunk as much as possible, getting rid of any sub chunks that are empty, and compacts
+all storages in the sub chunks to occupy as little space as possible.
+Compact should be called right before the chunk is saved in order to optimise the storage space.
+
+</Accordion>
+
+<Accordion title="Equals">
+```go
+func (*Chunk) Equals(c *Chunk) bool
+```
+
+Equals returns if the chunk passed is equal to the current one
+
+</Accordion>
+
+<Accordion title="HeightMap">
+```go
+func (*Chunk) HeightMap() HeightMap
+```
+
+HeightMap returns the height map of the chunk. If the chunk is edited, the height map will be recalculated on the
+next call to this function.
+
+</Accordion>
+
+<Accordion title="HighestBlock">
+```go
+func (*Chunk) HighestBlock(x, z uint8) int16
+```
+
+HighestBlock iterates from the highest non-empty sub chunk downwards to find the Y value of the highest
+non-air block at an x and z. If no blocks are present in the column, the minimum height is returned.
+
+</Accordion>
+
+<Accordion title="HighestFilledSubChunk">
+```go
+func (*Chunk) HighestFilledSubChunk() uint16
+```
+
+HighestFilledSubChunk returns the index of the highest sub chunk in the chunk
+that has any blocks in it. 0 is returned if no subchunks have any blocks.
+
+</Accordion>
+
+<Accordion title="HighestLightBlocker">
+```go
+func (*Chunk) HighestLightBlocker(x, z uint8) int16
+```
+
+HighestLightBlocker iterates from the highest non-empty sub chunk downwards to find the Y value of the
+highest block that completely blocks any light from going through. If none is found, the value returned is
+the minimum height.
+
+</Accordion>
+
+<Accordion title="Light">
+```go
+func (*Chunk) Light(x uint8, y int16, z uint8) uint8
+```
+
+Light returns the light level at a specific position in the chunk.
+
+</Accordion>
+
+<Accordion title="Range">
+```go
+func (*Chunk) Range() cube.Range
+```
+
+Range returns the cube.Range of the Chunk as passed to New.
+
+</Accordion>
+
+<Accordion title="SetBiome">
+```go
+func (*Chunk) SetBiome(x uint8, y int16, z uint8, biome uint32)
+```
+
+SetBiome sets the biome ID at a specific column in the chunk.
+
+</Accordion>
+
+<Accordion title="SetBlock">
+```go
+func (*Chunk) SetBlock(x uint8, y int16, z uint8, layer uint8, block uint32)
+```
+
+SetBlock sets the runtime ID of a block at a given x, y and z in a chunk at the given layer. If no
+SubChunk exists at the given y, a new SubChunk is created and the block is set.
+
+</Accordion>
+
+<Accordion title="SkyLight">
+```go
+func (*Chunk) SkyLight(x uint8, y int16, z uint8) uint8
+```
+
+SkyLight returns the skylight level at a specific position in the chunk.
+
+</Accordion>
+
+<Accordion title="Sub">
+```go
+func (*Chunk) Sub() []*SubChunk
+```
+
+Sub returns a list of all sub chunks present in the chunk.
+
+</Accordion>
+
+<Accordion title="SubChunk">
+```go
+func (*Chunk) SubChunk(y int16) *SubChunk
+```
+
+SubChunk finds the correct SubChunk in the Chunk by a Y value.
+
+</Accordion>
+
+<Accordion title="SubIndex">
+```go
+func (*Chunk) SubIndex(y int16) int16
+```
+
+SubIndex returns the sub chunk Y index matching the y value passed.
+
+</Accordion>
+
+<Accordion title="SubY">
+```go
+func (*Chunk) SubY(index int16) int16
+```
+
+SubY returns the sub chunk Y value matching the index passed.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Column
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Column struct {
+	Chunk		*Chunk
+	Entities	[]Entity
+	BlockEntities	[]BlockEntity
+	Tick		int64
+	ScheduledBlocks	[]ScheduledBlockUpdate
+}
+```
+
+
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Chunk: {
+      description: '',
+      type: '*Chunk',
+      typeLink: '../world-chunk.mdx#chunk',
+    },
+    Entities: {
+      description: '',
+      type: '[]Entity',
+      typeLink: '../world-chunk.mdx#entity',
+    },
+    BlockEntities: {
+      description: '',
+      type: '[]BlockEntity',
+      typeLink: '../world-chunk.mdx#blockentity',
+    },
+    Tick: {
+      description: '',
+      type: 'int64',
+    },
+    ScheduledBlocks: {
+      description: '',
+      type: '[]ScheduledBlockUpdate',
+      typeLink: '../world-chunk.mdx#scheduledblockupdate',
+    },
+  }}
+/>
+
+
+
+
+
+---
+
+### Encoding
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Encoding interface {
+	encodePalette(buf *bytes.Buffer, p *Palette, e paletteEncoding)
+	decodePalette(buf *bytes.Buffer, blockSize paletteSize, e paletteEncoding) (*Palette, error)
+	network() byte
+}
+```
+
+
+
+Encoding is an encoding type used for Chunk encoding. Implementations of this interface are DiskEncoding and
+NetworkEncoding, which can be used to encode a Chunk to an intermediate disk or network representation respectively.
+
+
+
+
+
+
+---
+
+### Entity
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Entity struct {
+	ID	int64
+	Data	map[string]any
+}
+```
+
+
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    ID: {
+      description: '',
+      type: 'int64',
+    },
+    Data: {
+      description: '',
+      type: 'map[string]any',
+    },
+  }}
+/>
+
+
+
+
+
+---
+
+### HeightMap
+
+
+
+
+```go
+type HeightMap []int16
+```
+
+
+
+HeightMap represents the height map of a chunk. It holds the y value of all the highest blocks in the chunk
+that diffuse or obstruct light.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="At">
+```go
+func (HeightMap) At(x, z uint8) int16
+```
+
+At returns the height map value at a specific column in the chunk.
+
+</Accordion>
+
+<Accordion title="HighestNeighbour">
+```go
+func (HeightMap) HighestNeighbour(x, z uint8) int16
+```
+
+HighestNeighbour returns the height map value of the highest directly neighbouring column of the x and z values
+passed.
+
+</Accordion>
+
+<Accordion title="Set">
+```go
+func (HeightMap) Set(x, z uint8, val int16)
+```
+
+Set changes the height map value at a specific column in the chunk.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Palette
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Palette struct {
+	last		uint32
+	lastIndex	int16
+	size		paletteSize
+
+	// values is a map of values. A PalettedStorage points to the index to this value.
+	values	[]uint32
+}
+```
+
+
+
+Palette is a palette of values that every PalettedStorage has. Storages hold 'pointers' to indices
+in this palette.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Add">
+```go
+func (*Palette) Add(v uint32) (index int16, resize bool)
+```
+
+Add adds a values to the Palette. It does not first check if the value was already set in the Palette.
+The index at which the value was added is returned. Another bool is returned indicating if the Palette
+was resized as a result of adding the value.
+
+</Accordion>
+
+<Accordion title="Index">
+```go
+func (*Palette) Index(runtimeID uint32) int16
+```
+
+Index loops through the values of the Palette and looks for the index of the given value. If the value could
+not be found, -1 is returned.
+
+</Accordion>
+
+<Accordion title="Len">
+```go
+func (*Palette) Len() int
+```
+
+Len returns the amount of unique values in the Palette.
+
+</Accordion>
+
+<Accordion title="Replace">
+```go
+func (*Palette) Replace(f func(v uint32) uint32)
+```
+
+Replace calls the function passed for each value present in the Palette. The value returned by the
+function replaces the value present at the index of the value passed.
+
+</Accordion>
+
+<Accordion title="Value">
+```go
+func (*Palette) Value(i uint16) uint32
+```
+
+Value returns the value in the Palette at a specific index.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### PalettedStorage
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type PalettedStorage struct {
+	// bitsPerIndex is the amount of bits required to store one block. The number increases as the block
+	// storage holds more unique block states.
+	bitsPerIndex	uint16
+	// filledBitsPerIndex returns the amount of blocks that are actually filled per uint32.
+	filledBitsPerIndex	uint16
+	// indexMask is the equivalent of 1 << bitsPerIndex - 1.
+	indexMask	uint32
+
+	// indicesStart holds an unsafe.Pointer to the first byte in the indices slice below.
+	indicesStart	unsafe.Pointer
+
+	// Palette holds all block runtime IDs that the indices in the indices slice point to. These runtime IDs
+	// point to block states.
+	palette	*Palette
+
+	// indices contains all indices in the PalettedStorage. This slice has a variable size, but may not be changed
+	// unless the whole PalettedStorage is resized, including the Palette.
+	indices	[]uint32
+}
+```
+
+
+
+PalettedStorage is a storage of 4096 blocks encoded in a variable amount of uint32s, storages may have values
+with a bit size per block of 0, 1, 2, 3, 4, 5, 6, 8 or 16 bits.
+3 of these formats have additional padding in every uint32 and an additional uint32 at the end, to cater
+for the blocks that don't fit. This padding is present when the storage has a block size of 3, 5 or 6
+bytes.
+Methods on PalettedStorage must not be called simultaneously from multiple goroutines.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="At">
+```go
+func (*PalettedStorage) At(x, y, z byte) uint32
+```
+
+At returns the value of the PalettedStorage at a given x, y and z.
+
+</Accordion>
+
+<Accordion title="Equal">
+```go
+func (*PalettedStorage) Equal(other *PalettedStorage) bool
+```
+
+Equal checks if two PalettedStorages are equal value wise. False is returned
+if either of the storages are nil.
+
+</Accordion>
+
+<Accordion title="Palette">
+```go
+func (*PalettedStorage) Palette() *Palette
+```
+
+Palette returns the Palette of the PalettedStorage.
+
+</Accordion>
+
+<Accordion title="Set">
+```go
+func (*PalettedStorage) Set(x, y, z byte, v uint32)
+```
+
+Set sets a value at a specific x, y and z. The Palette and PalettedStorage are expanded
+automatically to make space for the value, should that be needed.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ScheduledBlockUpdate
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ScheduledBlockUpdate struct {
+	Pos	cube.Pos
+	Block	uint32
+	Tick	int64
+}
+```
+
+
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Pos: {
+      description: '',
+      type: 'cube.Pos',
+      typeLink: '../block-cube.mdx#pos',
+    },
+    Block: {
+      description: '',
+      type: 'uint32',
+    },
+    Tick: {
+      description: '',
+      type: 'int64',
+    },
+  }}
+/>
+
+
+
+
+
+---
+
+### SerialisedData
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type SerialisedData struct {
+	// sub holds the data of the serialised sub chunks in a chunk. Sub chunks that are empty or that otherwise
+	// don't exist are represented as an empty slice (or technically, nil).
+	SubChunks	[][]byte
+	// Biomes is the biome data of the chunk, which is composed of a biome storage for each sub-chunk.
+	Biomes	[]byte
+}
+```
+
+
+
+SerialisedData holds the serialised data of a chunk. It consists of the chunk's block data itself, a height
+map, the biomes and entities and block entities.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    SubChunks: {
+      description: 'sub holds the data of the serialised sub chunks in a chunk. Sub chunks that are empty or that otherwise don\'t exist are represented as an empty slice (or technically, nil).',
+      type: '[][]byte',
+    },
+    Biomes: {
+      description: 'Biomes is the biome data of the chunk, which is composed of a biome storage for each sub-chunk.',
+      type: '[]byte',
+    },
+  }}
+/>
+
+
+
+
+
+---
+
+### SubChunk
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type SubChunk struct {
+	air		uint32
+	storages	[]*PalettedStorage
+	blockLight	[]uint8
+	skyLight	[]uint8
+}
+```
+
+
+
+SubChunk is a cube of blocks located in a chunk. It has a size of 16x16x16 blocks and forms part of a stack
+that forms a Chunk.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Block">
+```go
+func (*SubChunk) Block(x, y, z byte, layer uint8) uint32
+```
+
+Block returns the runtime ID of the block located at the given X, Y and Z. X, Y and Z must be in a
+range of 0-15.
+
+</Accordion>
+
+<Accordion title="BlockLight">
+```go
+func (*SubChunk) BlockLight(x, y, z byte) uint8
+```
+
+BlockLight returns the block light value at a specific value at a specific position in the sub chunk.
+
+</Accordion>
+
+<Accordion title="Empty">
+```go
+func (*SubChunk) Empty() bool
+```
+
+Empty checks if the SubChunk is considered empty. This is the case if the SubChunk has 0 block storages or if it has
+a single one that is completely filled with air.
+
+</Accordion>
+
+<Accordion title="Equals">
+```go
+func (*SubChunk) Equals(s *SubChunk) bool
+```
+
+Equals returns if the sub chunk passed is equal to the current one.
+
+</Accordion>
+
+<Accordion title="Layer">
+```go
+func (*SubChunk) Layer(layer uint8) *PalettedStorage
+```
+
+Layer returns a certain block storage/layer from a sub chunk. If no storage at the layer exists, the layer
+is created, as well as all layers between the current highest layer and the new highest layer.
+
+</Accordion>
+
+<Accordion title="Layers">
+```go
+func (*SubChunk) Layers() []*PalettedStorage
+```
+
+Layers returns all layers in the sub chunk. This method may also return an empty slice.
+
+</Accordion>
+
+<Accordion title="SetBlock">
+```go
+func (*SubChunk) SetBlock(x, y, z byte, layer uint8, block uint32)
+```
+
+SetBlock sets the given block runtime ID at the given X, Y and Z. X, Y and Z must be in a range of 0-15.
+
+</Accordion>
+
+<Accordion title="SetBlockLight">
+```go
+func (*SubChunk) SetBlockLight(x, y, z byte, level uint8)
+```
+
+SetBlockLight sets the block light value at a specific position in the sub chunk.
+
+</Accordion>
+
+<Accordion title="SetSkyLight">
+```go
+func (*SubChunk) SetSkyLight(x, y, z byte, level uint8)
+```
+
+SetSkyLight sets the skylight value at a specific position in the sub chunk.
+
+</Accordion>
+
+<Accordion title="SkyLight">
+```go
+func (*SubChunk) SkyLight(x, y, z byte) uint8
+```
+
+SkyLight returns the skylight value at a specific value at a specific position in the sub chunk.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

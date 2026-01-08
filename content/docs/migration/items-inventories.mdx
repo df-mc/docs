@@ -1,0 +1,348 @@
+---
+title: Items & Inventories
+icon: Backpack
+---
+
+Items work completely differently in Dragonfly. There's no `Item::get()`, no item IDs, no meta values. Everything is strongly typed.
+
+## How PM/Nukkit Items Work
+
+In PocketMine-MP, you create items using IDs and meta:
+
+```php title="pm_item_usage.php"
+use pocketmine\item\ItemFactory;
+use pocketmine\item\ItemIds;
+
+$sword = ItemFactory::getInstance()->get(ItemIds::DIAMOND_SWORD, 0, 1);
+$apple = ItemFactory::getInstance()->get(ItemIds::APPLE, 0, 16);
+```
+
+You set NBT data manually:
+
+```php title="pm_item_nbt.php"
+$sword->setCustomName("§eLegendary Sword");
+$sword->setLore(["§7A sword of legends"]);
+```
+
+And you check what item it is using IDs:
+
+```php title="pm_item_check.php"
+if ($item->getId() === ItemIds::DIAMOND_SWORD) {
+    // Handle sword
+}
+```
+
+This works, but it's fragile. Magic numbers everywhere, no type safety, and NBT manipulation is error-prone.
+
+## How Dragonfly Items Work
+
+Dragonfly uses typed structs. Each item type is its own struct:
+
+```go title="df_item_creation.go"
+import (
+    "github.com/df-mc/dragonfly/server/item"
+)
+
+sword := item.NewStack(item.Sword{Tier: item.ToolTierDiamond}, 1)
+apple := item.NewStack(item.Apple{}, 16)
+```
+
+No IDs. No meta. You construct the item type directly and wrap it in a stack.
+
+## Item Stacks
+
+In Dragonfly, `item.Stack` represents an item stack (the item + count):
+
+```go title="item_stacks.go"
+stack := item.NewStack(item.Apple{}, 16)
+
+// Get the item
+apple := stack.Item()  // Returns item.Apple{}
+
+// Get the count
+count := stack.Count()  // Returns 16
+
+// Check max stack
+max := stack.MaxCount()  // Returns 64 for apples
+```
+
+## Creating Custom Items
+
+In PM/Nukkit, you'd extend `Item` and register it. In Dragonfly, you embed an existing item type and implement interfaces:
+
+```go title="custom_item_struct.go"
+type LegendarySword struct {
+    item.Sword
+}
+
+func (s LegendarySword) EncodeItem() (name string, meta int16) {
+    return "minecraft:diamond_sword", 0
+}
+
+func (s LegendarySword) Name() string {
+    return "Legendary Sword"
+}
+```
+
+Then create stacks of it:
+
+```go title="create_custom_item.go"
+stack := item.NewStack(LegendarySword{
+    Sword: item.Sword{Tier: item.ToolTierDiamond},
+}, 1)
+```
+
+### Item Lore and Custom Names
+
+Use `item.Stack` methods:
+
+```go title="lore_and_names.go"
+stack := item.NewStack(item.Sword{Tier: item.ToolTierDiamond}, 1)
+stack = stack.WithCustomName("§eLegendary Sword")
+stack = stack.WithLore("§7A sword of legends", "§7+10 Attack")
+```
+
+Item stacks are immutable. Methods like `WithCustomName` return a new stack.
+
+### Item Enchantments
+
+```go title="enchantments.go"
+import (
+    "github.com/df-mc/dragonfly/server/item/enchantment"
+)
+
+stack := item.NewStack(item.Sword{Tier: item.ToolTierDiamond}, 1)
+stack = stack.WithEnchantments(
+    item.NewEnchantment(enchantment.Sharpness{}, 5),
+    item.NewEnchantment(enchantment.Unbreaking{}, 3),
+)
+```
+
+## Checking Item Types
+
+In PM/Nukkit, you'd check `$item->getId()`. In Dragonfly, use type assertions:
+
+```go title="item_type_switch.go"
+func handleItemUse(stack item.Stack) {
+    switch it := stack.Item().(type) {
+    case item.Sword:
+        fmt.Printf("Sword with tier %v\n", it.Tier)
+    case item.Apple:
+        fmt.Println("It's an apple!")
+    case LegendarySword:
+        fmt.Println("It's the legendary sword!")
+    default:
+        fmt.Println("Unknown item")
+    }
+}
+```
+
+Type switches give you compile-time safety and access to item-specific fields.
+
+## Player Inventory
+
+In PM/Nukkit, you use `$player->getInventory()`:
+
+```php title="pm_inventory.php"
+$inventory = $player->getInventory();
+$inventory->addItem($sword);
+$inventory->setItem(0, $apple);
+$item = $inventory->getItem(0);
+```
+
+In Dragonfly:
+
+```go title="df_inventory.go"
+inv := p.Inventory()
+
+// Add an item (returns leftovers if inventory is full)
+leftover := inv.AddItem(sword)
+
+// Set a slot
+inv.SetItem(0, apple)
+
+// Get a slot
+stack := inv.Item(0)
+
+// Clear inventory
+inv.Clear()
+```
+
+## Armor Inventory
+
+```go title="armor_inventory.go"
+armor := p.Armour()
+
+armor.SetHelmet(item.NewStack(item.Helmet{Tier: item.ArmourTierDiamond}, 1))
+armor.SetChestplate(item.NewStack(item.Chestplate{Tier: item.ArmourTierDiamond}, 1))
+armor.SetLeggings(item.NewStack(item.Leggings{Tier: item.ArmourTierDiamond}, 1))
+armor.SetBoots(item.NewStack(item.Boots{Tier: item.ArmourTierDiamond}, 1))
+
+// Get armor
+helmet := armor.Helmet()
+```
+
+## Checking if Inventory Has Item
+
+In PM/Nukkit:
+
+```php title="pm_has_item.php"
+if ($inventory->contains($item)) {
+    // Has item
+}
+```
+
+In Dragonfly, you have to iterate:
+
+```go title="check_inventory.go"
+func hasItem(inv *inventory.Inventory, target item.Stack) bool {
+    for _, stack := range inv.Items() {
+        if stack.Item() == target.Item() && stack.Count() >= target.Count() {
+            return true
+        }
+    }
+    return false
+}
+```
+
+Or use a helper:
+
+```go title="check_inventory_type.go"
+func hasItemType(inv *inventory.Inventory, itemType item.Item) bool {
+    for _, stack := range inv.Items() {
+        if stack.Item() == itemType {
+            return true
+        }
+    }
+    return false
+}
+```
+
+## Removing Items
+
+```go title="remove_item.go"
+func removeItem(inv *inventory.Inventory, target item.Stack) bool {
+    for slot, stack := range inv.Items() {
+        if stack.Item() == target.Item() {
+            if stack.Count() >= target.Count() {
+                stack = stack.Grow(-target.Count())
+                inv.SetItem(slot, stack)
+                return true
+            }
+        }
+    }
+    return false
+}
+```
+
+This is more manual than PM/Nukkit, but it gives you full control.
+
+## Container Inventories
+
+Chests, hoppers, etc. are containers:
+
+```go title="container_inventory.go"
+import (
+    "github.com/df-mc/dragonfly/server/block"
+    "github.com/df-mc/dragonfly/server/block/cube"
+)
+
+pos := cube.Pos{0, 64, 0}
+w := p.World()
+
+// Get the block
+b := w.Block(pos)
+
+// Check if it's a chest
+if chest, ok := b.(block.Chest); ok {
+    inv := chest.Inventory()
+
+    // Add items
+    inv.AddItem(item.NewStack(item.Apple{}, 64))
+
+    // The block needs to be updated for changes to persist
+    w.SetBlock(pos, chest, nil)
+}
+```
+
+## Opening Custom Inventories
+
+In PM/Nukkit, you'd create a custom inventory and send it to the player. Dragonfly uses the same approach:
+
+```go title="custom_inventory.go"
+import (
+    "github.com/df-mc/dragonfly/server/item/inventory"
+)
+
+// Create a chest inventory
+inv := inventory.New(27, func(slot int, before, after item.Stack) {
+    // Called when a slot changes
+    log.Printf("Slot %d changed from %v to %v", slot, before.Item(), after.Item())
+})
+
+// Open it for the player
+p.OpenBlockContainer(inv)
+```
+
+The callback allows you to react to inventory changes. This is how you implement shop GUIs, kit selectors, etc.
+
+## Practical Example: Kit System
+
+```go title="kit_system.go"
+type Kit struct {
+    Name  string
+    Items []item.Stack
+}
+
+var kits = map[string]Kit{
+    "warrior": {
+        Name: "Warrior",
+        Items: []item.Stack{
+            item.NewStack(item.Sword{Tier: item.ToolTierIron}, 1),
+            item.NewStack(item.Apple{}, 16),
+            item.NewStack(item.Helmet{Tier: item.ArmourTierIron}, 1),
+            item.NewStack(item.Chestplate{Tier: item.ArmourTierIron}, 1),
+            item.NewStack(item.Leggings{Tier: item.ArmourTierIron}, 1),
+            item.NewStack(item.Boots{Tier: item.ArmourTierIron}, 1),
+        },
+    },
+}
+
+func (k Kit) Apply(p *player.Player) {
+    inv := p.Inventory()
+    armor := p.Armour()
+
+    inv.Clear()
+    armor.Clear()
+
+    for i, stack := range k.Items {
+        switch stack.Item().(type) {
+        case item.Helmet:
+            armor.SetHelmet(stack)
+        case item.Chestplate:
+            armor.SetChestplate(stack)
+        case item.Leggings:
+            armor.SetLeggings(stack)
+        case item.Boots:
+            armor.SetBoots(stack)
+        default:
+            if i < 36 {
+                inv.SetItem(i, stack)
+            }
+        }
+    }
+
+    p.SendMessage("§aYou received the " + k.Name + " kit!")
+}
+```
+
+## Key Takeaways
+
+- Items are typed structs, not IDs. Use `item.NewStack(item.Apple{}, 16)`.
+- Check item types with type switches, not ID comparisons.
+- Stacks are immutable. Use `WithCustomName`, `WithLore`, etc.
+- Inventories use `AddItem`, `SetItem`, `Item`, `Items`, `Clear`.
+- Custom inventories use callbacks for slot changes.
+- You have more control, but you also have to write more helper functions.
+
+The typed item system takes some getting used to, but it's vastly more reliable than magic IDs and NBT wrangling.

@@ -1,0 +1,11 @@
+{
+    "title": "Core Concepts",
+    "icon": "Lightbulb",
+    "pages": [
+        "event-system",
+        "worlds",
+        "scoreboards",
+        "tasks",
+        "go-patterns"
+    ]
+}

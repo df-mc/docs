@@ -1,0 +1,209 @@
+---
+title: "creative"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# creative
+
+
+```go
+import "github.com/df-mc/dragonfly/server/item/creative"
+```
+
+
+
+
+
+
+
+
+
+## Functions
+
+<Accordions>
+
+<Accordion title="RegisterGroup">
+```go
+func RegisterGroup(group Group)
+```
+
+
+RegisterGroup registers a group as a creative group, exposing it in the creative inventory. It can then
+be referenced using its name when calling RegisterItem.
+
+</Accordion>
+
+<Accordion title="RegisterItem">
+```go
+func RegisterItem(item Item)
+```
+
+
+RegisterItem registers an item as a creative item, exposing it in the creative inventory.
+
+</Accordion>
+
+</Accordions>
+
+
+
+## Types
+
+
+### Category
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Category struct {
+	category
+}
+```
+
+
+
+Category represents a category of items in the creative inventory which are shown as different tabs.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    category: {
+      description: '',
+      type: 'category',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Uint8">
+```go
+func (Category) Uint8() uint8
+```
+
+Uint8 returns the category type as a uint8.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Group
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Group struct {
+	// Category is the category of the group. It determines the tab in which the group will be displayed in the
+	// creative inventory.
+	Category	Category
+	// Name is the localised name of the group, i.e. "itemGroup.name.planks".
+	Name	string
+	// Icon is the item that will be displayed as the icon of the group in the creative inventory.
+	Icon	item.Stack
+}
+```
+
+
+
+Group represents a group of items in the creative inventory. Each group has a category, a name and an icon.
+If either the name or icon is empty, the group is considered an 'anonymous group' and will not group its
+contents together in the creative inventory.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Category: {
+      description: 'Category is the category of the group. It determines the tab in which the group will be displayed in the creative inventory.',
+      type: 'Category',
+      typeLink: '../item-creative.mdx#category',
+    },
+    Name: {
+      description: 'Name is the localised name of the group, i.e. "itemGroup.name.planks".',
+      type: 'string',
+    },
+    Icon: {
+      description: 'Icon is the item that will be displayed as the icon of the group in the creative inventory.',
+      type: 'item.Stack',
+      typeLink: '../item.mdx#stack',
+    },
+  }}
+/>
+
+
+
+
+
+---
+
+### Item
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Item struct {
+	// Stack is the stack of the item that is registered in the creative inventory.
+	Stack	item.Stack
+	// Group is the name of the group that the item is part of. If two groups are registered with the same
+	// name, the item will always reside in the first group that was registered.
+	Group	string
+}
+```
+
+
+
+Item represents a registered item in the creative inventory. It holds a stack of the item and a group that
+the item is part of.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Stack: {
+      description: 'Stack is the stack of the item that is registered in the creative inventory.',
+      type: 'item.Stack',
+      typeLink: '../item.mdx#stack',
+    },
+    Group: {
+      description: 'Group is the name of the group that the item is part of. If two groups are registered with the same name, the item will always reside in the first group that was registered.',
+      type: 'string',
+    },
+  }}
+/>
+
+
+
+
+
+---
+
+

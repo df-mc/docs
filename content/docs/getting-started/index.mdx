@@ -1,0 +1,54 @@
+---
+title: Getting Started
+icon: Rocket
+---
+
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+Since Dragonfly is still in its early stages, there aren't any prebuilt executables. These may be provided when Dragonfly becomes more stable.
+
+## Installation
+
+<Steps>
+<Step>
+### Choose Installation Method
+
+You can install Dragonfly either as a library for your own project or by cloning the repository to run the latest commit directly.
+
+<Tabs items={["Library (Recommended)", "Latest Commit"]}>
+  <Tab value="Library (Recommended)">
+    Create a new directory for your project and initialize a Go module:
+
+    ```bash title="Terminal"
+    go mod init github.com/username/project
+    go get github.com/df-mc/dragonfly
+    ```
+    
+    This is the best way to start a new server project.
+  </Tab>
+  <Tab value="Latest Commit">
+    If you just want to test Dragonfly or contribute to the core, clone the repository:
+
+    ```bash title="Terminal"
+    git clone https://github.com/df-mc/dragonfly
+    cd dragonfly
+    go run main.go
+    ```
+  </Tab>
+</Tabs>
+</Step>
+
+<Step>
+### Verify Installation
+
+If you see the server starting up successfully, you're good to go!
+
+![](https://user-images.githubusercontent.com/16114089/121804512-0f843900-cc47-11eb-9320-d195393b5a1f.gif)
+</Step>
+
+</Steps>
+
+## Video Tutorial
+
+<iframe width="100%" height="400" src="https://www.youtube.com/embed/TODO" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>

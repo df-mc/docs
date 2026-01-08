@@ -1,0 +1,2278 @@
+---
+title: "session"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# session
+
+
+```go
+import "github.com/df-mc/dragonfly/server/session"
+```
+
+
+
+
+
+
+
+## Variables
+
+<Accordions>
+
+<Accordion title="Nop">
+```go
+var Nop 
+```
+
+Nop represents a no-operation session. It does not do anything when sending a packet to it.
+
+</Accordion>
+
+</Accordions>
+
+
+
+
+
+## Types
+
+
+### BlockActorDataHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BlockActorDataHandler struct{}
+```
+
+
+
+BlockActorDataHandler handles an incoming BlockActorData packet from the client, sent for some block entities like
+signs when they are edited.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (BlockActorDataHandler) Handle(p packet.Packet, s *Session, tx *world.Tx, c Controllable) error
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BlockPickRequestHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BlockPickRequestHandler struct{}
+```
+
+
+
+BlockPickRequestHandler handles the BlockPickRequest packet.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (BlockPickRequestHandler) Handle(p packet.Packet, _ *Session, _ *world.Tx, c Controllable) error
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BookEditHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BookEditHandler struct{}
+```
+
+
+
+BookEditHandler handles the BookEdit packet.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (BookEditHandler) Handle(p packet.Packet, s *Session, _ *world.Tx, _ Controllable) error
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ClientCacheBlobStatusHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ClientCacheBlobStatusHandler struct {
+}
+```
+
+
+
+ClientCacheBlobStatusHandler handles the ClientCacheBlobStatus packet.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (*ClientCacheBlobStatusHandler) Handle(p packet.Packet, s *Session, _ *world.Tx, _ Controllable) error
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### CommandRequestHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type CommandRequestHandler struct {
+	origin protocol.CommandOrigin
+}
+```
+
+
+
+CommandRequestHandler handles the CommandRequest packet.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (*CommandRequestHandler) Handle(p packet.Packet, _ *Session, _ *world.Tx, c Controllable) error
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Config
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Config struct {
+	Log	*slog.Logger
+
+	MaxChunkRadius	int
+
+	EmoteChatMuted	bool
+
+	JoinMessage, QuitMessage	chat.Translation
+
+	HandleStop	func(*world.Tx, Controllable)
+}
+```
+
+
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Log: {
+      description: '',
+      type: '*slog.Logger',
+    },
+    MaxChunkRadius: {
+      description: '',
+      type: 'int',
+    },
+    EmoteChatMuted: {
+      description: '',
+      type: 'bool',
+    },
+    JoinMessage: {
+      description: '',
+      type: 'chat.Translation',
+      typeLink: '../player-chat.mdx#translation',
+    },
+    QuitMessage: {
+      description: '',
+      type: 'chat.Translation',
+      typeLink: '../player-chat.mdx#translation',
+    },
+    HandleStop: {
+      description: '',
+      type: 'func(*world.Tx, Controllable)',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="New">
+```go
+func (Config) New(conn Conn) *Session
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Conn
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Conn interface {
+	io.Closer
+	// IdentityData returns the login.IdentityData of a Conn. It contains the UUID, XUID and username of the connection.
+	IdentityData() login.IdentityData
+	// ClientData returns the login.ClientData of a Conn. This includes less sensitive data of the player like its skin,
+	// language code and other non-essential information.
+	ClientData() login.ClientData
+	// ClientCacheEnabled specifies if the Conn has the client cache, used for caching chunks client-side, enabled or
+	// not. Some platforms, like the Nintendo Switch, have this disabled at all times.
+	ClientCacheEnabled() bool
+	// ChunkRadius returns the chunk radius as requested by the client at the other end of the Conn.
+	ChunkRadius() int
+	// Latency returns the current latency measured over the Conn.
+	Latency() time.Duration
+	// Flush flushes the packets buffered by the Conn, sending all of them out immediately.
+	Flush() error
+	// RemoteAddr returns the remote network address.
+	RemoteAddr() net.Addr
+	// ReadPacket reads a packet.Packet from the Conn. An error is returned if a deadline was set that was
+	// exceeded or if the Conn was closed while awaiting a packet.
+	ReadPacket() (pk packet.Packet, err error)
+	// WritePacket writes a packet.Packet to the Conn. An error is returned if the Conn was closed before sending the
+	// packet.
+	WritePacket(pk packet.Packet) error
+	// StartGameContext starts the game for the Conn with a context to cancel it.
+	StartGameContext(ctx context.Context, data minecraft.GameData) error
+}
+```
+
+
+
+Conn represents a connection that packets are read from and written to by a Session. In addition, it holds some
+information on the identity of the Session.
+
+
+
+
+
+
+---
+
+### ContainerCloseHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ContainerCloseHandler struct{}
+```
+
+
+
+ContainerCloseHandler handles the ContainerClose packet.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (*ContainerCloseHandler) Handle(p packet.Packet, s *Session, tx *world.Tx, c Controllable) error
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Controllable
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Controllable interface {
+	Name() string
+	world.Entity
+	item.User
+	dialogue.Submitter
+	form.Submitter
+	cmd.Source
+	chat.Subscriber
+	hud.Renderer
+	debug.Renderer
+
+	Locale() language.Tag
+
+	SetHeldItems(right, left item.Stack)
+	SetHeldSlot(slot int) error
+
+	Move(deltaPos mgl64.Vec3, deltaYaw, deltaPitch float64)
+
+	Speed() float64
+	FlightSpeed() float64
+	VerticalFlightSpeed() float64
+
+	Chat(msg ...any)
+	ExecuteCommand(commandLine string)
+	GameMode() world.GameMode
+	SetGameMode(mode world.GameMode)
+	Effects() []effect.Effect
+
+	UseItem()
+	ReleaseItem()
+	UseItemOnBlock(pos cube.Pos, face cube.Face, clickPos mgl64.Vec3)
+	UseItemOnEntity(e world.Entity) bool
+	BreakBlock(pos cube.Pos)
+	PickBlock(pos cube.Pos)
+	AttackEntity(e world.Entity) bool
+	Drop(s item.Stack) (n int)
+	SwingArm()
+	PunchAir()
+
+	Health() float64
+	MaxHealth() float64
+	Absorption() float64
+	Food() int
+
+	ExperienceLevel() int
+	ExperienceProgress() float64
+	SetExperienceLevel(level int)
+
+	EnchantmentSeed() int64
+	ResetEnchantmentSeed()
+
+	Respawn() *world.EntityHandle
+	Dead() bool
+
+	StartSneaking()
+	Sneaking() bool
+	StopSneaking()
+	StartSprinting()
+	Sprinting() bool
+	StopSprinting()
+	StartSwimming()
+	Swimming() bool
+	StopSwimming()
+	StartCrawling()
+	Crawling() bool
+	StopCrawling()
+	StartFlying()
+	Flying() bool
+	StopFlying()
+	StartGliding()
+	Gliding() bool
+	StopGliding()
+	Jump()
+
+	StartBreaking(pos cube.Pos, face cube.Face)
+	ContinueBreaking(face cube.Face)
+	FinishBreaking()
+	AbortBreaking()
+
+	Exhaust(points float64)
+
+	OpenSign(pos cube.Pos, frontSide bool)
+	EditSign(pos cube.Pos, frontText, backText string) error
+	TurnLecternPage(pos cube.Pos, page int) error
+
+	EnderChestInventory() *inventory.Inventory
+	MoveItemsToInventory()
+
+	// UUID returns the UUID of the controllable. It must be unique for all controllable entities present in
+	// the server.
+	UUID() uuid.UUID
+	// XUID returns the XBOX Live User ID of the controllable. Every controllable must have one of these if
+	// they are authenticated via XBOX Live, as they must be connected to an XBOX Live account.
+	XUID() string
+	// Skin returns the skin of the controllable. Each controllable must have a skin, as it defines how the
+	// entity looks in the world.
+	Skin() skin.Skin
+	SetSkin(skin.Skin)
+
+	UpdateDiagnostics(Diagnostics)
+}
+```
+
+
+
+Controllable represents an entity that may be controlled by a Session. Generally, Controllable is
+implemented in the form of a Player.
+Methods in Controllable will be added as Session needs them in order to handle packets.
+
+
+
+
+
+
+---
+
+### Diagnostics
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Diagnostics struct {
+	// AverageFramesPerSecond is the average amount of frames per second that the client has been
+	// running at.
+	AverageFramesPerSecond	float64
+	// AverageServerSimTickTime is the average time that the server spends simulating a single tick
+	// in milliseconds.
+	AverageServerSimTickTime	float64
+	// AverageClientSimTickTime is the average time that the client spends simulating a single tick
+	// in milliseconds.
+	AverageClientSimTickTime	float64
+	// AverageBeginFrameTime is the average time that the client spends beginning a frame in
+	// milliseconds.
+	AverageBeginFrameTime	float64
+	// AverageInputTime is the average time that the client spends processing input in milliseconds.
+	AverageInputTime	float64
+	// AverageRenderTime is the average time that the client spends rendering in milliseconds.
+	AverageRenderTime	float64
+	// AverageEndFrameTime is the average time that the client spends ending a frame in milliseconds.
+	AverageEndFrameTime	float64
+	// AverageRemainderTimePercent is the average percentage of time that the client spends on
+	// tasks that are not accounted for.
+	AverageRemainderTimePercent	float64
+	// AverageUnaccountedTimePercent is the average percentage of time that the client spends on
+	// unaccounted tasks.
+	AverageUnaccountedTimePercent	float64
+}
+```
+
+
+
+Diagnostics represents the latest diagnostics data of the client.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    AverageFramesPerSecond: {
+      description: 'AverageFramesPerSecond is the average amount of frames per second that the client has been running at.',
+      type: 'float64',
+    },
+    AverageServerSimTickTime: {
+      description: 'AverageServerSimTickTime is the average time that the server spends simulating a single tick in milliseconds.',
+      type: 'float64',
+    },
+    AverageClientSimTickTime: {
+      description: 'AverageClientSimTickTime is the average time that the client spends simulating a single tick in milliseconds.',
+      type: 'float64',
+    },
+    AverageBeginFrameTime: {
+      description: 'AverageBeginFrameTime is the average time that the client spends beginning a frame in milliseconds.',
+      type: 'float64',
+    },
+    AverageInputTime: {
+      description: 'AverageInputTime is the average time that the client spends processing input in milliseconds.',
+      type: 'float64',
+    },
+    AverageRenderTime: {
+      description: 'AverageRenderTime is the average time that the client spends rendering in milliseconds.',
+      type: 'float64',
+    },
+    AverageEndFrameTime: {
+      description: 'AverageEndFrameTime is the average time that the client spends ending a frame in milliseconds.',
+      type: 'float64',
+    },
+    AverageRemainderTimePercent: {
+      description: 'AverageRemainderTimePercent is the average percentage of time that the client spends on tasks that are not accounted for.',
+      type: 'float64',
+    },
+    AverageUnaccountedTimePercent: {
+      description: 'AverageUnaccountedTimePercent is the average percentage of time that the client spends on unaccounted tasks.',
+      type: 'float64',
+    },
+  }}
+/>
+
+
+
+
+
+---
+
+### EmoteHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type EmoteHandler struct {
+	LastEmote time.Time
+}
+```
+
+
+
+EmoteHandler handles the Emote packet.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    LastEmote: {
+      description: '',
+      type: 'time.Time',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (*EmoteHandler) Handle(p packet.Packet, _ *Session, tx *world.Tx, c Controllable) error
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### InteractHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type InteractHandler struct{}
+```
+
+
+
+InteractHandler handles the packet.Interact.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (*InteractHandler) Handle(p packet.Packet, s *Session, _ *world.Tx, c Controllable) error
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### InventoryTransactionHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type InventoryTransactionHandler struct{}
+```
+
+
+
+InventoryTransactionHandler handles the InventoryTransaction packet.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (*InventoryTransactionHandler) Handle(p packet.Packet, s *Session, tx *world.Tx, c Controllable) (err error)
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ItemStackRequestHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ItemStackRequestHandler struct {
+	currentRequest	int32
+
+	changes		map[byte]map[byte]changeInfo
+	responseChanges	map[int32]map[*inventory.Inventory]map[byte]responseChange
+
+	pendingResults	[]item.Stack
+
+	current		time.Time
+	ignoreDestroy	bool
+}
+```
+
+
+
+ItemStackRequestHandler handles the ItemStackRequest packet. It handles the actions done within the
+inventory.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (*ItemStackRequestHandler) Handle(p packet.Packet, s *Session, tx *world.Tx, c Controllable) error
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### LecternUpdateHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type LecternUpdateHandler struct{}
+```
+
+
+
+LecternUpdateHandler handles the LecternUpdate packet, sent when a player interacts with a lectern.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (LecternUpdateHandler) Handle(p packet.Packet, _ *Session, tx *world.Tx, c Controllable) error
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### MobEquipmentHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type MobEquipmentHandler struct{}
+```
+
+
+
+MobEquipmentHandler handles the MobEquipment packet.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (*MobEquipmentHandler) Handle(p packet.Packet, s *Session, tx *world.Tx, c Controllable) error
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ModalFormResponseHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ModalFormResponseHandler struct {
+	mu		sync.Mutex
+	forms		map[uint32]form.Form
+	currentID	atomic.Uint32
+}
+```
+
+
+
+ModalFormResponseHandler handles the ModalFormResponse packet.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (*ModalFormResponseHandler) Handle(p packet.Packet, _ *Session, tx *world.Tx, c Controllable) error
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### NPCRequestHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type NPCRequestHandler struct {
+	dialogue	dialogue.Dialogue
+	entityRuntimeID	uint64
+}
+```
+
+
+
+NPCRequestHandler handles the NPCRequest packet.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (*NPCRequestHandler) Handle(p packet.Packet, s *Session, tx *world.Tx, c Controllable) error
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### NetworkEncodeableEntity
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type NetworkEncodeableEntity interface {
+	// NetworkEncodeEntity returns the network type ID of the entity. This is
+	// NOT the save ID.
+	NetworkEncodeEntity() string
+}
+```
+
+
+
+NetworkEncodeableEntity is a world.EntityType where the save ID and network
+ID are not the same.
+
+
+
+
+
+
+---
+
+### OffsetEntity
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type OffsetEntity interface {
+	NetworkOffset() float64
+}
+```
+
+
+
+OffsetEntity is a world.EntityType that has an additional offset when sent
+over network. This is mostly the case for older entities such as players and
+TNT.
+
+
+
+
+
+
+---
+
+### PlayerActionHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type PlayerActionHandler struct{}
+```
+
+
+
+PlayerActionHandler handles the PlayerAction packet.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (*PlayerActionHandler) Handle(p packet.Packet, s *Session, _ *world.Tx, c Controllable) error
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### PlayerAuthInputHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type PlayerAuthInputHandler struct{}
+```
+
+
+
+PlayerAuthInputHandler handles the PlayerAuthInput packet.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (PlayerAuthInputHandler) Handle(p packet.Packet, s *Session, tx *world.Tx, c Controllable) error
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### PlayerSkinHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type PlayerSkinHandler struct{}
+```
+
+
+
+PlayerSkinHandler handles the PlayerSkin packet.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (PlayerSkinHandler) Handle(p packet.Packet, _ *Session, _ *world.Tx, c Controllable) error
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### RequestAbilityHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type RequestAbilityHandler struct{}
+```
+
+
+
+RequestAbilityHandler handles the RequestAbility packet.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (RequestAbilityHandler) Handle(p packet.Packet, s *Session, _ *world.Tx, c Controllable) error
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### RequestChunkRadiusHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type RequestChunkRadiusHandler struct{}
+```
+
+
+
+RequestChunkRadiusHandler handles the RequestChunkRadius packet.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (*RequestChunkRadiusHandler) Handle(p packet.Packet, s *Session, tx *world.Tx, _ Controllable) error
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### RespawnHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type RespawnHandler struct{}
+```
+
+
+
+RespawnHandler handles the Respawn packet.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (*RespawnHandler) Handle(p packet.Packet, _ *Session, _ *world.Tx, c Controllable) error
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ServerBoundDiagnosticsHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ServerBoundDiagnosticsHandler struct{}
+```
+
+
+
+ServerBoundDiagnosticsHandler handles diagnostic updates from the client.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (*ServerBoundDiagnosticsHandler) Handle(p packet.Packet, _ *Session, _ *world.Tx, c Controllable) error
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ServerBoundLoadingScreenHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ServerBoundLoadingScreenHandler struct {
+	currentID	atomic.Uint32
+	expectedID	atomic.Uint32
+}
+```
+
+
+
+ServerBoundLoadingScreenHandler handles loading screen updates from the clients. It is used to ensure that
+the server knows when the client is loading a screen, and when it is done loading it.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (*ServerBoundLoadingScreenHandler) Handle(p packet.Packet, s *Session, _ *world.Tx, _ Controllable) error
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Session
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Session struct {
+	conf		Config
+	once, connOnce	sync.Once
+
+	ent		*world.EntityHandle
+	conn		Conn
+	handlers	map[uint32]packetHandler
+	packets		chan packet.Packet
+
+	currentScoreboard	atomic.Pointer[string]
+	currentLines		atomic.Pointer[[]string]
+
+	chunkLoader			*world.Loader
+	chunkRadius, maxChunkRadius	int32
+
+	emoteChatMuted	bool
+
+	teleportPos	atomic.Pointer[mgl64.Vec3]
+
+	entityMutex	sync.RWMutex
+	// currentEntityRuntimeID holds the runtime ID assigned to the last entity. It is incremented for every
+	// entity spawned to the session.
+	currentEntityRuntimeID	uint64
+	// entityRuntimeIDs holds the runtime IDs of entities shown to the session.
+	entityRuntimeIDs	map[*world.EntityHandle]uint64
+	entities		map[uint64]*world.EntityHandle
+	hiddenEntities		map[uuid.UUID]struct{}
+
+	// heldSlot is the slot in the inventory that the controllable is holding.
+	heldSlot			*uint32
+	inv, offHand, enderChest, ui	*inventory.Inventory
+	armour				*inventory.Armour
+
+	// joinSkin is the first skin that the player joined with. It is sent on
+	// spawn for the player list, but otherwise updated immediately when the
+	// player is viewed.
+	joinSkin	skin.Skin
+
+	breakingPos	cube.Pos
+
+	inTransaction, containerOpened	atomic.Bool
+	openedWindowID			atomic.Uint32
+	openedContainerID		atomic.Uint32
+	openedWindow			atomic.Pointer[inventory.Inventory]
+	openedPos			atomic.Pointer[cube.Pos]
+	swingingArm			atomic.Bool
+	changingSlot			atomic.Bool
+	changingDimension		atomic.Bool
+	moving				bool
+
+	recipes	map[uint32]recipe.Recipe
+
+	blobMu			sync.Mutex
+	blobs			map[uint64][]byte
+	openChunkTransactions	[]map[uint64]struct{}
+	invOpened		bool
+
+	hudMu		sync.RWMutex
+	hudUpdates	map[hud.Element]bool
+	hiddenHud	map[hud.Element]struct{}
+
+	debugShapesMu		sync.RWMutex
+	debugShapes		map[int]debug.Shape
+	debugShapesAdd		chan debug.Shape
+	debugShapesRemove	chan int
+
+	closeBackground	chan struct{}
+}
+```
+
+
+
+Session handles incoming packets from connections and sends outgoing packets by providing a thin layer
+of abstraction over direct packets. A Session basically 'controls' an entity.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AddDebugShape">
+```go
+func (*Session) AddDebugShape(shape debug.Shape)
+```
+
+AddDebugShape adds a debug shape to be rendered to the player. If the shape already exists, it will be
+updated with the new information.
+
+</Accordion>
+
+<Accordion title="Addr">
+```go
+func (*Session) Addr() net.Addr
+```
+
+Addr returns the net.Addr of the client.
+
+</Accordion>
+
+<Accordion title="ChangingDimension">
+```go
+func (*Session) ChangingDimension() bool
+```
+
+ChangingDimension returns whether the session is currently changing dimension or not.
+
+</Accordion>
+
+<Accordion title="ChunkRadius">
+```go
+func (*Session) ChunkRadius() int32
+```
+
+ChunkRadius returns the chunk radius of the session.
+
+</Accordion>
+
+<Accordion title="ClientData">
+```go
+func (*Session) ClientData() login.ClientData
+```
+
+ClientData returns the login.ClientData of the underlying *minecraft.Conn.
+
+</Accordion>
+
+<Accordion title="Close">
+```go
+func (*Session) Close(tx *world.Tx, c Controllable)
+```
+
+Close closes the session, which in turn closes the controllable and the connection that the session
+manages. Close ensures the method only runs code on the first call.
+
+</Accordion>
+
+<Accordion title="CloseConnection">
+```go
+func (*Session) CloseConnection()
+```
+
+CloseConnection closes the underlying connection of the session so that the session ends up being closed
+eventually.
+
+</Accordion>
+
+<Accordion title="CloseDialogue">
+```go
+func (*Session) CloseDialogue()
+```
+
+</Accordion>
+
+<Accordion title="CloseForm">
+```go
+func (*Session) CloseForm()
+```
+
+CloseForm closes any forms that the player currently has open. If the player has no forms open, nothing
+happens.
+
+</Accordion>
+
+<Accordion title="Disconnect">
+```go
+func (*Session) Disconnect(message string)
+```
+
+Disconnect disconnects the client and ultimately closes the session. If the message passed is non-empty,
+it will be shown to the client.
+
+</Accordion>
+
+<Accordion title="EnableCoordinates">
+```go
+func (*Session) EnableCoordinates(enable bool)
+```
+
+EnableCoordinates will either enable or disable coordinates for the player depending on the value given.
+
+</Accordion>
+
+<Accordion title="EnableInstantRespawn">
+```go
+func (*Session) EnableInstantRespawn(enable bool)
+```
+
+EnableInstantRespawn will either enable or disable instant respawn for the player depending on the value given.
+
+</Accordion>
+
+<Accordion title="HandleInventories">
+```go
+func (*Session) HandleInventories(tx *world.Tx, c Controllable, inv, offHand, enderChest, ui *inventory.Inventory, armour *inventory.Armour, heldSlot *uint32)
+```
+
+HandleInventories starts handling the inventories of the Controllable entity of the session. It sends packets when
+slots in the inventory are changed.
+
+</Accordion>
+
+<Accordion title="HideEntity">
+```go
+func (*Session) HideEntity(e world.Entity)
+```
+
+HideEntity ...
+
+</Accordion>
+
+<Accordion title="HideHudElement">
+```go
+func (*Session) HideHudElement(e hud.Element)
+```
+
+HideHudElement hides a HUD element from the player if it is not already hidden. If the element is waiting
+to be shown, it will be removed from the updates and remain hidden from the player.
+
+</Accordion>
+
+<Accordion title="HudElementHidden">
+```go
+func (*Session) HudElementHidden(e hud.Element) bool
+```
+
+HudElementHidden checks if a HUD element is currently hidden from the player.
+
+</Accordion>
+
+<Accordion title="Latency">
+```go
+func (*Session) Latency() time.Duration
+```
+
+Latency returns the latency of the connection.
+
+</Accordion>
+
+<Accordion title="OpenBlockContainer">
+```go
+func (*Session) OpenBlockContainer(pos cube.Pos, tx *world.Tx)
+```
+
+OpenBlockContainer ...
+
+</Accordion>
+
+<Accordion title="OpenSign">
+```go
+func (*Session) OpenSign(pos cube.Pos, frontSide bool)
+```
+
+OpenSign ...
+
+</Accordion>
+
+<Accordion title="PlaySound">
+```go
+func (*Session) PlaySound(t world.Sound, pos mgl64.Vec3)
+```
+
+PlaySound plays a world.Sound to the client. The volume is not dependent on the distance to the source if it is a
+sound of the LevelSoundEvent packet.
+
+</Accordion>
+
+<Accordion title="RemoveAllDebugShapes">
+```go
+func (*Session) RemoveAllDebugShapes()
+```
+
+RemoveAllDebugShapes removes all rendered debug shapes from the player, as well as any shapes that have
+not yet been rendered.
+
+</Accordion>
+
+<Accordion title="RemoveBossBar">
+```go
+func (*Session) RemoveBossBar()
+```
+
+RemoveBossBar removes any boss bar currently active on the player's screen.
+
+</Accordion>
+
+<Accordion title="RemoveDebugShape">
+```go
+func (*Session) RemoveDebugShape(shape debug.Shape)
+```
+
+RemoveDebugShape removes a debug shape from the player by its unique identifier.
+
+</Accordion>
+
+<Accordion title="RemoveScoreboard">
+```go
+func (*Session) RemoveScoreboard()
+```
+
+RemoveScoreboard ...
+
+</Accordion>
+
+<Accordion title="SendAbilities">
+```go
+func (*Session) SendAbilities(c Controllable)
+```
+
+SendAbilities sends the abilities of the Controllable entity of the session to the client.
+
+</Accordion>
+
+<Accordion title="SendActionBarMessage">
+```go
+func (*Session) SendActionBarMessage(text string)
+```
+
+SendActionBarMessage ...
+
+</Accordion>
+
+<Accordion title="SendAnnouncement">
+```go
+func (*Session) SendAnnouncement(message string)
+```
+
+SendAnnouncement ...
+
+</Accordion>
+
+<Accordion title="SendBossBar">
+```go
+func (*Session) SendBossBar(text string, colour uint8, healthPercentage float64)
+```
+
+SendBossBar sends a boss bar to the player with the text passed and the health percentage of the bar.
+SendBossBar removes any boss bar that might be active before sending the new one.
+
+</Accordion>
+
+<Accordion title="SendChargeItemComplete">
+```go
+func (*Session) SendChargeItemComplete()
+```
+
+SendChargeItemComplete sends a packet to indicate that the item charging process has been completed.
+
+</Accordion>
+
+<Accordion title="SendCommandOutput">
+```go
+func (*Session) SendCommandOutput(output *cmd.Output, l language.Tag)
+```
+
+SendCommandOutput sends the output of a command to the player. It will be shown to the caller of the
+command, which might be the player or a websocket server.
+
+</Accordion>
+
+<Accordion title="SendDebugShapes">
+```go
+func (*Session) SendDebugShapes(dim world.Dimension)
+```
+
+SendDebugShapes sends any pending additions/removals of debug shapes to the player. Shapes should be sent
+every tick to allow for batching and time-efficient updates.
+
+</Accordion>
+
+<Accordion title="SendDialogue">
+```go
+func (*Session) SendDialogue(d dialogue.Dialogue, e world.Entity)
+```
+
+SendDialogue sends an NPC dialogue to the client of the connection. The Submit method of the dialogue is
+called when the client interacts with a button in the dialogue.
+
+</Accordion>
+
+<Accordion title="SendEffect">
+```go
+func (*Session) SendEffect(e effect.Effect)
+```
+
+SendEffect sends an effects passed to the player.
+
+</Accordion>
+
+<Accordion title="SendEffectRemoval">
+```go
+func (*Session) SendEffectRemoval(e effect.Type)
+```
+
+SendEffectRemoval sends the removal of an effect passed.
+
+</Accordion>
+
+<Accordion title="SendExperience">
+```go
+func (*Session) SendExperience(level int, progress float64)
+```
+
+SendExperience sends the experience level and progress from the given experience manager to the player.
+
+</Accordion>
+
+<Accordion title="SendFood">
+```go
+func (*Session) SendFood(food int, saturation, exhaustion float64)
+```
+
+SendFood ...
+
+</Accordion>
+
+<Accordion title="SendForm">
+```go
+func (*Session) SendForm(f form.Form)
+```
+
+SendForm sends a form to the client of the connection. The Submit method of the form is called when the
+client submits the form.
+
+</Accordion>
+
+<Accordion title="SendGameMode">
+```go
+func (*Session) SendGameMode(c Controllable)
+```
+
+SendGameMode sends the game mode of the Controllable entity of the session to the client. It makes sure the right
+flags are set to create the full game mode.
+
+</Accordion>
+
+<Accordion title="SendHealth">
+```go
+func (*Session) SendHealth(health, max, absorption float64)
+```
+
+SendHealth sends the health and max health to the player.
+
+</Accordion>
+
+<Accordion title="SendHeldSlot">
+```go
+func (*Session) SendHeldSlot(slot int, c Controllable, force bool)
+```
+
+SendHeldSlot sends the currently held hotbar slot.
+
+</Accordion>
+
+<Accordion title="SendHudUpdates">
+```go
+func (*Session) SendHudUpdates()
+```
+
+SendHudUpdates sends any pending HUD updates to the player. The updates are batched to reduce the number
+of packets being sent. Up to 2 packets will be sent, one for showing elements and one for hiding elements.
+
+</Accordion>
+
+<Accordion title="SendJukeboxPopup">
+```go
+func (*Session) SendJukeboxPopup(message string)
+```
+
+SendJukeboxPopup ...
+
+</Accordion>
+
+<Accordion title="SendMessage">
+```go
+func (*Session) SendMessage(message string)
+```
+
+SendMessage ...
+
+</Accordion>
+
+<Accordion title="SendPopup">
+```go
+func (*Session) SendPopup(message string)
+```
+
+SendPopup ...
+
+</Accordion>
+
+<Accordion title="SendRespawn">
+```go
+func (*Session) SendRespawn(pos mgl64.Vec3, c Controllable)
+```
+
+SendRespawn spawns the Controllable entity of the session client-side in the world, provided it has died.
+
+</Accordion>
+
+<Accordion title="SendScoreboard">
+```go
+func (*Session) SendScoreboard(sb *scoreboard.Scoreboard)
+```
+
+SendScoreboard ...
+
+</Accordion>
+
+<Accordion title="SendSpeed">
+```go
+func (*Session) SendSpeed(speed float64)
+```
+
+SendSpeed sends the speed of the player in an UpdateAttributes packet, so that it is updated client-side.
+
+</Accordion>
+
+<Accordion title="SendSubtitle">
+```go
+func (*Session) SendSubtitle(text string)
+```
+
+SendSubtitle ...
+
+</Accordion>
+
+<Accordion title="SendTip">
+```go
+func (*Session) SendTip(message string)
+```
+
+SendTip ...
+
+</Accordion>
+
+<Accordion title="SendTitle">
+```go
+func (*Session) SendTitle(text string)
+```
+
+SendTitle ...
+
+</Accordion>
+
+<Accordion title="SendToast">
+```go
+func (*Session) SendToast(title, message string)
+```
+
+SendToast ...
+
+</Accordion>
+
+<Accordion title="SendTranslation">
+```go
+func (*Session) SendTranslation(t chat.Translation, l language.Tag, a []any)
+```
+
+SendTranslation sends a translation localised for a specific language.Tag.
+
+</Accordion>
+
+<Accordion title="SetHandle">
+```go
+func (*Session) SetHandle(handle *world.EntityHandle, skin skin.Skin)
+```
+
+SetHandle sets the world.EntityHandle of the Session and attaches a skin to
+other players on join.
+
+</Accordion>
+
+<Accordion title="SetTitleDurations">
+```go
+func (*Session) SetTitleDurations(fadeInDuration, remainDuration, fadeOutDuration time.Duration)
+```
+
+SetTitleDurations ...
+
+</Accordion>
+
+<Accordion title="ShowHudElement">
+```go
+func (*Session) ShowHudElement(e hud.Element)
+```
+
+ShowHudElement shows a HUD element to the player if it is not already shown. If the element is waiting to
+be hidden, it will be removed from the updates and remain visible to the player.
+
+</Accordion>
+
+<Accordion title="Spawn">
+```go
+func (*Session) Spawn(c Controllable, tx *world.Tx)
+```
+
+Spawn makes the Controllable passed spawn in the world.World.
+The function passed will be called when the session stops running.
+
+</Accordion>
+
+<Accordion title="StartShowingEntity">
+```go
+func (*Session) StartShowingEntity(e world.Entity)
+```
+
+StartShowingEntity starts showing a world.Entity to the Session that was previously hidden using StopShowingEntity.
+
+</Accordion>
+
+<Accordion title="StopShowingEntity">
+```go
+func (*Session) StopShowingEntity(e world.Entity)
+```
+
+StopShowingEntity stops showing a world.Entity to the Session. It will be completely invisible until a call to
+StartShowingEntity is made.
+
+</Accordion>
+
+<Accordion title="Transfer">
+```go
+func (*Session) Transfer(ip net.IP, port int)
+```
+
+Transfer transfers the player to a server with the IP and port passed.
+
+</Accordion>
+
+<Accordion title="VerifyAndSetHeldSlot">
+```go
+func (*Session) VerifyAndSetHeldSlot(slot int, expected item.Stack, c Controllable) error
+```
+
+VerifyAndSetHeldSlot verifies if the slot passed is a valid hotbar slot and
+if the expected item.Stack is in it. Afterwards, it changes the held slot
+of the player.
+
+</Accordion>
+
+<Accordion title="VerifySlot">
+```go
+func (*Session) VerifySlot(slot int, expected item.Stack) error
+```
+
+VerifySlot verifies if the slot passed is a valid hotbar slot and if the
+expected item.Stack is in it.
+
+</Accordion>
+
+<Accordion title="ViewBlockAction">
+```go
+func (*Session) ViewBlockAction(pos cube.Pos, a world.BlockAction)
+```
+
+ViewBlockAction ...
+
+</Accordion>
+
+<Accordion title="ViewBlockUpdate">
+```go
+func (*Session) ViewBlockUpdate(pos cube.Pos, b world.Block, layer int)
+```
+
+ViewBlockUpdate ...
+
+</Accordion>
+
+<Accordion title="ViewBrewingUpdate">
+```go
+func (*Session) ViewBrewingUpdate(prevBrewTime, brewTime time.Duration, prevFuelAmount, fuelAmount, prevFuelTotal, fuelTotal int32)
+```
+
+ViewBrewingUpdate updates a brewing stand for the associated session based on previous times.
+
+</Accordion>
+
+<Accordion title="ViewChunk">
+```go
+func (*Session) ViewChunk(pos world.ChunkPos, dim world.Dimension, blockEntities map[cube.Pos]world.Block, c *chunk.Chunk)
+```
+
+ViewChunk ...
+
+</Accordion>
+
+<Accordion title="ViewEmote">
+```go
+func (*Session) ViewEmote(player world.Entity, emote uuid.UUID)
+```
+
+ViewEmote ...
+
+</Accordion>
+
+<Accordion title="ViewEntity">
+```go
+func (*Session) ViewEntity(e world.Entity)
+```
+
+ViewEntity ...
+
+</Accordion>
+
+<Accordion title="ViewEntityAction">
+```go
+func (*Session) ViewEntityAction(e world.Entity, a world.EntityAction)
+```
+
+ViewEntityAction ...
+
+</Accordion>
+
+<Accordion title="ViewEntityAnimation">
+```go
+func (*Session) ViewEntityAnimation(e world.Entity, a world.EntityAnimation)
+```
+
+ViewEntityAnimation ...
+
+</Accordion>
+
+<Accordion title="ViewEntityArmour">
+```go
+func (*Session) ViewEntityArmour(e world.Entity)
+```
+
+ViewEntityArmour ...
+
+</Accordion>
+
+<Accordion title="ViewEntityGameMode">
+```go
+func (*Session) ViewEntityGameMode(e world.Entity)
+```
+
+ViewEntityGameMode ...
+
+</Accordion>
+
+<Accordion title="ViewEntityItems">
+```go
+func (*Session) ViewEntityItems(e world.Entity)
+```
+
+ViewEntityItems ...
+
+</Accordion>
+
+<Accordion title="ViewEntityMovement">
+```go
+func (*Session) ViewEntityMovement(e world.Entity, pos mgl64.Vec3, rot cube.Rotation, onGround bool)
+```
+
+ViewEntityMovement ...
+
+</Accordion>
+
+<Accordion title="ViewEntityState">
+```go
+func (*Session) ViewEntityState(e world.Entity)
+```
+
+ViewEntityState ...
+
+</Accordion>
+
+<Accordion title="ViewEntityTeleport">
+```go
+func (*Session) ViewEntityTeleport(e world.Entity, position mgl64.Vec3)
+```
+
+ViewEntityTeleport ...
+
+</Accordion>
+
+<Accordion title="ViewEntityVelocity">
+```go
+func (*Session) ViewEntityVelocity(e world.Entity, velocity mgl64.Vec3)
+```
+
+ViewEntityVelocity ...
+
+</Accordion>
+
+<Accordion title="ViewFurnaceUpdate">
+```go
+func (*Session) ViewFurnaceUpdate(prevCookTime, cookTime, prevRemainingFuelTime, remainingFuelTime, prevMaxFuelTime, maxFuelTime time.Duration)
+```
+
+ViewFurnaceUpdate updates a furnace for the associated session based on previous times.
+
+</Accordion>
+
+<Accordion title="ViewItemCooldown">
+```go
+func (*Session) ViewItemCooldown(item world.Item, duration time.Duration)
+```
+
+ViewItemCooldown ...
+
+</Accordion>
+
+<Accordion title="ViewParticle">
+```go
+func (*Session) ViewParticle(pos mgl64.Vec3, p world.Particle)
+```
+
+ViewParticle ...
+
+</Accordion>
+
+<Accordion title="ViewSkin">
+```go
+func (*Session) ViewSkin(e world.Entity)
+```
+
+ViewSkin ...
+
+</Accordion>
+
+<Accordion title="ViewSlotChange">
+```go
+func (*Session) ViewSlotChange(slot int, newItem item.Stack)
+```
+
+ViewSlotChange ...
+
+</Accordion>
+
+<Accordion title="ViewSound">
+```go
+func (*Session) ViewSound(pos mgl64.Vec3, soundType world.Sound)
+```
+
+ViewSound ...
+
+</Accordion>
+
+<Accordion title="ViewSubChunks">
+```go
+func (*Session) ViewSubChunks(center world.SubChunkPos, offsets []protocol.SubChunkOffset, tx *world.Tx)
+```
+
+ViewSubChunks ...
+
+</Accordion>
+
+<Accordion title="ViewTime">
+```go
+func (*Session) ViewTime(time int)
+```
+
+ViewTime ...
+
+</Accordion>
+
+<Accordion title="ViewTimeCycle">
+```go
+func (*Session) ViewTimeCycle(doDayLightCycle bool)
+```
+
+ViewTimeCycle ...
+
+</Accordion>
+
+<Accordion title="ViewWeather">
+```go
+func (*Session) ViewWeather(raining, thunder bool)
+```
+
+ViewWeather ...
+
+</Accordion>
+
+<Accordion title="ViewWorldSpawn">
+```go
+func (*Session) ViewWorldSpawn(pos cube.Pos)
+```
+
+ViewWorldSpawn ...
+
+</Accordion>
+
+<Accordion title="VisibleDebugShapes">
+```go
+func (*Session) VisibleDebugShapes() []debug.Shape
+```
+
+VisibleDebugShapes returns a slice of all debug shapes that are currently being shown to the player.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### SubChunkRequestHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type SubChunkRequestHandler struct{}
+```
+
+
+
+SubChunkRequestHandler handles sub-chunk requests from the client. The server will respond with a packet containing
+the requested sub-chunks.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (*SubChunkRequestHandler) Handle(p packet.Packet, s *Session, tx *world.Tx, _ Controllable) error
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### TextHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type TextHandler struct{}
+```
+
+
+
+TextHandler handles the Text packet.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Handle">
+```go
+func (TextHandler) Handle(p packet.Packet, s *Session, _ *world.Tx, c Controllable) error
+```
+
+Handle ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

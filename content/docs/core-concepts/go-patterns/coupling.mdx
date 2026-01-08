@@ -1,0 +1,129 @@
+---
+title: Object Coupling
+icon: GitCompare
+---
+
+Coupling refers to how dependent your code is on other pieces of code. Tight coupling means changing one thing breaks a bunch of other things. Loose coupling means components can change independently.
+
+## Tight Coupling Example
+
+Here's a common pattern that creates tight coupling:
+
+```go title="tight_coupling.go"
+type Arena struct {
+    players []*player.Player
+    game    *Game
+}
+
+func (a *Arena) AddPlayer(p *player.Player) {
+    a.players = append(a.players, p)
+    a.game.UpdateScoreboard()
+    a.game.BroadcastJoin(p)
+    a.game.CheckStartCondition()
+}
+```
+
+The `Arena` now depends on `Game` having specific methods. If you rename `UpdateScoreboard` or change its signature, you have to update `Arena` too. Multiply this across your codebase and things get messy fast.
+
+## Loose Coupling with Interfaces
+
+Go's interfaces let you define behavior without caring about concrete types:
+
+```go title="loose_coupling.go"
+type GameNotifier interface {
+    OnPlayerJoin(p *player.Player)
+}
+
+type Arena struct {
+    players  []*player.Player
+    notifier GameNotifier
+}
+
+func (a *Arena) AddPlayer(p *player.Player) {
+    a.players = append(a.players, p)
+    if a.notifier != nil {
+        a.notifier.OnPlayerJoin(p)
+    }
+}
+```
+
+Now `Arena` doesn't care what `GameNotifier` actually is. It could be your `Game` struct, a test mock, or anything else that implements `OnPlayerJoin`. The arena just calls the interface method.
+
+```go title="implementation.go"
+type Game struct {
+    // ...
+}
+
+func (g *Game) OnPlayerJoin(p *player.Player) {
+    g.updateScoreboard()
+    g.broadcastJoin(p)
+    g.checkStartCondition()
+}
+
+// Wire it up
+arena := &Arena{
+    notifier: game,
+}
+```
+
+## Why This Matters
+
+Consider this scenario: you want to test your arena logic without spinning up an entire game. With tight coupling, you're stuck. With loose coupling:
+
+```go title="testing.go"
+type mockNotifier struct {
+    joinCalls int
+}
+
+func (m *mockNotifier) OnPlayerJoin(p *player.Player) {
+    m.joinCalls++
+}
+
+func TestArenaAddPlayer(t *testing.T) {
+    mock := &mockNotifier{}
+    arena := &Arena{notifier: mock}
+
+    arena.AddPlayer(somePlayer)
+
+    if mock.joinCalls != 1 {
+        t.Fail()
+    }
+}
+```
+
+## The Dragonfly Approach
+
+Dragonfly uses interfaces extensively for this reason. The `player.Handler` interface is a good example - your handler doesn't need to know anything about Dragonfly's internals. It just implements the interface methods it cares about.
+
+```go title="handler_interface.go"
+type Handler interface {
+    HandleMove(ctx *event.Context[*player.Player], newPos mgl64.Vec3, newRot cube.Rotation)
+    HandleChat(ctx *event.Context[*player.Player], message *string)
+    // ... etc
+}
+```
+
+Your handler code isn't coupled to Dragonfly's internal implementation. If Dragonfly refactors how movement works internally, your handler doesn't need to change as long as the interface stays the same.
+
+## Practical Guidelines
+
+1. **Depend on interfaces, not concrete types** - If a function only needs to call `Close()`, accept an `io.Closer`, not a `*os.File`.
+
+2. **Keep interfaces small** - Go convention favors small, focused interfaces. A single-method interface is often ideal.
+
+3. **Define interfaces where they're used** - Unlike Java where you define the interface with the implementation, in Go you typically define it in the package that uses it.
+
+```go title="interface_definition.go"
+// In your arena package, not the game package
+type GameNotifier interface {
+    OnPlayerJoin(p *player.Player)
+}
+```
+
+4. **Accept interfaces, return structs** - Functions should accept interface parameters but return concrete types. This keeps your API flexible for callers while being explicit about what you return.
+
+```go title="factory_func.go"
+func NewArena(notifier GameNotifier) *Arena {
+    return &Arena{notifier: notifier}
+}
+```

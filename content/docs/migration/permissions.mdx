@@ -1,0 +1,463 @@
+---
+title: Permissions
+icon: ShieldCheck
+---
+
+Dragonfly doesn't have a built-in permission system like PocketMine-MP. There's no `$player->hasPermission()`, no `permissions.yml`, no permission nodes.
+
+You have to implement your own.
+
+## Why No Permission System?
+
+Dragonfly is a library, not a framework. It gives you the primitives to build a server, but doesn't force design decisions on you.
+
+This means you can implement permissions however you want:
+- Simple role-based system
+- Full permission nodes like PM/Nukkit
+- Database-backed
+- Hardcoded per-player
+- Whatever fits your needs
+
+## Simple Role-Based System
+
+The easiest approach is to assign roles to players:
+
+```go title="role_definition.go"
+type Role int
+
+const (
+    RolePlayer Role = iota
+    RoleModerator
+    RoleAdmin
+)
+
+func (r Role) String() string {
+    switch r {
+    case RolePlayer:
+        return "Player"
+    case RoleModerator:
+        return "Moderator"
+    case RoleAdmin:
+        return "Admin"
+    default:
+        return "Unknown"
+    }
+}
+```
+
+Store roles in a map:
+
+```go title="player_roles.go"
+var playerRoles = map[string]Role{
+    "Notch":      RoleAdmin,
+    "jeb_":       RoleModerator,
+    "Herobrine":  RolePlayer,
+}
+
+func GetRole(p *player.Player) Role {
+    role, ok := playerRoles[p.Name()]
+    if !ok {
+        return RolePlayer  // Default
+    }
+    return role
+}
+```
+
+Check permissions:
+
+```go title="role_check.go"
+func CanKick(p *player.Player) bool {
+    role := GetRole(p)
+    return role >= RoleModerator
+}
+
+func CanBan(p *player.Player) bool {
+    role := GetRole(p)
+    return role >= RoleAdmin
+}
+```
+
+Use in commands:
+
+```go title="command_usage.go"
+type KickCommand struct {
+    Target cmd.Target `cmd:"target"`
+}
+
+func (c KickCommand) Run(source cmd.Source, output *cmd.Output) {
+    p, ok := source.(*player.Player)
+    if !ok {
+        output.Error("Console can't kick players")
+        return
+    }
+
+    if !CanKick(p) {
+        output.Error("§cYou don't have permission to do that")
+        return
+    }
+
+    target := c.Target.(*player.Player)
+    target.Disconnect("Kicked by " + p.Name())
+    output.Printf("Kicked %s", target.Name())
+}
+```
+
+## Permission Nodes System
+
+If you want a PM/Nukkit-style permission system, you can build it:
+
+```go title="permission_nodes.go"
+type Permission string
+
+const (
+    PermKick       Permission = "server.kick"
+    PermBan        Permission = "server.ban"
+    PermGamemode   Permission = "server.gamemode"
+    PermTeleport   Permission = "server.teleport"
+    PermFly        Permission = "player.fly"
+)
+```
+
+Store permissions per player:
+
+```go title="player_permissions.go"
+var playerPermissions = map[string][]Permission{
+    "Notch": {
+        PermKick, PermBan, PermGamemode, PermTeleport, PermFly,
+    },
+    "jeb_": {
+        PermKick, PermTeleport,
+    },
+}
+
+func HasPermission(p *player.Player, perm Permission) bool {
+    perms, ok := playerPermissions[p.Name()]
+    if !ok {
+        return false
+    }
+
+    for _, p := range perms {
+        if p == perm {
+            return true
+        }
+    }
+
+    return false
+}
+```
+
+Support wildcards:
+
+```go title="wildcard_permissions.go"
+func HasPermission(p *player.Player, perm Permission) bool {
+    perms, ok := playerPermissions[p.Name()]
+    if !ok {
+        return false
+    }
+
+    for _, p := range perms {
+        if p == perm || p == "*" || matchesWildcard(string(p), string(perm)) {
+            return true
+        }
+    }
+
+    return false
+}
+
+func matchesWildcard(pattern, perm string) bool {
+    if !strings.HasSuffix(pattern, ".*") {
+        return false
+    }
+
+    prefix := strings.TrimSuffix(pattern, ".*")
+    return strings.HasPrefix(perm, prefix)
+}
+```
+
+Example:
+
+```go title="wildcard_example.go"
+playerPermissions["Notch"] = []Permission{"server.*"}  // All server permissions
+```
+
+## Database-Backed Permissions
+
+For persistent permissions, store them in a database:
+
+```go title="db_permissions.go"
+type PlayerData struct {
+    UUID        string
+    Permissions []string
+}
+
+func LoadPermissions(p *player.Player) ([]Permission, error) {
+    var data PlayerData
+    err := db.QueryRow("SELECT permissions FROM players WHERE uuid = ?", p.UUID()).Scan(&data.Permissions)
+    if err != nil {
+        return nil, err
+    }
+
+    perms := make([]Permission, len(data.Permissions))
+    for i, p := range data.Permissions {
+        perms[i] = Permission(p)
+    }
+
+    return perms, nil
+}
+
+func SavePermissions(p *player.Player, perms []Permission) error {
+    permStrings := make([]string, len(perms))
+    for i, p := range perms {
+        permStrings[i] = string(p)
+    }
+
+    _, err := db.Exec("UPDATE players SET permissions = ? WHERE uuid = ?",
+        strings.Join(permStrings, ","), p.UUID())
+
+    return err
+}
+```
+
+Cache permissions on join:
+
+```go title="permission_cache.go"
+var permissionCache = make(map[string][]Permission)
+var cacheMu sync.RWMutex
+
+type LobbyHandler struct {
+    player *player.Player
+}
+
+func (h *LobbyHandler) HandleJoin() {
+    perms, err := LoadPermissions(h.player)
+    if err != nil {
+        log.Printf("Failed to load permissions for %s: %v", h.player.Name(), err)
+        return
+    }
+
+    cacheMu.Lock()
+    permissionCache[h.player.UUID()] = perms
+    cacheMu.Unlock()
+}
+
+func HasPermission(p *player.Player, perm Permission) bool {
+    cacheMu.RLock()
+    defer cacheMu.RUnlock()
+
+    perms, ok := permissionCache[p.UUID()]
+    if !ok {
+        return false
+    }
+
+    for _, cached := range perms {
+        if cached == perm {
+            return true
+        }
+    }
+
+    return false
+}
+```
+
+## Groups
+
+Implement groups like PM/Nukkit:
+
+```go title="groups.go"
+type Group struct {
+    Name        string
+    Permissions []Permission
+}
+
+var groups = map[string]*Group{
+    "default": {
+        Name:        "Default",
+        Permissions: []Permission{},
+    },
+    "vip": {
+        Name: "VIP",
+        Permissions: []Permission{
+            PermFly,
+        },
+    },
+    "mod": {
+        Name: "Moderator",
+        Permissions: []Permission{
+            PermKick, PermTeleport,
+        },
+    },
+    "admin": {
+        Name: "Admin",
+        Permissions: []Permission{
+            PermKick, PermBan, PermGamemode, PermTeleport, PermFly,
+        },
+    },
+}
+
+var playerGroups = map[string]string{
+    "Notch": "admin",
+    "jeb_":  "mod",
+}
+
+func GetGroup(p *player.Player) *Group {
+    groupName, ok := playerGroups[p.Name()]
+    if !ok {
+        return groups["default"]
+    }
+
+    group, ok := groups[groupName]
+    if !ok {
+        return groups["default"]
+    }
+
+    return group
+}
+
+func HasPermission(p *player.Player, perm Permission) bool {
+    group := GetGroup(p)
+
+    for _, p := range group.Permissions {
+        if p == perm {
+            return true
+        }
+    }
+
+    return false
+}
+```
+
+## Inheritance
+
+Support group inheritance:
+
+```go title="group_inheritance.go"
+type Group struct {
+    Name        string
+    Permissions []Permission
+    Inherits    []*Group
+}
+
+var (
+    defaultGroup = &Group{Name: "Default", Permissions: []Permission{}}
+    vipGroup     = &Group{Name: "VIP", Permissions: []Permission{PermFly}, Inherits: []*Group{defaultGroup}}
+    modGroup     = &Group{Name: "Moderator", Permissions: []Permission{PermKick, PermTeleport}, Inherits: []*Group{vipGroup}}
+    adminGroup   = &Group{Name: "Admin", Permissions: []Permission{PermBan, PermGamemode}, Inherits: []*Group{modGroup}}
+)
+
+func (g *Group) HasPermission(perm Permission) bool {
+    // Check own permissions
+    for _, p := range g.Permissions {
+        if p == perm {
+            return true
+        }
+    }
+
+    // Check inherited groups
+    for _, inherited := range g.Inherits {
+        if inherited.HasPermission(perm) {
+            return true
+        }
+    }
+
+    return false
+}
+
+func HasPermission(p *player.Player, perm Permission) bool {
+    group := GetGroup(p)
+    return group.HasPermission(perm)
+}
+```
+
+Now moderators automatically get VIP and default permissions.
+
+## Practical Example: Full System
+
+```go title="full_permission_system.go"
+package permissions
+
+import (
+    "github.com/df-mc/dragonfly/server/player"
+)
+
+type Permission string
+
+const (
+    PermKick     Permission = "server.kick"
+    PermBan      Permission = "server.ban"
+    PermGamemode Permission = "server.gamemode"
+    PermFly      Permission = "player.fly"
+)
+
+type Group struct {
+    Name        string
+    Permissions []Permission
+    Inherits    []*Group
+}
+
+var (
+    DefaultGroup = &Group{Name: "Default"}
+    VIPGroup     = &Group{Name: "VIP", Permissions: []Permission{PermFly}, Inherits: []*Group{DefaultGroup}}
+    ModGroup     = &Group{Name: "Moderator", Permissions: []Permission{PermKick}, Inherits: []*Group{VIPGroup}}
+    AdminGroup   = &Group{Name: "Admin", Permissions: []Permission{PermBan, PermGamemode}, Inherits: []*Group{ModGroup}}
+)
+
+var playerGroups = map[string]*Group{}
+
+func SetGroup(p *player.Player, group *Group) {
+    playerGroups[p.UUID()] = group
+}
+
+func GetGroup(p *player.Player) *Group {
+    group, ok := playerGroups[p.UUID()]
+    if !ok {
+        return DefaultGroup
+    }
+    return group
+}
+
+func (g *Group) HasPermission(perm Permission) bool {
+    for _, p := range g.Permissions {
+        if p == perm {
+            return true
+        }
+    }
+
+    for _, inherited := range g.Inherits {
+        if inherited.HasPermission(perm) {
+            return true
+        }
+    }
+
+    return false
+}
+
+func Has(p *player.Player, perm Permission) bool {
+    return GetGroup(p).HasPermission(perm)
+}
+```
+
+Usage:
+
+```go title="usage_example.go"
+import "my-server/internal/permissions"
+
+// On join
+permissions.SetGroup(p, permissions.ModGroup)
+
+// In a command
+if !permissions.Has(p, permissions.PermKick) {
+    output.Error("§cNo permission")
+    return
+}
+```
+
+## Key Takeaways
+
+- Dragonfly has no built-in permission system. Build your own.
+- Start simple: roles are easier than full permission nodes.
+- Use constants for permission strings to avoid typos.
+- Cache permissions in memory for performance.
+- Store permissions in a database if you need persistence.
+- Groups with inheritance are more flexible than individual permissions.
+
+You have complete control. Build what fits your server's needs, not what a framework forces on you.

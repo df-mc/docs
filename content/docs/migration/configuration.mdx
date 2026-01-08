@@ -1,0 +1,460 @@
+---
+title: Configuration
+icon: Settings
+---
+
+There is no `config.yml` by default. Dragonfly is a library—you control everything, including how you handle configuration.
+
+## How PM/Nukkit Configuration Works
+
+In PocketMine-MP, you use `config.yml`:
+
+```yaml title="config.yml (PM)"
+server:
+  max-players: 100
+  motd: "My Server"
+
+database:
+  host: localhost
+  port: 3306
+  user: root
+  password: password
+```
+
+You load it in your plugin:
+
+```php title="pm_config_load.php"
+$config = $this->getConfig();
+$maxPlayers = $config->get("server")["max-players"];
+```
+
+This is convenient, but it ties you to YAML and the structure is untyped.
+
+## How Dragonfly Configuration Works
+
+You build it yourself. Dragonfly doesn't force a configuration format on you. You can use:
+
+- JSON
+- YAML
+- TOML
+- Environment variables
+- Hardcoded Go structs
+- Whatever you want
+
+Here's the most common approach: define a Go struct and load it from a file.
+
+## Using JSON
+
+Define your config structure:
+
+```go title="config_struct.go"
+package config
+
+type Config struct {
+    Server   ServerConfig   `json:"server"`
+    Database DatabaseConfig `json:"database"`
+}
+
+type ServerConfig struct {
+    MaxPlayers int    `json:"max_players"`
+    MOTD       string `json:"motd"`
+}
+
+type DatabaseConfig struct {
+    Host     string `json:"host"`
+    Port     int    `json:"port"`
+    User     string `json:"user"`
+    Password string `json:"password"`
+}
+```
+
+Load it:
+
+```go title="json_loader.go"
+package config
+
+import (
+    "encoding/json"
+    "os"
+)
+
+func Load(path string) (*Config, error) {
+    data, err := os.ReadFile(path)
+    if err != nil {
+        return nil, err
+    }
+
+    var conf Config
+    if err := json.Unmarshal(data, &conf); err != nil {
+        return nil, err
+    }
+
+    return &conf, nil
+}
+```
+
+Save default config if it doesn't exist:
+
+```go title="load_or_create.go"
+func LoadOrCreate(path string) (*Config, error) {
+    if _, err := os.Stat(path); os.IsNotExist(err) {
+        // File doesn't exist, create default
+        defaultConf := &Config{
+            Server: ServerConfig{
+                MaxPlayers: 100,
+                MOTD:       "My Server",
+            },
+            Database: DatabaseConfig{
+                Host:     "localhost",
+                Port:     3306,
+                User:     "root",
+                Password: "password",
+            },
+        }
+
+        data, _ := json.MarshalIndent(defaultConf, "", "  ")
+        if err := os.WriteFile(path, data, 0644); err != nil {
+            return nil, err
+        }
+
+        return defaultConf, nil
+    }
+
+    return Load(path)
+}
+```
+
+Use it in your main:
+
+```go title="main_config_usage.go"
+func main() {
+    conf, err := config.LoadOrCreate("config.json")
+    if err != nil {
+        panic(err)
+    }
+
+    fmt.Println("Max players:", conf.Server.MaxPlayers)
+    fmt.Println("MOTD:", conf.Server.MOTD)
+
+    // Use the config to set up your server...
+}
+```
+
+## Using YAML
+
+If you prefer YAML, use `gopkg.in/yaml.v3`:
+
+```bash title="Terminal"
+go get gopkg.in/yaml.v3
+```
+
+Change the struct tags:
+
+```go title="yaml_struct_tags.go"
+type Config struct {
+    Server   ServerConfig   `yaml:"server"`
+    Database DatabaseConfig `yaml:"database"`
+}
+
+type ServerConfig struct {
+    MaxPlayers int    `yaml:"max_players"`
+    MOTD       string `yaml:"motd"`
+}
+
+type DatabaseConfig struct {
+    Host     string `yaml:"host"`
+    Port     int    `yaml:"port"`
+    User     string `yaml:"user"`
+    Password string `yaml:"password"`
+}
+```
+
+Load it:
+
+```go title="yaml_loader.go"
+import "gopkg.in/yaml.v3"
+
+func Load(path string) (*Config, error) {
+    data, err := os.ReadFile(path)
+    if err != nil {
+        return nil, err
+    }
+
+    var conf Config
+    if err := yaml.Unmarshal(data, &conf); err != nil {
+        return nil, err
+    }
+
+    return &conf, nil
+}
+```
+
+Save it:
+
+```go title="yaml_saver.go"
+func (c *Config) Save(path string) error {
+    data, err := yaml.Marshal(c)
+    if err != nil {
+        return err
+    }
+
+    return os.WriteFile(path, data, 0644)
+}
+```
+
+## Using TOML
+
+TOML is also popular in Go. Use `github.com/BurntSushi/toml`:
+
+```bash title="Terminal"
+go get github.com/BurntSushi/toml
+```
+
+```go title="toml_loader.go"
+import "github.com/BurntSushi/toml"
+
+func Load(path string) (*Config, error) {
+    var conf Config
+    if _, err := toml.DecodeFile(path, &conf); err != nil {
+        return nil, err
+    }
+    return &conf, nil
+}
+```
+
+## Environment Variables
+
+For sensitive data (API keys, passwords), use environment variables:
+
+```go title="env_var.go"
+import "os"
+
+dbPassword := os.Getenv("DB_PASSWORD")
+if dbPassword == "" {
+    dbPassword = "default_password"
+}
+```
+
+Combine with a config file:
+
+```go title="env_override.go"
+type DatabaseConfig struct {
+    Host     string `json:"host"`
+    Port     int    `json:"port"`
+    User     string `json:"user"`
+    Password string `json:"-"`  // Don't save to file
+}
+
+func Load(path string) (*Config, error) {
+    conf, err := loadFromFile(path)
+    if err != nil {
+        return nil, err
+    }
+
+    // Override password from env
+    conf.Database.Password = os.Getenv("DB_PASSWORD")
+
+    return conf, nil
+}
+```
+
+## Nested Configuration
+
+For large projects, split configs into multiple files:
+
+```text title="config_files"
+config/
+├── server.json
+├── database.json
+└── game.json
+```
+
+Load them separately:
+
+```go title="nested_loader.go"
+type Config struct {
+    Server   *ServerConfig
+    Database *DatabaseConfig
+    Game     *GameConfig
+}
+
+func Load() (*Config, error) {
+    serverConf, err := loadServerConfig("config/server.json")
+    if err != nil {
+        return nil, err
+    }
+
+    dbConf, err := loadDatabaseConfig("config/database.json")
+    if err != nil {
+        return nil, err
+    }
+
+    gameConf, err := loadGameConfig("config/game.json")
+    if err != nil {
+        return nil, err
+    }
+
+    return &Config{
+        Server:   serverConf,
+        Database: dbConf,
+        Game:     gameConf,
+    }, nil
+}
+```
+
+## Reloading Configuration
+
+In PM/Nukkit, you'd reload configs with `$this->reloadConfig()`. In Dragonfly, you control this:
+
+```go title="config_reloader.go"
+type Server struct {
+    config *config.Config
+    mu     sync.RWMutex
+}
+
+func (s *Server) ReloadConfig() error {
+    newConf, err := config.Load("config.json")
+    if err != nil {
+        return err
+    }
+
+    s.mu.Lock()
+    s.config = newConf
+    s.mu.Unlock()
+
+    log.Println("Configuration reloaded")
+    return nil
+}
+
+func (s *Server) GetConfig() *config.Config {
+    s.mu.RLock()
+    defer s.mu.RUnlock()
+
+    return s.config
+}
+```
+
+Trigger reload with a command:
+
+```go title="reload_command.go"
+type ReloadCommand struct{}
+
+func (c ReloadCommand) Run(source cmd.Source, output *cmd.Output) {
+    if err := server.ReloadConfig(); err != nil {
+        output.Errorf("Failed to reload config: %v", err)
+        return
+    }
+
+    output.Print("§aConfiguration reloaded!")
+}
+```
+
+## Using Third-Party Config Libraries
+
+For advanced needs, use libraries like `viper`:
+
+```bash title="Terminal"
+go get github.com/spf13/viper
+```
+
+```go title="viper_usage.go"
+import "github.com/spf13/viper"
+
+func Load() error {
+    viper.SetConfigName("config")
+    viper.SetConfigType("yaml")
+    viper.AddConfigPath(".")
+
+    if err := viper.ReadInConfig(); err != nil {
+        return err
+    }
+
+    viper.WatchConfig()  // Auto-reload on change
+
+    return nil
+}
+
+func Get(key string) interface{} {
+    return viper.Get(key)
+}
+```
+
+Viper supports multiple formats, environment variables, remote config, and more. It's overkill for most projects, but it's there if you need it.
+
+## Practical Example: Server Config
+
+```go title="full_example.go"
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+    "os"
+)
+
+type Config struct {
+    Server ServerConfig `json:"server"`
+}
+
+type ServerConfig struct {
+    MaxPlayers int    `json:"max_players"`
+    MOTD       string `json:"motd"`
+    Port       int    `json:"port"`
+}
+
+func LoadConfig() (*Config, error) {
+    const path = "config.json"
+
+    // Create default if not exists
+    if _, err := os.Stat(path); os.IsNotExist(err) {
+        defaultConf := &Config{
+            Server: ServerConfig{
+                MaxPlayers: 100,
+                MOTD:       "A Dragonfly Server",
+                Port:       19132,
+            },
+        }
+
+        data, _ := json.MarshalIndent(defaultConf, "", "  ")
+        os.WriteFile(path, data, 0644)
+
+        return defaultConf, nil
+    }
+
+    // Load existing
+    data, err := os.ReadFile(path)
+    if err != nil {
+        return nil, err
+    }
+
+    var conf Config
+    if err := json.Unmarshal(data, &conf); err != nil {
+        return nil, err
+    }
+
+    return &conf, nil
+}
+
+func main() {
+    conf, err := LoadConfig()
+    if err != nil {
+        panic(err)
+    }
+
+    fmt.Println("Loaded config:")
+    fmt.Printf("  Max Players: %d\n", conf.Server.MaxPlayers)
+    fmt.Printf("  MOTD: %s\n", conf.Server.MOTD)
+    fmt.Printf("  Port: %d\n", conf.Server.Port)
+}
+```
+
+## Key Takeaways
+
+- Dragonfly has no built-in config system. You build it yourself.
+- Define a struct, load it from JSON/YAML/TOML.
+- Use `os.ReadFile` and `json.Unmarshal` (or equivalent for YAML/TOML).
+- Create default configs if the file doesn't exist.
+- Use environment variables for sensitive data.
+- Control reloading with your own logic.
+
+This is more work upfront, but it gives you complete control over how your server is configured. No framework limitations.

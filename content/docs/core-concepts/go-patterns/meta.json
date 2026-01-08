@@ -1,0 +1,11 @@
+{
+    "title": "Go Patterns",
+    "icon": "Code",
+    "pages": [
+        "overengineering",
+        "abstraction",
+        "polymorphism",
+        "coupling",
+        "encapsulation"
+    ]
+}

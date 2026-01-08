@@ -1,0 +1,9 @@
+{
+    "icon": "FolderInput",
+    "pages": [
+        "basic-forms",
+        "advanced-forms",
+        "ui-components",
+        "validation"
+    ]
+}

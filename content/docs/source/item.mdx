@@ -1,0 +1,12129 @@
+---
+title: "item"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# item
+
+
+```go
+import "github.com/df-mc/dragonfly/server/item"
+```
+
+
+
+
+
+## Constants
+
+<Accordions>
+
+<Accordion title="DefaultConsumeDuration">
+```go
+const DefaultConsumeDuration  = (time.Second * 161) / 100
+```
+
+DefaultConsumeDuration is the default duration that consuming an item takes. Dried kelp takes half this
+time to be consumed.
+
+</Accordion>
+
+</Accordions>
+
+
+
+## Variables
+
+<Accordions>
+
+<Accordion title="EnchantmentRarityCommon">
+```go
+var EnchantmentRarityCommon enchantmentRarityCommon
+```
+
+</Accordion>
+
+<Accordion title="EnchantmentRarityUncommon">
+```go
+var EnchantmentRarityUncommon enchantmentRarityUncommon
+```
+
+</Accordion>
+
+<Accordion title="EnchantmentRarityRare">
+```go
+var EnchantmentRarityRare enchantmentRarityRare
+```
+
+</Accordion>
+
+<Accordion title="EnchantmentRarityVeryRare">
+```go
+var EnchantmentRarityVeryRare enchantmentRarityVeryRare
+```
+
+</Accordion>
+
+<Accordion title="TypeNone">
+```go
+var TypeNone 
+```
+
+</Accordion>
+
+<Accordion title="TypePickaxe">
+```go
+var TypePickaxe 
+```
+
+</Accordion>
+
+<Accordion title="TypeAxe">
+```go
+var TypeAxe 
+```
+
+</Accordion>
+
+<Accordion title="TypeHoe">
+```go
+var TypeHoe 
+```
+
+</Accordion>
+
+<Accordion title="TypeShovel">
+```go
+var TypeShovel 
+```
+
+</Accordion>
+
+<Accordion title="TypeShears">
+```go
+var TypeShears 
+```
+
+</Accordion>
+
+<Accordion title="TypeSword">
+```go
+var TypeSword 
+```
+
+</Accordion>
+
+<Accordion title="ToolTierWood">
+```go
+var ToolTierWood 
+```
+
+</Accordion>
+
+<Accordion title="ToolTierGold">
+```go
+var ToolTierGold 
+```
+
+</Accordion>
+
+<Accordion title="ToolTierStone">
+```go
+var ToolTierStone 
+```
+
+</Accordion>
+
+<Accordion title="ToolTierCopper">
+```go
+var ToolTierCopper 
+```
+
+</Accordion>
+
+<Accordion title="ToolTierIron">
+```go
+var ToolTierIron 
+```
+
+</Accordion>
+
+<Accordion title="ToolTierDiamond">
+```go
+var ToolTierDiamond 
+```
+
+</Accordion>
+
+<Accordion title="ToolTierNetherite">
+```go
+var ToolTierNetherite 
+```
+
+</Accordion>
+
+</Accordions>
+
+
+
+## Functions
+
+<Accordions>
+
+<Accordion title="ArmourTrimMaterials">
+```go
+func ArmourTrimMaterials() []world.Item
+```
+
+
+ArmourTrimMaterials returns all the items that can be trim materials.
+
+</Accordion>
+
+<Accordion title="EnchantmentID">
+```go
+func EnchantmentID(e EnchantmentType) (int, bool)
+```
+
+
+EnchantmentID attempts to return the ID the enchantment was registered with. If found, the id is returned and
+the bool true.
+
+</Accordion>
+
+<Accordion title="RegisterEnchantment">
+```go
+func RegisterEnchantment(id int, enchantment EnchantmentType)
+```
+
+
+RegisterEnchantment registers an enchantment with the ID passed. Once registered, enchantments may be received
+by instantiating an EnchantmentType struct (e.g. enchantment.Protection{})
+
+</Accordion>
+
+</Accordions>
+
+
+
+## Types
+
+
+### AmethystShard
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type AmethystShard struct{}
+```
+
+
+
+AmethystShard is a crystalline mineral obtained from mining a fully grown amethyst cluster.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (AmethystShard) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaterialColour">
+```go
+func (AmethystShard) MaterialColour() string
+```
+
+MaterialColour ...
+
+</Accordion>
+
+<Accordion title="TrimMaterial">
+```go
+func (AmethystShard) TrimMaterial() string
+```
+
+TrimMaterial ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Apple
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Apple struct {
+	defaultFood
+}
+```
+
+
+
+Apple is a food item that can be eaten by the player.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    defaultFood: {
+      description: '',
+      type: 'defaultFood',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (Apple) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="CompostChance">
+```go
+func (Apple) CompostChance() float64
+```
+
+CompostChance ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (Apple) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (Apple) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Apple) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Armour
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Armour interface {
+	// DefencePoints returns the defence points that the armour provides when worn.
+	DefencePoints() float64
+	// Toughness returns the toughness that the armor provides when worn. The toughness reduces defense reduction
+	// caused by increased damage.
+	Toughness() float64
+	// KnockBackResistance returns a number from 0-1 that decides the amount of knock back force that is
+	// resisted upon being attacked. 1 knock back resistance point client-side translates to 10% knock back
+	// reduction.
+	KnockBackResistance() float64
+}
+```
+
+
+
+Armour represents an item that may be worn as armour. Generally, these items provide armour points, which
+reduce damage taken. Some pieces of armour also provide toughness, which negates damage proportional to
+the total damage dealt.
+
+
+
+
+
+
+---
+
+### ArmourTier
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type ArmourTier interface {
+	// BaseDurability is the base durability of armour with this tier. This is otherwise the durability of
+	// the helmet with this tier.
+	BaseDurability() float64
+	// Toughness reduces the defense reduction caused by damage increases.
+	Toughness() float64
+	// KnockBackResistance is a number from 0-1 that decides the amount of knock back force that is resisted
+	// upon being attacked. 1 knock back resistance point client-side translates to 10% knock back reduction.
+	KnockBackResistance() float64
+	// EnchantmentValue is the enchantment value of the armour used when selecting pseudo-random enchantments for
+	// enchanting tables. When this value is high, the enchantments that are selected are more likely to be good.
+	EnchantmentValue() int
+	// Name is the name of the tier.
+	Name() string
+}
+```
+
+
+
+ArmourTier represents the tier, or material, that a piece of armour is made of.
+
+
+
+
+
+
+---
+
+### ArmourTierChain
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ArmourTierChain struct{}
+```
+
+
+
+ArmourTierChain is the ArmourTier of chain armour.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BaseDurability">
+```go
+func (ArmourTierChain) BaseDurability() float64
+```
+
+</Accordion>
+
+<Accordion title="EnchantmentValue">
+```go
+func (ArmourTierChain) EnchantmentValue() int
+```
+
+</Accordion>
+
+<Accordion title="KnockBackResistance">
+```go
+func (ArmourTierChain) KnockBackResistance() float64
+```
+
+</Accordion>
+
+<Accordion title="Name">
+```go
+func (ArmourTierChain) Name() string
+```
+
+</Accordion>
+
+<Accordion title="Toughness">
+```go
+func (ArmourTierChain) Toughness() float64
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ArmourTierCopper
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ArmourTierCopper struct{}
+```
+
+
+
+ArmourTierCopper is the ArmourTier of copper armour.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BaseDurability">
+```go
+func (ArmourTierCopper) BaseDurability() float64
+```
+
+</Accordion>
+
+<Accordion title="EnchantmentValue">
+```go
+func (ArmourTierCopper) EnchantmentValue() int
+```
+
+</Accordion>
+
+<Accordion title="KnockBackResistance">
+```go
+func (ArmourTierCopper) KnockBackResistance() float64
+```
+
+</Accordion>
+
+<Accordion title="Name">
+```go
+func (ArmourTierCopper) Name() string
+```
+
+</Accordion>
+
+<Accordion title="Toughness">
+```go
+func (ArmourTierCopper) Toughness() float64
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ArmourTierDiamond
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ArmourTierDiamond struct{}
+```
+
+
+
+ArmourTierDiamond is the ArmourTier of diamond armour.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BaseDurability">
+```go
+func (ArmourTierDiamond) BaseDurability() float64
+```
+
+</Accordion>
+
+<Accordion title="EnchantmentValue">
+```go
+func (ArmourTierDiamond) EnchantmentValue() int
+```
+
+</Accordion>
+
+<Accordion title="KnockBackResistance">
+```go
+func (ArmourTierDiamond) KnockBackResistance() float64
+```
+
+</Accordion>
+
+<Accordion title="Name">
+```go
+func (ArmourTierDiamond) Name() string
+```
+
+</Accordion>
+
+<Accordion title="Toughness">
+```go
+func (ArmourTierDiamond) Toughness() float64
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ArmourTierGold
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ArmourTierGold struct{}
+```
+
+
+
+ArmourTierGold is the ArmourTier of gold armour.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BaseDurability">
+```go
+func (ArmourTierGold) BaseDurability() float64
+```
+
+</Accordion>
+
+<Accordion title="EnchantmentValue">
+```go
+func (ArmourTierGold) EnchantmentValue() int
+```
+
+</Accordion>
+
+<Accordion title="KnockBackResistance">
+```go
+func (ArmourTierGold) KnockBackResistance() float64
+```
+
+</Accordion>
+
+<Accordion title="Name">
+```go
+func (ArmourTierGold) Name() string
+```
+
+</Accordion>
+
+<Accordion title="Toughness">
+```go
+func (ArmourTierGold) Toughness() float64
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ArmourTierIron
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ArmourTierIron struct{}
+```
+
+
+
+ArmourTierIron is the ArmourTier of iron armour.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BaseDurability">
+```go
+func (ArmourTierIron) BaseDurability() float64
+```
+
+</Accordion>
+
+<Accordion title="EnchantmentValue">
+```go
+func (ArmourTierIron) EnchantmentValue() int
+```
+
+</Accordion>
+
+<Accordion title="KnockBackResistance">
+```go
+func (ArmourTierIron) KnockBackResistance() float64
+```
+
+</Accordion>
+
+<Accordion title="Name">
+```go
+func (ArmourTierIron) Name() string
+```
+
+</Accordion>
+
+<Accordion title="Toughness">
+```go
+func (ArmourTierIron) Toughness() float64
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ArmourTierLeather
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ArmourTierLeather struct {
+	// Colour is the dyed colour of the armour.
+	Colour color.RGBA
+}
+```
+
+
+
+ArmourTierLeather is the ArmourTier of leather armour
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Colour: {
+      description: 'Colour is the dyed colour of the armour.',
+      type: 'color.RGBA',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BaseDurability">
+```go
+func (ArmourTierLeather) BaseDurability() float64
+```
+
+</Accordion>
+
+<Accordion title="EnchantmentValue">
+```go
+func (ArmourTierLeather) EnchantmentValue() int
+```
+
+</Accordion>
+
+<Accordion title="KnockBackResistance">
+```go
+func (ArmourTierLeather) KnockBackResistance() float64
+```
+
+</Accordion>
+
+<Accordion title="Name">
+```go
+func (ArmourTierLeather) Name() string
+```
+
+</Accordion>
+
+<Accordion title="Toughness">
+```go
+func (ArmourTierLeather) Toughness() float64
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ArmourTierNetherite
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ArmourTierNetherite struct{}
+```
+
+
+
+ArmourTierNetherite is the ArmourTier of netherite armour.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BaseDurability">
+```go
+func (ArmourTierNetherite) BaseDurability() float64
+```
+
+</Accordion>
+
+<Accordion title="EnchantmentValue">
+```go
+func (ArmourTierNetherite) EnchantmentValue() int
+```
+
+</Accordion>
+
+<Accordion title="KnockBackResistance">
+```go
+func (ArmourTierNetherite) KnockBackResistance() float64
+```
+
+</Accordion>
+
+<Accordion title="Name">
+```go
+func (ArmourTierNetherite) Name() string
+```
+
+</Accordion>
+
+<Accordion title="Toughness">
+```go
+func (ArmourTierNetherite) Toughness() float64
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ArmourTrim
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ArmourTrim struct {
+	Template	SmithingTemplateType
+	Material	ArmourTrimMaterial
+}
+```
+
+
+
+ArmourTrim is a decorative addition to an armour piece. It consists of a
+template that specifies the pattern and a material that specifies the colour.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Template: {
+      description: '',
+      type: 'SmithingTemplateType',
+      typeLink: '../item.mdx#smithingtemplatetype',
+    },
+    Material: {
+      description: '',
+      type: 'ArmourTrimMaterial',
+      typeLink: '../item.mdx#armourtrimmaterial',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Zero">
+```go
+func (ArmourTrim) Zero() bool
+```
+
+Zero checks if an ArmourTrim is considered zero: Either its material is nil
+or its template TemplateNetheriteUpgrade.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ArmourTrimMaterial
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type ArmourTrimMaterial interface {
+	// TrimMaterial returns the material name used for reading and writing trim data.
+	TrimMaterial() string
+	// MaterialColour returns the colour code used for internal text formatting.
+	MaterialColour() string
+}
+```
+
+
+
+ArmourTrimMaterial is the material of an ArmourTrim, such as an IronIngot,
+that modifies the colour of an ArmourTrim.
+
+
+
+
+
+
+---
+
+### Arrow
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Arrow struct {
+	// Tip is the potion effect that is tipped on the arrow.
+	Tip potion.Potion
+}
+```
+
+
+
+Arrow is used as ammunition for bows, crossbows, and dispensers. Arrows can be modified to
+imbue status effects on players and mobs.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Tip: {
+      description: 'Tip is the potion effect that is tipped on the arrow.',
+      type: 'potion.Potion',
+      typeLink: '../item-potion.mdx#potion',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Arrow) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="OffHand">
+```go
+func (Arrow) OffHand() bool
+```
+
+OffHand ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Axe
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Axe struct {
+	// Tier is the tier of the axe.
+	Tier ToolTier
+}
+```
+
+
+
+Axe is a tool generally used for mining wood-like blocks. It may also be used to break some plant-like
+blocks at a faster pace such as pumpkins.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Tier: {
+      description: 'Tier is the tier of the axe.',
+      type: 'ToolTier',
+      typeLink: '../item.mdx#tooltier',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AttackDamage">
+```go
+func (Axe) AttackDamage() float64
+```
+
+AttackDamage ...
+
+</Accordion>
+
+<Accordion title="BaseMiningEfficiency">
+```go
+func (Axe) BaseMiningEfficiency(world.Block) float64
+```
+
+BaseMiningEfficiency ...
+
+</Accordion>
+
+<Accordion title="DurabilityInfo">
+```go
+func (Axe) DurabilityInfo() DurabilityInfo
+```
+
+DurabilityInfo ...
+
+</Accordion>
+
+<Accordion title="EnchantmentValue">
+```go
+func (Axe) EnchantmentValue() int
+```
+
+EnchantmentValue ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Axe) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="FuelInfo">
+```go
+func (Axe) FuelInfo() FuelInfo
+```
+
+FuelInfo ...
+
+</Accordion>
+
+<Accordion title="HarvestLevel">
+```go
+func (Axe) HarvestLevel() int
+```
+
+HarvestLevel ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (Axe) MaxCount() int
+```
+
+MaxCount always returns 1.
+
+</Accordion>
+
+<Accordion title="RepairableBy">
+```go
+func (Axe) RepairableBy(i Stack) bool
+```
+
+RepairableBy ...
+
+</Accordion>
+
+<Accordion title="SmeltInfo">
+```go
+func (Axe) SmeltInfo() SmeltInfo
+```
+
+SmeltInfo ...
+
+</Accordion>
+
+<Accordion title="ToolType">
+```go
+func (Axe) ToolType() ToolType
+```
+
+ToolType ...
+
+</Accordion>
+
+<Accordion title="UseOnBlock">
+```go
+func (Axe) UseOnBlock(pos cube.Pos, _ cube.Face, _ mgl64.Vec3, tx *world.Tx, _ User, ctx *UseContext) bool
+```
+
+UseOnBlock handles the stripping of logs when a player clicks a log with an axe.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BakedPotato
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BakedPotato struct {
+	defaultFood
+}
+```
+
+
+
+BakedPotato is a food item that can be eaten by the player.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    defaultFood: {
+      description: '',
+      type: 'defaultFood',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (BakedPotato) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="CompostChance">
+```go
+func (BakedPotato) CompostChance() float64
+```
+
+CompostChance ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (BakedPotato) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (BakedPotato) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (BakedPotato) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BannerPattern
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BannerPattern struct {
+	// Type represents the type of banner pattern. These types do not include all patterns that can be applied to a
+	// banner.
+	Type BannerPatternType
+}
+```
+
+
+
+BannerPattern is an item used to customize banners inside looms.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Type: {
+      description: 'Type represents the type of banner pattern. These types do not include all patterns that can be applied to a banner.',
+      type: 'BannerPatternType',
+      typeLink: '../item.mdx#bannerpatterntype',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (BannerPattern) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (BannerPattern) MaxCount() int
+```
+
+MaxCount always returns 1.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BannerPatternType
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BannerPatternType struct {
+	bannerPatternType
+}
+```
+
+
+
+BannerPatternType represents a type of BannerPattern.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    bannerPatternType: {
+      description: '',
+      type: 'bannerPatternType',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="String">
+```go
+func (BannerPatternType) String() string
+```
+
+String ...
+
+</Accordion>
+
+<Accordion title="Uint8">
+```go
+func (BannerPatternType) Uint8() uint8
+```
+
+Uint8 returns the uint8 value of the banner pattern type.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BeaconPayment
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type BeaconPayment interface {
+	PayableForBeacon() bool
+}
+```
+
+
+
+BeaconPayment represents an item that may be used as payment for a beacon to select effects to be broadcast
+to surrounding players.
+
+
+
+
+
+
+---
+
+### Beef
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Beef struct {
+	defaultFood
+
+	// Cooked is whether the beef is cooked.
+	Cooked	bool
+}
+```
+
+
+
+Beef is a food item obtained from cows. It can be cooked in a furnace, smoker, or campfire.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    defaultFood: {
+      description: '',
+      type: 'defaultFood',
+    },
+    Cooked: {
+      description: 'Cooked is whether the beef is cooked.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (Beef) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (Beef) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (Beef) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Beef) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="SmeltInfo">
+```go
+func (Beef) SmeltInfo() SmeltInfo
+```
+
+SmeltInfo ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Beetroot
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Beetroot struct {
+	defaultFood
+}
+```
+
+
+
+Beetroot is a food and dye ingredient.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    defaultFood: {
+      description: '',
+      type: 'defaultFood',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (Beetroot) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="CompostChance">
+```go
+func (Beetroot) CompostChance() float64
+```
+
+CompostChance ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (Beetroot) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (Beetroot) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Beetroot) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BeetrootSoup
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BeetrootSoup struct {
+	defaultFood
+}
+```
+
+
+
+BeetrootSoup is an unstackable food item.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    defaultFood: {
+      description: '',
+      type: 'defaultFood',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (BeetrootSoup) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (BeetrootSoup) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (BeetrootSoup) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (BeetrootSoup) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (BeetrootSoup) MaxCount() int
+```
+
+MaxCount ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BlazePowder
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BlazePowder struct{}
+```
+
+
+
+BlazePowder is an item made from a blaze rod obtained from blazes.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (BlazePowder) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BlazeRod
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BlazeRod struct{}
+```
+
+
+
+BlazeRod is an item exclusively obtained from blazes.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (BlazeRod) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="FuelInfo">
+```go
+func (BlazeRod) FuelInfo() FuelInfo
+```
+
+FuelInfo ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Bone
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Bone struct{}
+```
+
+
+
+Bone is an item primarily obtained as a drop from skeletons and their variants.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Bone) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BoneMeal
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BoneMeal struct{}
+```
+
+
+
+BoneMeal is an item used to force growth in plants & crops.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (BoneMeal) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="UseOnBlock">
+```go
+func (BoneMeal) UseOnBlock(pos cube.Pos, _ cube.Face, _ mgl64.Vec3, tx *world.Tx, _ User, ctx *UseContext) bool
+```
+
+UseOnBlock ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BoneMealAffected
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type BoneMealAffected interface {
+	// BoneMeal attempts to affect the block using a bone meal item.
+	BoneMeal(pos cube.Pos, tx *world.Tx) bool
+}
+```
+
+
+
+BoneMealAffected represents a block that is affected when bone meal is used on it.
+
+
+
+
+
+
+---
+
+### Book
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Book struct{}
+```
+
+
+
+Book is an item used in enchanting and crafting.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EnchantmentValue">
+```go
+func (Book) EnchantmentValue() int
+```
+
+EnchantmentValue ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Book) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BookAndQuill
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BookAndQuill struct {
+	// Pages represents the pages within the book.
+	Pages []string
+}
+```
+
+
+
+BookAndQuill is an item used to write WrittenBook(s).
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Pages: {
+      description: 'Pages represents the pages within the book.',
+      type: '[]string',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="DecodeNBT">
+```go
+func (BookAndQuill) DecodeNBT(data map[string]any) any
+```
+
+DecodeNBT ...
+
+</Accordion>
+
+<Accordion title="DeletePage">
+```go
+func (BookAndQuill) DeletePage(page int) BookAndQuill
+```
+
+DeletePage attempts to delete a page from the book.
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (BookAndQuill) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="EncodeNBT">
+```go
+func (BookAndQuill) EncodeNBT() map[string]any
+```
+
+EncodeNBT ...
+
+</Accordion>
+
+<Accordion title="InsertPage">
+```go
+func (BookAndQuill) InsertPage(page int, text string) BookAndQuill
+```
+
+InsertPage attempts to insert a page within the book
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (BookAndQuill) MaxCount() int
+```
+
+MaxCount always returns 1.
+
+</Accordion>
+
+<Accordion title="Page">
+```go
+func (BookAndQuill) Page(page int) (string, bool)
+```
+
+Page returns a specific page from the book and true when the page exists. It will otherwise return an empty string
+and false.
+
+</Accordion>
+
+<Accordion title="SetPage">
+```go
+func (BookAndQuill) SetPage(page int, text string) BookAndQuill
+```
+
+SetPage writes a page to the book, if the page doesn't exist it will be created. It will panic if the
+text is longer then 256 characters. It will return a new book representing this data.
+
+</Accordion>
+
+<Accordion title="SwapPages">
+```go
+func (BookAndQuill) SwapPages(pageOne, pageTwo int) BookAndQuill
+```
+
+SwapPages swaps two different pages, it will panic if the largest of the two numbers doesn't exist. It will
+return the newly updated pages.
+
+</Accordion>
+
+<Accordion title="TotalPages">
+```go
+func (BookAndQuill) TotalPages() int
+```
+
+TotalPages returns the total number of pages in the book.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Boots
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Boots struct {
+	// Tier is the tier of the boots.
+	Tier	ArmourTier
+	// Trim specifies the trim of the armour.
+	Trim	ArmourTrim
+}
+```
+
+
+
+Boots are a defensive item that may be equipped in the boots armour slot. They come in several tiers, like
+leather, gold, chain, iron and diamond.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Tier: {
+      description: 'Tier is the tier of the boots.',
+      type: 'ArmourTier',
+      typeLink: '../item.mdx#armourtier',
+    },
+    Trim: {
+      description: 'Trim specifies the trim of the armour.',
+      type: 'ArmourTrim',
+      typeLink: '../item.mdx#armourtrim',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Boots">
+```go
+func (Boots) Boots() bool
+```
+
+Boots ...
+
+</Accordion>
+
+<Accordion title="DecodeNBT">
+```go
+func (Boots) DecodeNBT(data map[string]any) any
+```
+
+DecodeNBT ...
+
+</Accordion>
+
+<Accordion title="DefencePoints">
+```go
+func (Boots) DefencePoints() float64
+```
+
+DefencePoints ...
+
+</Accordion>
+
+<Accordion title="DurabilityInfo">
+```go
+func (Boots) DurabilityInfo() DurabilityInfo
+```
+
+DurabilityInfo ...
+
+</Accordion>
+
+<Accordion title="EnchantmentValue">
+```go
+func (Boots) EnchantmentValue() int
+```
+
+EnchantmentValue ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Boots) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="EncodeNBT">
+```go
+func (Boots) EncodeNBT() map[string]any
+```
+
+EncodeNBT ...
+
+</Accordion>
+
+<Accordion title="KnockBackResistance">
+```go
+func (Boots) KnockBackResistance() float64
+```
+
+KnockBackResistance ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (Boots) MaxCount() int
+```
+
+MaxCount always returns 1.
+
+</Accordion>
+
+<Accordion title="RepairableBy">
+```go
+func (Boots) RepairableBy(i Stack) bool
+```
+
+RepairableBy ...
+
+</Accordion>
+
+<Accordion title="SmeltInfo">
+```go
+func (Boots) SmeltInfo() SmeltInfo
+```
+
+SmeltInfo ...
+
+</Accordion>
+
+<Accordion title="Toughness">
+```go
+func (Boots) Toughness() float64
+```
+
+Toughness ...
+
+</Accordion>
+
+<Accordion title="Use">
+```go
+func (Boots) Use(_ *world.Tx, _ User, ctx *UseContext) bool
+```
+
+Use handles the auto-equipping of boots in the armour slot when using it.
+
+</Accordion>
+
+<Accordion title="WithTrim">
+```go
+func (Boots) WithTrim(trim ArmourTrim) world.Item
+```
+
+WithTrim ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BootsType
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type BootsType interface {
+	Armour
+	Boots() bool
+}
+```
+
+
+
+BootsType are an Armour item that can be worn in the boots slot.
+
+
+
+
+
+
+---
+
+### BottleOfEnchanting
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BottleOfEnchanting struct{}
+```
+
+
+
+BottleOfEnchanting is a bottle that releases experience orbs when thrown.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (BottleOfEnchanting) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="Use">
+```go
+func (BottleOfEnchanting) Use(tx *world.Tx, user User, ctx *UseContext) bool
+```
+
+Use ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Bow
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Bow struct{}
+```
+
+
+
+Bow is a ranged weapon that fires arrows.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="DurabilityInfo">
+```go
+func (Bow) DurabilityInfo() DurabilityInfo
+```
+
+DurabilityInfo ...
+
+</Accordion>
+
+<Accordion title="EnchantmentValue">
+```go
+func (Bow) EnchantmentValue() int
+```
+
+EnchantmentValue ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Bow) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="FuelInfo">
+```go
+func (Bow) FuelInfo() FuelInfo
+```
+
+FuelInfo ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (Bow) MaxCount() int
+```
+
+MaxCount always returns 1.
+
+</Accordion>
+
+<Accordion title="Release">
+```go
+func (Bow) Release(releaser Releaser, tx *world.Tx, ctx *UseContext, duration time.Duration)
+```
+
+Release ...
+
+</Accordion>
+
+<Accordion title="Requirements">
+```go
+func (Bow) Requirements() []Stack
+```
+
+Requirements returns the required items to release this item.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Bowl
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Bowl struct{}
+```
+
+
+
+Bowl is a container that can hold certain foods.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Bowl) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="FuelInfo">
+```go
+func (Bowl) FuelInfo() FuelInfo
+```
+
+FuelInfo ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Bread
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Bread struct {
+	defaultFood
+}
+```
+
+
+
+Bread is a food item that can be eaten by the player.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    defaultFood: {
+      description: '',
+      type: 'defaultFood',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (Bread) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="CompostChance">
+```go
+func (Bread) CompostChance() float64
+```
+
+CompostChance ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (Bread) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (Bread) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Bread) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Brick
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Brick struct{}
+```
+
+
+
+Brick is an item made from clay, and is used for making bricks and flower pots.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Brick) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="PotDecoration">
+```go
+func (Brick) PotDecoration() bool
+```
+
+PotDecoration ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Bucket
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Bucket struct {
+	// Content is the content that the bucket has. By default, this value resolves to an empty bucket.
+	Content BucketContent
+}
+```
+
+
+
+Bucket is a tool used to carry water, lava and fish.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Content: {
+      description: 'Content is the content that the bucket has. By default, this value resolves to an empty bucket.',
+      type: 'BucketContent',
+      typeLink: '../item.mdx#bucketcontent',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (Bucket) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="CanConsume">
+```go
+func (Bucket) CanConsume() bool
+```
+
+CanConsume ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (Bucket) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (Bucket) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="Empty">
+```go
+func (Bucket) Empty() bool
+```
+
+Empty returns true if the bucket is empty.
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Bucket) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="FuelInfo">
+```go
+func (Bucket) FuelInfo() FuelInfo
+```
+
+FuelInfo ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (Bucket) MaxCount() int
+```
+
+MaxCount returns 16.
+
+</Accordion>
+
+<Accordion title="UseOnBlock">
+```go
+func (Bucket) UseOnBlock(pos cube.Pos, face cube.Face, _ mgl64.Vec3, tx *world.Tx, _ User, ctx *UseContext) bool
+```
+
+UseOnBlock handles the bucket filling and emptying logic.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### BucketContent
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type BucketContent struct {
+	liquid	world.Liquid
+	milk	bool
+}
+```
+
+
+
+BucketContent is the content of a bucket.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Liquid">
+```go
+func (BucketContent) Liquid() (world.Liquid, bool)
+```
+
+Liquid returns the world.Liquid that a Bucket with this BucketContent places.
+If this BucketContent does not place a liquid block, false is returned.
+
+</Accordion>
+
+<Accordion title="LiquidType">
+```go
+func (BucketContent) LiquidType() string
+```
+
+LiquidType returns the type of liquid the bucket contains.
+
+</Accordion>
+
+<Accordion title="String">
+```go
+func (BucketContent) String() string
+```
+
+String converts the BucketContent to a string.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Carrier
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Carrier interface {
+	world.Entity
+	// HeldItems returns the items currently held by the entity. Viewers of the entity will be able to see
+	// these items.
+	HeldItems() (mainHand, offHand Stack)
+}
+```
+
+
+
+Carrier represents an entity that is able to carry an item.
+
+
+
+
+
+
+---
+
+### CarrotOnAStick
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type CarrotOnAStick struct{}
+```
+
+
+
+CarrotOnAStick is an item that can be used to control saddled pigs.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (CarrotOnAStick) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (CarrotOnAStick) MaxCount() int
+```
+
+MaxCount ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Charcoal
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Charcoal struct{}
+```
+
+
+
+Charcoal is an item obtained by smelting logs or wood.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Charcoal) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="FuelInfo">
+```go
+func (Charcoal) FuelInfo() FuelInfo
+```
+
+FuelInfo ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Chargeable
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Chargeable interface {
+	// Charge is called when an item is being used.
+	Charge(releaser Releaser, tx *world.Tx, ctx *UseContext, duration time.Duration) bool
+	// ContinueCharge continues the charge.
+	ContinueCharge(releaser Releaser, tx *world.Tx, ctx *UseContext, duration time.Duration)
+	// ReleaseCharge is called when an item is being released.
+	ReleaseCharge(releaser Releaser, tx *world.Tx, ctx *UseContext) bool
+}
+```
+
+
+
+Chargeable represents an item that can be charged.
+
+
+
+
+
+
+---
+
+### Chestplate
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Chestplate struct {
+	// Tier is the tier of the chestplate.
+	Tier	ArmourTier
+	// Trim specifies the trim of the armour.
+	Trim	ArmourTrim
+}
+```
+
+
+
+Chestplate is a defensive item that may be equipped in the chestplate slot. Generally, chestplates provide
+the most defence of all armour items.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Tier: {
+      description: 'Tier is the tier of the chestplate.',
+      type: 'ArmourTier',
+      typeLink: '../item.mdx#armourtier',
+    },
+    Trim: {
+      description: 'Trim specifies the trim of the armour.',
+      type: 'ArmourTrim',
+      typeLink: '../item.mdx#armourtrim',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Chestplate">
+```go
+func (Chestplate) Chestplate() bool
+```
+
+Chestplate ...
+
+</Accordion>
+
+<Accordion title="DecodeNBT">
+```go
+func (Chestplate) DecodeNBT(data map[string]any) any
+```
+
+DecodeNBT ...
+
+</Accordion>
+
+<Accordion title="DefencePoints">
+```go
+func (Chestplate) DefencePoints() float64
+```
+
+DefencePoints ...
+
+</Accordion>
+
+<Accordion title="DurabilityInfo">
+```go
+func (Chestplate) DurabilityInfo() DurabilityInfo
+```
+
+DurabilityInfo ...
+
+</Accordion>
+
+<Accordion title="EnchantmentValue">
+```go
+func (Chestplate) EnchantmentValue() int
+```
+
+EnchantmentValue ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Chestplate) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="EncodeNBT">
+```go
+func (Chestplate) EncodeNBT() map[string]any
+```
+
+EncodeNBT ...
+
+</Accordion>
+
+<Accordion title="KnockBackResistance">
+```go
+func (Chestplate) KnockBackResistance() float64
+```
+
+KnockBackResistance ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (Chestplate) MaxCount() int
+```
+
+MaxCount always returns 1.
+
+</Accordion>
+
+<Accordion title="RepairableBy">
+```go
+func (Chestplate) RepairableBy(i Stack) bool
+```
+
+RepairableBy ...
+
+</Accordion>
+
+<Accordion title="SmeltInfo">
+```go
+func (Chestplate) SmeltInfo() SmeltInfo
+```
+
+SmeltInfo ...
+
+</Accordion>
+
+<Accordion title="Toughness">
+```go
+func (Chestplate) Toughness() float64
+```
+
+Toughness ...
+
+</Accordion>
+
+<Accordion title="Use">
+```go
+func (Chestplate) Use(_ *world.Tx, _ User, ctx *UseContext) bool
+```
+
+Use handles the using of a chestplate to auto-equip it in the designated armour slot.
+
+</Accordion>
+
+<Accordion title="WithTrim">
+```go
+func (Chestplate) WithTrim(trim ArmourTrim) world.Item
+```
+
+WithTrim ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ChestplateType
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type ChestplateType interface {
+	Armour
+	Chestplate() bool
+}
+```
+
+
+
+ChestplateType is an Armour item that can be worn in the chestplate slot.
+
+
+
+
+
+
+---
+
+### Chicken
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Chicken struct {
+	defaultFood
+
+	// Cooked is whether the chicken is cooked.
+	Cooked	bool
+}
+```
+
+
+
+Chicken is a food item obtained from chickens. It can be cooked in a furnace, smoker, or campfire.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    defaultFood: {
+      description: '',
+      type: 'defaultFood',
+    },
+    Cooked: {
+      description: 'Cooked is whether the chicken is cooked.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (Chicken) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (Chicken) Consume(_ *world.Tx, co Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (Chicken) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Chicken) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="SmeltInfo">
+```go
+func (Chicken) SmeltInfo() SmeltInfo
+```
+
+SmeltInfo ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ClayBall
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ClayBall struct{}
+```
+
+
+
+ClayBall is obtained from mining clay blocks
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (ClayBall) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="SmeltInfo">
+```go
+func (ClayBall) SmeltInfo() SmeltInfo
+```
+
+SmeltInfo ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Clock
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Clock struct{}
+```
+
+
+
+Clock is used to measure and display in-game time.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Clock) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Coal
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Coal struct{}
+```
+
+
+
+Coal is an item used as fuel & crafting torches.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Coal) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="FuelInfo">
+```go
+func (Coal) FuelInfo() FuelInfo
+```
+
+FuelInfo ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Cod
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Cod struct {
+	defaultFood
+
+	// Cooked is whether the cod is cooked.
+	Cooked	bool
+}
+```
+
+
+
+Cod is a food item obtained from cod. It can be cooked in a furnace, smoker, or campfire.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    defaultFood: {
+      description: '',
+      type: 'defaultFood',
+    },
+    Cooked: {
+      description: 'Cooked is whether the cod is cooked.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (Cod) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (Cod) Consume(_ *world.Tx, co Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (Cod) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Cod) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="SmeltInfo">
+```go
+func (Cod) SmeltInfo() SmeltInfo
+```
+
+SmeltInfo ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Colour
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Colour struct {
+	colour
+}
+```
+
+
+
+Colour represents the colour of a block. Typically, Minecraft blocks have a total of 16 different colours.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    colour: {
+      description: '',
+      type: 'colour',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="RGBA">
+```go
+func (Colour) RGBA() color.RGBA
+```
+
+RGBA returns the colour as RGBA. The alpha channel is always set to the maximum value. Colour values as returned here
+were obtained by placing signs in a world with all possible dyes used on them. The world was then loaded in Dragonfly
+to read their respective colours.
+
+</Accordion>
+
+<Accordion title="SignRGBA">
+```go
+func (Colour) SignRGBA() color.RGBA
+```
+
+SignRGBA returns the colour as RGBA. It is identical to the RGBA method, except for the colour black. For the colour
+black, a value of rgba(0, 0, 0, 255) is returned rather than rgba(29, 29, 33, 255), in order to match the black sign
+text colour found in vanilla Minecraft.
+
+</Accordion>
+
+<Accordion title="SilverString">
+```go
+func (Colour) SilverString() string
+```
+
+SilverString returns the name of the colour, with light_gray being replaced by silver.
+
+</Accordion>
+
+<Accordion title="String">
+```go
+func (Colour) String() string
+```
+
+String ...
+
+</Accordion>
+
+<Accordion title="Uint8">
+```go
+func (Colour) Uint8() uint8
+```
+
+Uint8 ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Compass
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Compass struct{}
+```
+
+
+
+Compass is an item used to find the spawn position of a world.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Compass) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Compostable
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Compostable interface {
+	// CompostChance returns the chance the item will produce a layer of compost in the range of 0-1.
+	CompostChance() float64
+}
+```
+
+
+
+Compostable represents an item that may be used to fill up a composter.
+
+
+
+
+
+
+---
+
+### Consumable
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Consumable interface {
+	// AlwaysConsumable specifies if the item is always consumable. Normal food can generally only be consumed
+	// when the food bar is not full or when in creative mode. Returning true here means the item can always
+	// be consumed, like golden apples or potions.
+	AlwaysConsumable() bool
+	// ConsumeDuration is the duration consuming the item takes. If the player is using the item for at least
+	// this duration, the item will be consumed and have its Consume method called.
+	ConsumeDuration() time.Duration
+	// Consume consumes one item of the Stack that the Consumable is in. The Stack returned is added back to
+	// the inventory after consuming the item. For potions, for example, an empty bottle is returned.
+	Consume(tx *world.Tx, c Consumer) Stack
+}
+```
+
+
+
+Consumable represents an item that may be consumed by a player. If an item implements this interface, a player
+may use and hold the item to consume it.
+
+
+
+
+
+
+---
+
+### Consumer
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Consumer interface {
+	User
+	// Saturate saturates the Consumer's food bar by the amount of food points passed and the saturation by
+	// up to as many saturation points as passed. The final saturation will never exceed the final food level.
+	Saturate(food int, saturation float64)
+	// AddEffect adds an effect.Effect to the Consumer. If the effect is instant, it is applied to the Consumer
+	// immediately. If not, the effect is applied to the consumer every time the Tick method is called.
+	// AddEffect will overwrite any effects present if the level of the effect is higher than the existing one, or
+	// if the effects' levels are equal and the new effect has a longer duration.
+	AddEffect(e effect.Effect)
+	// RemoveEffect removes any effect that might currently be active on the Consumer.
+	RemoveEffect(e effect.Type)
+	// Effects returns any effect currently applied to the Consumer. The returned effects are guaranteed not to have
+	// expired when returned.
+	Effects() []effect.Effect
+}
+```
+
+
+
+Consumer represents a User that is able to consume Consumable items.
+
+
+
+
+
+
+---
+
+### Cookie
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Cookie struct {
+	defaultFood
+}
+```
+
+
+
+Cookie is a food item that can be obtained in large quantities, but do not restore hunger or saturation significantly.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    defaultFood: {
+      description: '',
+      type: 'defaultFood',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (Cookie) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="CompostChance">
+```go
+func (Cookie) CompostChance() float64
+```
+
+CompostChance ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (Cookie) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (Cookie) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Cookie) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Cooldown
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Cooldown interface {
+	// Cooldown is the duration of the cooldown.
+	Cooldown() time.Duration
+}
+```
+
+
+
+Cooldown represents an item that has a cooldown.
+
+
+
+
+
+
+---
+
+### CopperIngot
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type CopperIngot struct{}
+```
+
+
+
+CopperIngot is a metal ingot melted from copper ore.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (CopperIngot) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaterialColour">
+```go
+func (CopperIngot) MaterialColour() string
+```
+
+MaterialColour ...
+
+</Accordion>
+
+<Accordion title="TrimMaterial">
+```go
+func (CopperIngot) TrimMaterial() string
+```
+
+TrimMaterial ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### CopperNugget
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type CopperNugget struct{}
+```
+
+
+
+CopperNugget is a piece of copper that can be obtained by smelting copper tools/weapons or armour.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (CopperNugget) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Crossbow
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Crossbow struct {
+	// Item is the item the crossbow is charged with.
+	Item Stack
+}
+```
+
+
+
+Crossbow is a ranged weapon similar to a bow that uses arrows or fireworks
+as ammunition.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Item: {
+      description: 'Item is the item the crossbow is charged with.',
+      type: 'Stack',
+      typeLink: '../item.mdx#stack',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Charge">
+```go
+func (Crossbow) Charge(releaser Releaser, _ *world.Tx, ctx *UseContext, duration time.Duration) bool
+```
+
+Charge starts the charging process and checks if the charge duration meets
+the required duration.
+
+</Accordion>
+
+<Accordion title="ContinueCharge">
+```go
+func (Crossbow) ContinueCharge(releaser Releaser, tx *world.Tx, ctx *UseContext, duration time.Duration)
+```
+
+ContinueCharge ...
+
+</Accordion>
+
+<Accordion title="DecodeNBT">
+```go
+func (Crossbow) DecodeNBT(data map[string]any) any
+```
+
+DecodeNBT ...
+
+</Accordion>
+
+<Accordion title="DurabilityInfo">
+```go
+func (Crossbow) DurabilityInfo() DurabilityInfo
+```
+
+DurabilityInfo ...
+
+</Accordion>
+
+<Accordion title="EnchantmentValue">
+```go
+func (Crossbow) EnchantmentValue() int
+```
+
+EnchantmentValue ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Crossbow) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="EncodeNBT">
+```go
+func (Crossbow) EncodeNBT() map[string]any
+```
+
+EncodeNBT ...
+
+</Accordion>
+
+<Accordion title="FuelInfo">
+```go
+func (Crossbow) FuelInfo() FuelInfo
+```
+
+FuelInfo ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (Crossbow) MaxCount() int
+```
+
+MaxCount always returns 1.
+
+</Accordion>
+
+<Accordion title="ReleaseCharge">
+```go
+func (Crossbow) ReleaseCharge(releaser Releaser, tx *world.Tx, ctx *UseContext) bool
+```
+
+ReleaseCharge checks if the item is fully charged and, if so, releases it.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Diamond
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Diamond struct{}
+```
+
+
+
+Diamond is a rare mineral obtained from diamond ore or loot chests.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Diamond) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaterialColour">
+```go
+func (Diamond) MaterialColour() string
+```
+
+MaterialColour ...
+
+</Accordion>
+
+<Accordion title="PayableForBeacon">
+```go
+func (Diamond) PayableForBeacon() bool
+```
+
+PayableForBeacon ...
+
+</Accordion>
+
+<Accordion title="TrimMaterial">
+```go
+func (Diamond) TrimMaterial() string
+```
+
+TrimMaterial ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### DiscFragment
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type DiscFragment struct{}
+```
+
+
+
+DiscFragment is a music disc fragment obtained from ancient city loot chests. They are extremely rare to find and
+nine of them in a crafting table makes a music disc named, "5".
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (DiscFragment) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### DragonBreath
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type DragonBreath struct{}
+```
+
+
+
+DragonBreath is a brewing item that is used solely to make lingering potions.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (DragonBreath) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### DriedKelp
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type DriedKelp struct{}
+```
+
+
+
+DriedKelp is a food item that can be quickly eaten by the player.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (DriedKelp) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="CompostChance">
+```go
+func (DriedKelp) CompostChance() float64
+```
+
+CompostChance ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (DriedKelp) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (DriedKelp) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (DriedKelp) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Drinkable
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Drinkable interface {
+	// Drinkable returns if the item can be drunk or not.
+	Drinkable() bool
+}
+```
+
+
+
+Drinkable represents a custom item that can be drunk. It is used to make the client show the correct drinking
+animation when a player is using an item. This will only have an effect on non-vanilla items.
+
+
+
+
+
+
+---
+
+### DurabilityInfo
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type DurabilityInfo struct {
+	// MaxDurability is the maximum durability that this item may have. This field must be positive for the
+	// durability to function properly.
+	MaxDurability	int
+	// BrokenItem is the item created when the item is broken. For most durable items, this is simply an
+	// air item.
+	BrokenItem	func() Stack
+	// AttackDurability and BreakDurability are the losses in durability that the item sustains when they are
+	// used to do the respective actions.
+	AttackDurability, BreakDurability	int
+	// Persistent is true if the item is persistent, i.e. it will not be destroyed when at its last durability stage.
+	Persistent	bool
+}
+```
+
+
+
+DurabilityInfo is the info of a durable item. It includes fields that must be set in order to define
+durability related behaviour.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    MaxDurability: {
+      description: 'MaxDurability is the maximum durability that this item may have. This field must be positive for the durability to function properly.',
+      type: 'int',
+    },
+    BrokenItem: {
+      description: 'BrokenItem is the item created when the item is broken. For most durable items, this is simply an air item.',
+      type: 'func() Stack',
+    },
+    AttackDurability: {
+      description: 'AttackDurability and BreakDurability are the losses in durability that the item sustains when they are used to do the respective actions.',
+      type: 'int',
+    },
+    BreakDurability: {
+      description: 'AttackDurability and BreakDurability are the losses in durability that the item sustains when they are used to do the respective actions.',
+      type: 'int',
+    },
+    Persistent: {
+      description: 'Persistent is true if the item is persistent, i.e. it will not be destroyed when at its last durability stage.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+
+---
+
+### Durable
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Durable interface {
+	// DurabilityInfo returns info related to the durability of an item.
+	DurabilityInfo() DurabilityInfo
+}
+```
+
+
+
+Durable represents an item that has durability, and may therefore be broken. Some durable items, when
+broken, create a new item, such as an elytra.
+
+
+
+
+
+
+---
+
+### Dye
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Dye struct {
+	// Colour is the colour of the dye.
+	Colour Colour
+}
+```
+
+
+
+Dye is an item that comes in 16 colours which allows you to colour blocks like concrete and sheep.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Colour: {
+      description: 'Colour is the colour of the dye.',
+      type: 'Colour',
+      typeLink: '../item.mdx#colour',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Dye) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="UseOnBlock">
+```go
+func (Dye) UseOnBlock(pos cube.Pos, _ cube.Face, _ mgl64.Vec3, tx *world.Tx, user User, ctx *UseContext) bool
+```
+
+UseOnBlock implements the colouring behaviour of signs.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### EchoShard
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type EchoShard struct{}
+```
+
+
+
+EchoShard is an item found in ancient cities which can be used to craft recovery compasses.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (EchoShard) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Egg
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Egg struct{}
+```
+
+
+
+Egg is an item that can be used to craft food items, or as a throwable entity to spawn chicks.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Egg) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (Egg) MaxCount() int
+```
+
+MaxCount ...
+
+</Accordion>
+
+<Accordion title="Use">
+```go
+func (Egg) Use(tx *world.Tx, user User, ctx *UseContext) bool
+```
+
+Use ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Elytra
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Elytra struct{}
+```
+
+
+
+Elytra is a pair of rare wings found in end ships that are the only single-item source of flight in Survival mode.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Chestplate">
+```go
+func (Elytra) Chestplate() bool
+```
+
+Chestplate ...
+
+</Accordion>
+
+<Accordion title="DefencePoints">
+```go
+func (Elytra) DefencePoints() float64
+```
+
+DefencePoints ...
+
+</Accordion>
+
+<Accordion title="DurabilityInfo">
+```go
+func (Elytra) DurabilityInfo() DurabilityInfo
+```
+
+DurabilityInfo ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Elytra) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="KnockBackResistance">
+```go
+func (Elytra) KnockBackResistance() float64
+```
+
+KnockBackResistance ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (Elytra) MaxCount() int
+```
+
+MaxCount always returns 1.
+
+</Accordion>
+
+<Accordion title="RepairableBy">
+```go
+func (Elytra) RepairableBy(i Stack) bool
+```
+
+RepairableBy ...
+
+</Accordion>
+
+<Accordion title="Toughness">
+```go
+func (Elytra) Toughness() float64
+```
+
+Toughness ...
+
+</Accordion>
+
+<Accordion title="Use">
+```go
+func (Elytra) Use(_ *world.Tx, _ User, ctx *UseContext) bool
+```
+
+Use handles the using of an elytra to auto-equip it in an armour slot.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Emerald
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Emerald struct{}
+```
+
+
+
+Emerald is a rare mineral obtained from emerald ore or from villagers.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Emerald) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaterialColour">
+```go
+func (Emerald) MaterialColour() string
+```
+
+MaterialColour ...
+
+</Accordion>
+
+<Accordion title="PayableForBeacon">
+```go
+func (Emerald) PayableForBeacon() bool
+```
+
+PayableForBeacon ...
+
+</Accordion>
+
+<Accordion title="TrimMaterial">
+```go
+func (Emerald) TrimMaterial() string
+```
+
+TrimMaterial ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Enchantable
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Enchantable interface {
+	// EnchantmentValue returns the value the item may inhibit on possible enchantments.
+	EnchantmentValue() int
+}
+```
+
+
+
+Enchantable is an interface that can be implemented by items that can be enchanted through an enchanting table.
+
+
+
+
+
+
+---
+
+### EnchantedApple
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type EnchantedApple struct{}
+```
+
+
+
+EnchantedApple is a rare variant of the golden apple that has stronger effects.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (EnchantedApple) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (EnchantedApple) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (EnchantedApple) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (EnchantedApple) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### EnchantedBook
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type EnchantedBook struct{}
+```
+
+
+
+EnchantedBook is an item that lets players add enchantments to certain items using an anvil.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (EnchantedBook) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (EnchantedBook) MaxCount() int
+```
+
+MaxCount ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Enchantment
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Enchantment struct {
+	t	EnchantmentType
+	lvl	int
+}
+```
+
+
+
+Enchantment is an enchantment that can be applied to a Stack. It holds an EnchantmentType and level that influences
+the power of the enchantment.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Level">
+```go
+func (Enchantment) Level() int
+```
+
+Level returns the current level of the Enchantment as passed to NewEnchantment upon construction.
+
+</Accordion>
+
+<Accordion title="Type">
+```go
+func (Enchantment) Type() EnchantmentType
+```
+
+Type returns the EnchantmentType of the Enchantment as passed to NewEnchantment upon construction.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### EnchantmentRarity
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type EnchantmentRarity interface {
+	// Name returns the name of the enchantment rarity.
+	Name() string
+	// Cost returns the cost of the enchantment rarity.
+	Cost() int
+	// Weight returns the weight of the enchantment rarity.
+	Weight() int
+}
+```
+
+
+
+EnchantmentRarity represents an enchantment rarity for enchantments. These rarities may inhibit certain properties,
+such as anvil costs or enchanting table weights.
+
+
+
+
+
+
+---
+
+### EnchantmentType
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type EnchantmentType interface {
+	// Name returns the name of the enchantment.
+	Name() string
+	// MaxLevel returns the maximum level the enchantment should be able to have.
+	MaxLevel() int
+	// Cost returns the minimum and maximum cost the enchantment may inhibit. The higher this range is, the more likely
+	// better enchantments are to be selected.
+	Cost(level int) (int, int)
+	// Rarity returns the enchantment's rarity.
+	Rarity() EnchantmentRarity
+	// CompatibleWithEnchantment is called when an enchantment is added to an item. It can be used to check if
+	// the enchantment is compatible with other enchantments.
+	CompatibleWithEnchantment(t EnchantmentType) bool
+	// CompatibleWithItem is also called when an enchantment is added to an item. It can be used to check if
+	// the enchantment is compatible with the item type.
+	CompatibleWithItem(i world.Item) bool
+}
+```
+
+
+
+EnchantmentType represents an enchantment type that can be applied to a Stack, with specific behaviour that modifies
+the Stack's behaviour.
+An instance of an EnchantmentType may be created using NewEnchantment.
+
+
+
+
+
+
+---
+
+### EnderPearl
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type EnderPearl struct{}
+```
+
+
+
+EnderPearl is a smooth, greenish-blue item used to teleport and to make an eye of ender.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Cooldown">
+```go
+func (EnderPearl) Cooldown() time.Duration
+```
+
+Cooldown ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (EnderPearl) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (EnderPearl) MaxCount() int
+```
+
+MaxCount ...
+
+</Accordion>
+
+<Accordion title="Use">
+```go
+func (EnderPearl) Use(tx *world.Tx, user User, ctx *UseContext) bool
+```
+
+Use ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Feather
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Feather struct{}
+```
+
+
+
+Feather are items dropped by chickens and parrots, as well as tamed cats as morning gifts.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Feather) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### FermentedSpiderEye
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FermentedSpiderEye struct{}
+```
+
+
+
+FermentedSpiderEye is a brewing ingredient.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (FermentedSpiderEye) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### FireCharge
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FireCharge struct{}
+```
+
+
+
+FireCharge is an item that can be used to place fire when used on a block, or shot from a dispenser to create a small
+fireball.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (FireCharge) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="UseOnBlock">
+```go
+func (FireCharge) UseOnBlock(pos cube.Pos, face cube.Face, _ mgl64.Vec3, tx *world.Tx, user User, ctx *UseContext) bool
+```
+
+UseOnBlock ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Firework
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Firework struct {
+	// Duration is the flight duration of the firework.
+	Duration	time.Duration
+	// Explosions is the list of explosions the firework should create when launched.
+	Explosions	[]FireworkExplosion
+}
+```
+
+
+
+Firework is an item (and entity) used for creating decorative explosions, boosting when flying with elytra, and
+loading into a crossbow as ammunition.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Duration: {
+      description: 'Duration is the flight duration of the firework.',
+      type: 'time.Duration',
+    },
+    Explosions: {
+      description: 'Explosions is the list of explosions the firework should create when launched.',
+      type: '[]FireworkExplosion',
+      typeLink: '../item.mdx#fireworkexplosion',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="DecodeNBT">
+```go
+func (Firework) DecodeNBT(data map[string]any) any
+```
+
+DecodeNBT ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Firework) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="EncodeNBT">
+```go
+func (Firework) EncodeNBT() map[string]any
+```
+
+EncodeNBT ...
+
+</Accordion>
+
+<Accordion title="OffHand">
+```go
+func (Firework) OffHand() bool
+```
+
+OffHand ...
+
+</Accordion>
+
+<Accordion title="RandomisedDuration">
+```go
+func (Firework) RandomisedDuration() time.Duration
+```
+
+RandomisedDuration returns the randomised flight duration of the firework.
+
+</Accordion>
+
+<Accordion title="Use">
+```go
+func (Firework) Use(tx *world.Tx, user User, ctx *UseContext) bool
+```
+
+Use ...
+
+</Accordion>
+
+<Accordion title="UseOnBlock">
+```go
+func (Firework) UseOnBlock(pos cube.Pos, _ cube.Face, clickPos mgl64.Vec3, tx *world.Tx, user User, ctx *UseContext) bool
+```
+
+UseOnBlock ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### FireworkExplosion
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FireworkExplosion struct {
+	// Shape represents the shape of the explosion.
+	Shape	FireworkShape
+	// Colour is the colour of the explosion.
+	Colour	Colour
+	// Fade is the colour the explosion should fade into. Fades must be set to true in order for this to function.
+	Fade	Colour
+	// Fades is true if the explosion should fade into the fade colour.
+	Fades	bool
+	// Twinkle is true if the explosion should twinkle on explode.
+	Twinkle	bool
+	// Trail is true if the explosion should have a trail.
+	Trail	bool
+}
+```
+
+
+
+FireworkExplosion represents an explosion of a firework.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Shape: {
+      description: 'Shape represents the shape of the explosion.',
+      type: 'FireworkShape',
+      typeLink: '../item.mdx#fireworkshape',
+    },
+    Colour: {
+      description: 'Colour is the colour of the explosion.',
+      type: 'Colour',
+      typeLink: '../item.mdx#colour',
+    },
+    Fade: {
+      description: 'Fade is the colour the explosion should fade into. Fades must be set to true in order for this to function.',
+      type: 'Colour',
+      typeLink: '../item.mdx#colour',
+    },
+    Fades: {
+      description: 'Fades is true if the explosion should fade into the fade colour.',
+      type: 'bool',
+    },
+    Twinkle: {
+      description: 'Twinkle is true if the explosion should twinkle on explode.',
+      type: 'bool',
+    },
+    Trail: {
+      description: 'Trail is true if the explosion should have a trail.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="DecodeNBT">
+```go
+func (FireworkExplosion) DecodeNBT(data map[string]any) any
+```
+
+DecodeNBT ...
+
+</Accordion>
+
+<Accordion title="EncodeNBT">
+```go
+func (FireworkExplosion) EncodeNBT() map[string]any
+```
+
+EncodeNBT ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### FireworkShape
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FireworkShape struct {
+	fireworkShape
+}
+```
+
+
+
+FireworkShape represents a shape of a firework.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    fireworkShape: {
+      description: '',
+      type: 'fireworkShape',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Name">
+```go
+func (FireworkShape) Name() string
+```
+
+Name ...
+
+</Accordion>
+
+<Accordion title="String">
+```go
+func (FireworkShape) String() string
+```
+
+String ...
+
+</Accordion>
+
+<Accordion title="Uint8">
+```go
+func (FireworkShape) Uint8() uint8
+```
+
+Uint8 returns the firework as a uint8.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### FireworkStar
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FireworkStar struct {
+	FireworkExplosion
+}
+```
+
+
+
+FireworkStar is an item used to determine the color, effect, and shape of firework rockets.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    FireworkExplosion: {
+      description: '',
+      type: 'FireworkExplosion',
+      typeLink: '../item.mdx#fireworkexplosion',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="DecodeNBT">
+```go
+func (FireworkStar) DecodeNBT(data map[string]any) any
+```
+
+DecodeNBT ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (FireworkStar) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="EncodeNBT">
+```go
+func (FireworkStar) EncodeNBT() map[string]any
+```
+
+EncodeNBT ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Flint
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Flint struct{}
+```
+
+
+
+Flint is an item dropped rarely by gravel.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Flint) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### FlintAndSteel
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FlintAndSteel struct{}
+```
+
+
+
+FlintAndSteel is an item used to light blocks on fire.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="DurabilityInfo">
+```go
+func (FlintAndSteel) DurabilityInfo() DurabilityInfo
+```
+
+DurabilityInfo ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (FlintAndSteel) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (FlintAndSteel) MaxCount() int
+```
+
+MaxCount ...
+
+</Accordion>
+
+<Accordion title="UseOnBlock">
+```go
+func (FlintAndSteel) UseOnBlock(pos cube.Pos, face cube.Face, _ mgl64.Vec3, tx *world.Tx, user User, ctx *UseContext) bool
+```
+
+UseOnBlock ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Fuel
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Fuel interface {
+	// FuelInfo returns information of the item related to its fuel capabilities.
+	FuelInfo() FuelInfo
+}
+```
+
+
+
+Fuel represents an item that can be used as fuel in a smelter, such as a blast furnace, furnace, or smoker.
+
+
+
+
+
+
+---
+
+### FuelInfo
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type FuelInfo struct {
+	// Duration returns the amount of time the fuel can be used to burn an input in a smelter.
+	Duration	time.Duration
+	// Residue is the resulting item from burning the fuel in a smelter.
+	Residue	Stack
+}
+```
+
+
+
+FuelInfo is a struct returned by items that implement Fuel. It contains information about the amount of fuel time
+it gives, and the residue created from burning the fuel.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Duration: {
+      description: 'Duration returns the amount of time the fuel can be used to burn an input in a smelter.',
+      type: 'time.Duration',
+    },
+    Residue: {
+      description: 'Residue is the resulting item from burning the fuel in a smelter.',
+      type: 'Stack',
+      typeLink: '../item.mdx#stack',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="WithResidue">
+```go
+func (FuelInfo) WithResidue(residue Stack) FuelInfo
+```
+
+WithResidue returns a new FuelInfo with a residue.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### GhastTear
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type GhastTear struct{}
+```
+
+
+
+GhastTear is a brewing item dropped by ghasts.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (GhastTear) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### GlassBottle
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type GlassBottle struct{}
+```
+
+
+
+GlassBottle is an item that can hold various liquids.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (GlassBottle) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="UseOnBlock">
+```go
+func (GlassBottle) UseOnBlock(pos cube.Pos, _ cube.Face, _ mgl64.Vec3, tx *world.Tx, _ User, ctx *UseContext) bool
+```
+
+UseOnBlock ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Glinted
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Glinted interface {
+	// Glinted returns whether the item has an enchantment glint.
+	Glinted() bool
+}
+```
+
+
+
+Glinted represents a custom item that can have a permanent enchantment glint, this glint is purely cosmetic and
+will show regardless of whether it is actually enchanted. An example of this is the enchanted golden apple.
+
+
+
+
+
+
+---
+
+### GlisteringMelonSlice
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type GlisteringMelonSlice struct{}
+```
+
+
+
+GlisteringMelonSlice is an inedible item used for brewing potions of healing. It is also one of the many potion
+ingredients that can be used to make mundane potions.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (GlisteringMelonSlice) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### GlowstoneDust
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type GlowstoneDust struct{}
+```
+
+
+
+GlowstoneDust is dropped when breaking the glowstone block.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (GlowstoneDust) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### GoatHorn
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type GoatHorn struct {
+	nopReleasable
+
+	// Type is the type of the goat horn, determining the sound it plays.
+	Type	sound.Horn
+}
+```
+
+
+
+GoatHorn is an item dropped by goats. It has eight variants, and each plays a unique sound when used which can be
+heard by players in a large radius.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    nopReleasable: {
+      description: '',
+      type: 'nopReleasable',
+    },
+    Type: {
+      description: 'Type is the type of the goat horn, determining the sound it plays.',
+      type: 'sound.Horn',
+      typeLink: '../world-sound.mdx#horn',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Cooldown">
+```go
+func (GoatHorn) Cooldown() time.Duration
+```
+
+Cooldown ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (GoatHorn) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (GoatHorn) MaxCount() int
+```
+
+MaxCount ...
+
+</Accordion>
+
+<Accordion title="Release">
+```go
+func (GoatHorn) Release(Releaser, *world.Tx, *UseContext, time.Duration)
+```
+
+</Accordion>
+
+<Accordion title="Requirements">
+```go
+func (GoatHorn) Requirements() []Stack
+```
+
+</Accordion>
+
+<Accordion title="Use">
+```go
+func (GoatHorn) Use(tx *world.Tx, user User, _ *UseContext) bool
+```
+
+Use ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### GoldIngot
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type GoldIngot struct{}
+```
+
+
+
+GoldIngot is a metal ingot melted from raw gold or obtained from loot chests.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (GoldIngot) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaterialColour">
+```go
+func (GoldIngot) MaterialColour() string
+```
+
+MaterialColour ...
+
+</Accordion>
+
+<Accordion title="PayableForBeacon">
+```go
+func (GoldIngot) PayableForBeacon() bool
+```
+
+PayableForBeacon ...
+
+</Accordion>
+
+<Accordion title="TrimMaterial">
+```go
+func (GoldIngot) TrimMaterial() string
+```
+
+TrimMaterial ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### GoldNugget
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type GoldNugget struct{}
+```
+
+
+
+GoldNugget is an item used to craft gold ingots & other various gold items.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (GoldNugget) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### GoldenApple
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type GoldenApple struct{}
+```
+
+
+
+GoldenApple is a special food item that bestows beneficial effects.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (GoldenApple) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (GoldenApple) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (GoldenApple) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (GoldenApple) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### GoldenCarrot
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type GoldenCarrot struct {
+	defaultFood
+}
+```
+
+
+
+GoldenCarrot is a valuable food item and brewing ingredient. It provides the second most saturation in the game,
+behind Suspicious Stew crafted with either a Dandelion or Blue Orchid.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    defaultFood: {
+      description: '',
+      type: 'defaultFood',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (GoldenCarrot) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (GoldenCarrot) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (GoldenCarrot) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (GoldenCarrot) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Gunpowder
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Gunpowder struct{}
+```
+
+
+
+Gunpowder is an item that is used for explosion-related recipes.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Gunpowder) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### HandEquipped
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type HandEquipped interface {
+	// HandEquipped returns whether the item is hand equipped.
+	HandEquipped() bool
+}
+```
+
+
+
+HandEquipped represents an item that can be 'hand equipped'. This means the item will show up in third person like
+a tool, sword or stick would, giving them a different orientation in the hand and making them slightly bigger.
+
+
+
+
+
+
+---
+
+### HeartOfTheSea
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type HeartOfTheSea struct{}
+```
+
+
+
+HeartOfTheSea is a rare item that can be crafted into a conduit.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (HeartOfTheSea) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Helmet
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Helmet struct {
+	// Tier is the tier of the armour.
+	Tier	ArmourTier
+	// Trim specifies the trim of the armour.
+	Trim	ArmourTrim
+}
+```
+
+
+
+Helmet is a defensive item that may be worn in the head slot. It comes in several tiers, each with
+different defence points and armour toughness.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Tier: {
+      description: 'Tier is the tier of the armour.',
+      type: 'ArmourTier',
+      typeLink: '../item.mdx#armourtier',
+    },
+    Trim: {
+      description: 'Trim specifies the trim of the armour.',
+      type: 'ArmourTrim',
+      typeLink: '../item.mdx#armourtrim',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="DecodeNBT">
+```go
+func (Helmet) DecodeNBT(data map[string]any) any
+```
+
+DecodeNBT ...
+
+</Accordion>
+
+<Accordion title="DefencePoints">
+```go
+func (Helmet) DefencePoints() float64
+```
+
+DefencePoints ...
+
+</Accordion>
+
+<Accordion title="DurabilityInfo">
+```go
+func (Helmet) DurabilityInfo() DurabilityInfo
+```
+
+DurabilityInfo ...
+
+</Accordion>
+
+<Accordion title="EnchantmentValue">
+```go
+func (Helmet) EnchantmentValue() int
+```
+
+EnchantmentValue ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Helmet) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="EncodeNBT">
+```go
+func (Helmet) EncodeNBT() map[string]any
+```
+
+EncodeNBT ...
+
+</Accordion>
+
+<Accordion title="Helmet">
+```go
+func (Helmet) Helmet() bool
+```
+
+Helmet ...
+
+</Accordion>
+
+<Accordion title="KnockBackResistance">
+```go
+func (Helmet) KnockBackResistance() float64
+```
+
+KnockBackResistance ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (Helmet) MaxCount() int
+```
+
+MaxCount always returns 1.
+
+</Accordion>
+
+<Accordion title="RepairableBy">
+```go
+func (Helmet) RepairableBy(i Stack) bool
+```
+
+RepairableBy ...
+
+</Accordion>
+
+<Accordion title="SmeltInfo">
+```go
+func (Helmet) SmeltInfo() SmeltInfo
+```
+
+SmeltInfo ...
+
+</Accordion>
+
+<Accordion title="Toughness">
+```go
+func (Helmet) Toughness() float64
+```
+
+Toughness ...
+
+</Accordion>
+
+<Accordion title="Use">
+```go
+func (Helmet) Use(_ *world.Tx, _ User, ctx *UseContext) bool
+```
+
+Use handles the using of a helmet to auto-equip it in an armour slot.
+
+</Accordion>
+
+<Accordion title="WithTrim">
+```go
+func (Helmet) WithTrim(trim ArmourTrim) world.Item
+```
+
+WithTrim ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### HelmetType
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type HelmetType interface {
+	Armour
+	Helmet() bool
+}
+```
+
+
+
+HelmetType is an Armour item that can be worn in the helmet slot.
+
+
+
+
+
+
+---
+
+### Hoe
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Hoe struct {
+	Tier ToolTier
+}
+```
+
+
+
+Hoe is a tool generally used to till dirt and grass blocks into farmland blocks for planting crops.
+Additionally, a Hoe can be used to break certain types of blocks such as Crimson and Hay Blocks.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Tier: {
+      description: '',
+      type: 'ToolTier',
+      typeLink: '../item.mdx#tooltier',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AttackDamage">
+```go
+func (Hoe) AttackDamage() float64
+```
+
+AttackDamage ...
+
+</Accordion>
+
+<Accordion title="BaseMiningEfficiency">
+```go
+func (Hoe) BaseMiningEfficiency(world.Block) float64
+```
+
+BaseMiningEfficiency ...
+
+</Accordion>
+
+<Accordion title="DurabilityInfo">
+```go
+func (Hoe) DurabilityInfo() DurabilityInfo
+```
+
+DurabilityInfo ...
+
+</Accordion>
+
+<Accordion title="EnchantmentValue">
+```go
+func (Hoe) EnchantmentValue() int
+```
+
+EnchantmentValue ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Hoe) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="FuelInfo">
+```go
+func (Hoe) FuelInfo() FuelInfo
+```
+
+FuelInfo ...
+
+</Accordion>
+
+<Accordion title="HarvestLevel">
+```go
+func (Hoe) HarvestLevel() int
+```
+
+HarvestLevel returns the level that this hoe is able to harvest. If a block has a harvest level above
+this one, this hoe won't be able to harvest it.
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (Hoe) MaxCount() int
+```
+
+MaxCount ...
+
+</Accordion>
+
+<Accordion title="RepairableBy">
+```go
+func (Hoe) RepairableBy(i Stack) bool
+```
+
+RepairableBy ...
+
+</Accordion>
+
+<Accordion title="SmeltInfo">
+```go
+func (Hoe) SmeltInfo() SmeltInfo
+```
+
+SmeltInfo ...
+
+</Accordion>
+
+<Accordion title="ToolType">
+```go
+func (Hoe) ToolType() ToolType
+```
+
+ToolType ...
+
+</Accordion>
+
+<Accordion title="UseOnBlock">
+```go
+func (Hoe) UseOnBlock(pos cube.Pos, face cube.Face, _ mgl64.Vec3, tx *world.Tx, _ User, ctx *UseContext) bool
+```
+
+UseOnBlock will turn a dirt or grass block into a farmland if the necessary properties are met.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Honeycomb
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Honeycomb struct{}
+```
+
+
+
+Honeycomb is an item obtained from bee nests and beehives.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Honeycomb) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="UseOnBlock">
+```go
+func (Honeycomb) UseOnBlock(pos cube.Pos, _ cube.Face, _ mgl64.Vec3, tx *world.Tx, user User, ctx *UseContext) bool
+```
+
+UseOnBlock handles the logic of using an ink sac on a sign. Glowing ink sacs turn the text of these signs glowing,
+whereas normal ink sacs revert them back to non-glowing text.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### InkSac
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type InkSac struct {
+	// Glowing specifies if the ink sac is that of a glow squid. If true, it may be used on a sign to light up its text.
+	Glowing bool
+}
+```
+
+
+
+InkSac is an item dropped by a squid upon death used to create black dye, dark prismarine and book and quill. The
+glowing variant, obtained by killing a glow squid, may be used to cause sign text to light up.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Glowing: {
+      description: 'Glowing specifies if the ink sac is that of a glow squid. If true, it may be used on a sign to light up its text.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (InkSac) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="UseOnBlock">
+```go
+func (InkSac) UseOnBlock(pos cube.Pos, _ cube.Face, _ mgl64.Vec3, tx *world.Tx, user User, ctx *UseContext) bool
+```
+
+UseOnBlock handles the logic of using an ink sac on a sign. Glowing ink sacs turn the text of these signs glowing,
+whereas normal ink sacs revert them back to non-glowing text.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### IronIngot
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type IronIngot struct{}
+```
+
+
+
+IronIngot is a metal ingot melted from raw iron or obtained from loot chests.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (IronIngot) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaterialColour">
+```go
+func (IronIngot) MaterialColour() string
+```
+
+MaterialColour ...
+
+</Accordion>
+
+<Accordion title="PayableForBeacon">
+```go
+func (IronIngot) PayableForBeacon() bool
+```
+
+PayableForBeacon ...
+
+</Accordion>
+
+<Accordion title="TrimMaterial">
+```go
+func (IronIngot) TrimMaterial() string
+```
+
+TrimMaterial ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### IronNugget
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type IronNugget struct{}
+```
+
+
+
+IronNugget is a piece of iron that can be obtained by smelting iron tools/weapons or iron/chainmail armor.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (IronNugget) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### LapisLazuli
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type LapisLazuli struct{}
+```
+
+
+
+LapisLazuli is a mineral used for enchanting and decoration.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (LapisLazuli) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaterialColour">
+```go
+func (LapisLazuli) MaterialColour() string
+```
+
+MaterialColour ...
+
+</Accordion>
+
+<Accordion title="TrimMaterial">
+```go
+func (LapisLazuli) TrimMaterial() string
+```
+
+TrimMaterial ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Leather
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Leather struct{}
+```
+
+
+
+Leather is an animal skin used to make item frames, armor and books.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Leather) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Leggings
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Leggings struct {
+	// Tier is the tier of the leggings.
+	Tier	ArmourTier
+	// Trim specifies the trim of the armour.
+	Trim	ArmourTrim
+}
+```
+
+
+
+Leggings are a defensive item that may be equipped in the leggings armour slot. They come in several tiers,
+like leather, gold, chain, iron and diamond.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Tier: {
+      description: 'Tier is the tier of the leggings.',
+      type: 'ArmourTier',
+      typeLink: '../item.mdx#armourtier',
+    },
+    Trim: {
+      description: 'Trim specifies the trim of the armour.',
+      type: 'ArmourTrim',
+      typeLink: '../item.mdx#armourtrim',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="DecodeNBT">
+```go
+func (Leggings) DecodeNBT(data map[string]any) any
+```
+
+DecodeNBT ...
+
+</Accordion>
+
+<Accordion title="DefencePoints">
+```go
+func (Leggings) DefencePoints() float64
+```
+
+DefencePoints ...
+
+</Accordion>
+
+<Accordion title="DurabilityInfo">
+```go
+func (Leggings) DurabilityInfo() DurabilityInfo
+```
+
+DurabilityInfo ...
+
+</Accordion>
+
+<Accordion title="EnchantmentValue">
+```go
+func (Leggings) EnchantmentValue() int
+```
+
+EnchantmentValue ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Leggings) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="EncodeNBT">
+```go
+func (Leggings) EncodeNBT() map[string]any
+```
+
+EncodeNBT ...
+
+</Accordion>
+
+<Accordion title="KnockBackResistance">
+```go
+func (Leggings) KnockBackResistance() float64
+```
+
+KnockBackResistance ...
+
+</Accordion>
+
+<Accordion title="Leggings">
+```go
+func (Leggings) Leggings() bool
+```
+
+Leggings ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (Leggings) MaxCount() int
+```
+
+MaxCount always returns 1.
+
+</Accordion>
+
+<Accordion title="RepairableBy">
+```go
+func (Leggings) RepairableBy(i Stack) bool
+```
+
+RepairableBy ...
+
+</Accordion>
+
+<Accordion title="SmeltInfo">
+```go
+func (Leggings) SmeltInfo() SmeltInfo
+```
+
+SmeltInfo ...
+
+</Accordion>
+
+<Accordion title="Toughness">
+```go
+func (Leggings) Toughness() float64
+```
+
+Toughness ...
+
+</Accordion>
+
+<Accordion title="Use">
+```go
+func (Leggings) Use(_ *world.Tx, _ User, ctx *UseContext) bool
+```
+
+Use handles the auto-equipping of leggings in an armour slot by using the item.
+
+</Accordion>
+
+<Accordion title="WithTrim">
+```go
+func (Leggings) WithTrim(trim ArmourTrim) world.Item
+```
+
+WithTrim ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### LeggingsType
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type LeggingsType interface {
+	Armour
+	Leggings() bool
+}
+```
+
+
+
+LeggingsType are an Armour item that can be worn in the leggings slot.
+
+
+
+
+
+
+---
+
+### LingeringPotion
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type LingeringPotion struct {
+	// Type is the type of lingering potion.
+	Type potion.Potion
+}
+```
+
+
+
+LingeringPotion is a variant of a splash potion that can be thrown to leave clouds with status effects that linger on
+the ground in an area.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Type: {
+      description: 'Type is the type of lingering potion.',
+      type: 'potion.Potion',
+      typeLink: '../item-potion.mdx#potion',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (LingeringPotion) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (LingeringPotion) MaxCount() int
+```
+
+MaxCount ...
+
+</Accordion>
+
+<Accordion title="Use">
+```go
+func (LingeringPotion) Use(tx *world.Tx, user User, ctx *UseContext) bool
+```
+
+Use ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### MagmaCream
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type MagmaCream struct{}
+```
+
+
+
+MagmaCream is an item used in brewing to create potions of Fire Resistance, and to build magma blocks.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (MagmaCream) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### MaxCounter
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type MaxCounter interface {
+	// MaxCount returns the maximum number of items that a stack may be composed of. The number returned must
+	// be positive.
+	MaxCount() int
+}
+```
+
+
+
+MaxCounter represents an item that has a specific max count. By default, each item will be expected to have
+a maximum count of 64. MaxCounter may be implemented to change this behaviour.
+
+
+
+
+
+
+---
+
+### MelonSlice
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type MelonSlice struct{}
+```
+
+
+
+MelonSlice is a food item dropped by melon blocks.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (MelonSlice) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="CompostChance">
+```go
+func (MelonSlice) CompostChance() float64
+```
+
+CompostChance ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (MelonSlice) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (MelonSlice) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (MelonSlice) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### MushroomStew
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type MushroomStew struct {
+	defaultFood
+}
+```
+
+
+
+MushroomStew is a food item.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    defaultFood: {
+      description: '',
+      type: 'defaultFood',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (MushroomStew) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (MushroomStew) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (MushroomStew) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (MushroomStew) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (MushroomStew) MaxCount() int
+```
+
+MaxCount ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### MusicDisc
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type MusicDisc struct {
+	// DiscType is the disc type of the music disc.
+	DiscType sound.DiscType
+}
+```
+
+
+
+MusicDisc is an item that can be played in jukeboxes.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    DiscType: {
+      description: 'DiscType is the disc type of the music disc.',
+      type: 'sound.DiscType',
+      typeLink: '../world-sound.mdx#disctype',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (MusicDisc) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (MusicDisc) MaxCount() int
+```
+
+MaxCount always returns 1.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Mutton
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Mutton struct {
+	defaultFood
+
+	// Cooked is whether the mutton is cooked.
+	Cooked	bool
+}
+```
+
+
+
+Mutton is a food item obtained from sheep. It can be cooked in a furnace, smoker, or campfire.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    defaultFood: {
+      description: '',
+      type: 'defaultFood',
+    },
+    Cooked: {
+      description: 'Cooked is whether the mutton is cooked.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (Mutton) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (Mutton) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (Mutton) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Mutton) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="SmeltInfo">
+```go
+func (Mutton) SmeltInfo() SmeltInfo
+```
+
+SmeltInfo ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### NautilusShell
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type NautilusShell struct{}
+```
+
+
+
+NautilusShell is an item that is used for crafting conduits.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (NautilusShell) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="OffHand">
+```go
+func (NautilusShell) OffHand() bool
+```
+
+OffHand ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### NetherBrick
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type NetherBrick struct{}
+```
+
+
+
+NetherBrick is an item made by smelting netherrack in a furnace.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (NetherBrick) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### NetherQuartz
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type NetherQuartz struct{}
+```
+
+
+
+NetherQuartz is a smooth, white mineral found in the Nether.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (NetherQuartz) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaterialColour">
+```go
+func (NetherQuartz) MaterialColour() string
+```
+
+MaterialColour ...
+
+</Accordion>
+
+<Accordion title="TrimMaterial">
+```go
+func (NetherQuartz) TrimMaterial() string
+```
+
+TrimMaterial ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### NetherStar
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type NetherStar struct{}
+```
+
+
+
+NetherStar is a rare item dropped by the wither that is used solely to craft beacons.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BlastProof">
+```go
+func (NetherStar) BlastProof() bool
+```
+
+BlastProof indicates that the item will withstand an explosion as an item entity.
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (NetherStar) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### NetheriteIngot
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type NetheriteIngot struct{}
+```
+
+
+
+NetheriteIngot is a rare mineral crafted with 4 pieces of netherite scrap and 4 gold ingots.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (NetheriteIngot) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaterialColour">
+```go
+func (NetheriteIngot) MaterialColour() string
+```
+
+MaterialColour ...
+
+</Accordion>
+
+<Accordion title="PayableForBeacon">
+```go
+func (NetheriteIngot) PayableForBeacon() bool
+```
+
+PayableForBeacon ...
+
+</Accordion>
+
+<Accordion title="TrimMaterial">
+```go
+func (NetheriteIngot) TrimMaterial() string
+```
+
+TrimMaterial ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### NetheriteScrap
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type NetheriteScrap struct{}
+```
+
+
+
+NetheriteScrap is a material smelted from ancient debris, which is found in the Nether.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (NetheriteScrap) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### OffHand
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type OffHand interface {
+	// OffHand returns true if the item can be held in the off hand.
+	OffHand() bool
+}
+```
+
+
+
+OffHand represents an item that can be held in the off hand.
+
+
+
+
+
+
+---
+
+### Paper
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Paper struct{}
+```
+
+
+
+Paper is an item crafted from sugar cane.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Paper) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### PhantomMembrane
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type PhantomMembrane struct{}
+```
+
+
+
+PhantomMembrane are leathery skins obtained from killing phantoms.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (PhantomMembrane) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Pickaxe
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Pickaxe struct {
+	// Tier is the tier of the pickaxe.
+	Tier ToolTier
+}
+```
+
+
+
+Pickaxe is a tool generally used for mining stone-like blocks and ores at a higher speed and to obtain
+their drops.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Tier: {
+      description: 'Tier is the tier of the pickaxe.',
+      type: 'ToolTier',
+      typeLink: '../item.mdx#tooltier',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AttackDamage">
+```go
+func (Pickaxe) AttackDamage() float64
+```
+
+AttackDamage returns the attack damage to the pickaxe.
+
+</Accordion>
+
+<Accordion title="BaseMiningEfficiency">
+```go
+func (Pickaxe) BaseMiningEfficiency(world.Block) float64
+```
+
+BaseMiningEfficiency is the base efficiency of the pickaxe, when it comes to mining blocks. This decides
+the speed with which blocks can be mined.
+
+</Accordion>
+
+<Accordion title="DurabilityInfo">
+```go
+func (Pickaxe) DurabilityInfo() DurabilityInfo
+```
+
+DurabilityInfo ...
+
+</Accordion>
+
+<Accordion title="EnchantmentValue">
+```go
+func (Pickaxe) EnchantmentValue() int
+```
+
+EnchantmentValue ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Pickaxe) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="FuelInfo">
+```go
+func (Pickaxe) FuelInfo() FuelInfo
+```
+
+FuelInfo ...
+
+</Accordion>
+
+<Accordion title="HarvestLevel">
+```go
+func (Pickaxe) HarvestLevel() int
+```
+
+HarvestLevel returns the level that this pickaxe is able to harvest. If a block has a harvest level above
+this one, this pickaxe won't be able to harvest it.
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (Pickaxe) MaxCount() int
+```
+
+MaxCount returns 1.
+
+</Accordion>
+
+<Accordion title="RepairableBy">
+```go
+func (Pickaxe) RepairableBy(i Stack) bool
+```
+
+RepairableBy ...
+
+</Accordion>
+
+<Accordion title="SmeltInfo">
+```go
+func (Pickaxe) SmeltInfo() SmeltInfo
+```
+
+SmeltInfo ...
+
+</Accordion>
+
+<Accordion title="ToolType">
+```go
+func (Pickaxe) ToolType() ToolType
+```
+
+ToolType returns the type for pickaxes.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### PoisonousPotato
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type PoisonousPotato struct {
+	defaultFood
+}
+```
+
+
+
+PoisonousPotato is a type of potato that can poison the player.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    defaultFood: {
+      description: '',
+      type: 'defaultFood',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (PoisonousPotato) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (PoisonousPotato) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (PoisonousPotato) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (PoisonousPotato) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### PoppedChorusFruit
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type PoppedChorusFruit struct{}
+```
+
+
+
+PoppedChorusFruit is an item obtained by smelting chorus fruit, and used to craft end rods and purpur blocks.
+Unlike raw chorus fruit, the popped fruit is inedible.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (PoppedChorusFruit) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Porkchop
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Porkchop struct {
+	defaultFood
+
+	// Cooked is whether the porkchop is cooked.
+	Cooked	bool
+}
+```
+
+
+
+Porkchop is a food item obtained from pigs. It can be cooked in a furnace, smoker, or campfire.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    defaultFood: {
+      description: '',
+      type: 'defaultFood',
+    },
+    Cooked: {
+      description: 'Cooked is whether the porkchop is cooked.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (Porkchop) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (Porkchop) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (Porkchop) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Porkchop) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="SmeltInfo">
+```go
+func (Porkchop) SmeltInfo() SmeltInfo
+```
+
+SmeltInfo ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Potion
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Potion struct {
+	// Type is the type of potion.
+	Type potion.Potion
+}
+```
+
+
+
+Potion is an item that grants effects on consumption.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Type: {
+      description: 'Type is the type of potion.',
+      type: 'potion.Potion',
+      typeLink: '../item-potion.mdx#potion',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (Potion) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (Potion) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (Potion) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Potion) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (Potion) MaxCount() int
+```
+
+MaxCount ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### PotterySherd
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type PotterySherd struct {
+	Type SherdType
+}
+```
+
+
+
+PotterySherd is an item that can be found from brushing suspicious sand or gravel.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Type: {
+      description: '',
+      type: 'SherdType',
+      typeLink: '../item.mdx#sherdtype',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (PotterySherd) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="PotDecoration">
+```go
+func (PotterySherd) PotDecoration() bool
+```
+
+PotDecoration ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### PrismarineCrystals
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type PrismarineCrystals struct{}
+```
+
+
+
+PrismarineCrystals are items obtained by defeating guardians or elder guardians. They are used for crafting sea
+lanterns.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (PrismarineCrystals) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### PrismarineShard
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type PrismarineShard struct{}
+```
+
+
+
+PrismarineShard is an item obtained by defeating guardians or elder guardians.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (PrismarineShard) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Pufferfish
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Pufferfish struct {
+	defaultFood
+}
+```
+
+
+
+Pufferfish is a poisonous type of fish that is used to brew water breathing potions.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    defaultFood: {
+      description: '',
+      type: 'defaultFood',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (Pufferfish) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (Pufferfish) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (Pufferfish) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Pufferfish) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### PumpkinPie
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type PumpkinPie struct {
+	defaultFood
+}
+```
+
+
+
+PumpkinPie is a food item that can be eaten by the player.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    defaultFood: {
+      description: '',
+      type: 'defaultFood',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (PumpkinPie) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="CompostChance">
+```go
+func (PumpkinPie) CompostChance() float64
+```
+
+CompostChance ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (PumpkinPie) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (PumpkinPie) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (PumpkinPie) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Rabbit
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Rabbit struct {
+	defaultFood
+
+	// Cooked is whether the rabbit is cooked.
+	Cooked	bool
+}
+```
+
+
+
+Rabbit is a food item obtained from rabbits. It can be cooked in a furnace, smoker, or campfire.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    defaultFood: {
+      description: '',
+      type: 'defaultFood',
+    },
+    Cooked: {
+      description: 'Cooked is whether the rabbit is cooked.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (Rabbit) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (Rabbit) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (Rabbit) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Rabbit) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="SmeltInfo">
+```go
+func (Rabbit) SmeltInfo() SmeltInfo
+```
+
+SmeltInfo ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### RabbitFoot
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type RabbitFoot struct{}
+```
+
+
+
+RabbitFoot is a brewing item obtained from rabbits.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (RabbitFoot) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### RabbitHide
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type RabbitHide struct{}
+```
+
+
+
+RabbitHide is an item dropped by rabbits.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (RabbitHide) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### RabbitStew
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type RabbitStew struct {
+	defaultFood
+}
+```
+
+
+
+RabbitStew is a food item that can be eaten by the player.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    defaultFood: {
+      description: '',
+      type: 'defaultFood',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (RabbitStew) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (RabbitStew) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (RabbitStew) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (RabbitStew) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (RabbitStew) MaxCount() int
+```
+
+MaxCount ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### RawCopper
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type RawCopper struct{}
+```
+
+
+
+RawCopper is a raw metal resource obtained from mining copper ore.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (RawCopper) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="SmeltInfo">
+```go
+func (RawCopper) SmeltInfo() SmeltInfo
+```
+
+SmeltInfo ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### RawGold
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type RawGold struct{}
+```
+
+
+
+RawGold is a raw metal resource obtained from mining gold ore.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (RawGold) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="SmeltInfo">
+```go
+func (RawGold) SmeltInfo() SmeltInfo
+```
+
+SmeltInfo ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### RawIron
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type RawIron struct{}
+```
+
+
+
+RawIron is a raw metal resource obtained from mining iron ore.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (RawIron) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="SmeltInfo">
+```go
+func (RawIron) SmeltInfo() SmeltInfo
+```
+
+SmeltInfo ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### RecoveryCompass
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type RecoveryCompass struct{}
+```
+
+
+
+RecoveryCompass is an item used to point to the location of the player's last death.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (RecoveryCompass) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Releasable
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Releasable interface {
+	// Release is called when an item is released.
+	Release(releaser Releaser, tx *world.Tx, ctx *UseContext, duration time.Duration)
+	// Requirements returns the required items to release this item.
+	Requirements() []Stack
+}
+```
+
+
+
+Releasable represents an item that can be released.
+
+
+
+
+
+
+---
+
+### Releaser
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Releaser interface {
+	User
+	// GameMode returns the gamemode of the releaser.
+	GameMode() world.GameMode
+	// PlaySound plays a world.Sound that only this Releaser can hear.
+	PlaySound(sound world.Sound)
+}
+```
+
+
+
+Releaser represents an entity that can release items, such as bows.
+
+
+
+
+
+
+---
+
+### Repairable
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Repairable interface {
+	Durable
+	RepairableBy(i Stack) bool
+}
+```
+
+
+
+Repairable represents a durable item that can be repaired by other items.
+
+
+
+
+
+
+---
+
+### ResinBrick
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ResinBrick struct{}
+```
+
+
+
+ResinBrick is an item used to create resin bricks. It can also be used as a
+smithing ingredient, giving orange details to pieces of armor.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (ResinBrick) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaterialColour">
+```go
+func (ResinBrick) MaterialColour() string
+```
+
+MaterialColour ...
+
+</Accordion>
+
+<Accordion title="TrimMaterial">
+```go
+func (ResinBrick) TrimMaterial() string
+```
+
+TrimMaterial ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### RottenFlesh
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type RottenFlesh struct {
+	defaultFood
+}
+```
+
+
+
+RottenFlesh is a food item that can be eaten by the player, at the high risk of inflicting hunger.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    defaultFood: {
+      description: '',
+      type: 'defaultFood',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (RottenFlesh) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (RottenFlesh) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (RottenFlesh) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (RottenFlesh) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Salmon
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Salmon struct {
+	defaultFood
+
+	// Cooked is whether the salmon is cooked.
+	Cooked	bool
+}
+```
+
+
+
+Salmon is a food item obtained from salmons. It can be cooked in a furnace, smoker, or campfire.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    defaultFood: {
+      description: '',
+      type: 'defaultFood',
+    },
+    Cooked: {
+      description: 'Cooked is whether the salmon is cooked.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (Salmon) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (Salmon) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (Salmon) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Salmon) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="SmeltInfo">
+```go
+func (Salmon) SmeltInfo() SmeltInfo
+```
+
+SmeltInfo ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Scute
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Scute struct{}
+```
+
+
+
+Scute is an item that baby turtles drop when they grow into adults.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Scute) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Shears
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Shears struct{}
+```
+
+
+
+Shears is a tool used to shear sheep, mine a few types of blocks, and carve pumpkins.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BaseMiningEfficiency">
+```go
+func (Shears) BaseMiningEfficiency(world.Block) float64
+```
+
+BaseMiningEfficiency ...
+
+</Accordion>
+
+<Accordion title="DurabilityInfo">
+```go
+func (Shears) DurabilityInfo() DurabilityInfo
+```
+
+DurabilityInfo ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Shears) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="HarvestLevel">
+```go
+func (Shears) HarvestLevel() int
+```
+
+HarvestLevel ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (Shears) MaxCount() int
+```
+
+MaxCount ...
+
+</Accordion>
+
+<Accordion title="ToolType">
+```go
+func (Shears) ToolType() ToolType
+```
+
+ToolType ...
+
+</Accordion>
+
+<Accordion title="UseOnBlock">
+```go
+func (Shears) UseOnBlock(pos cube.Pos, face cube.Face, _ mgl64.Vec3, tx *world.Tx, _ User, ctx *UseContext) bool
+```
+
+UseOnBlock ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### SherdType
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type SherdType struct {
+	sherdType
+}
+```
+
+
+
+SherdType represents the sherdType of a block.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    sherdType: {
+      description: '',
+      type: 'sherdType',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="String">
+```go
+func (SherdType) String() string
+```
+
+String ...
+
+</Accordion>
+
+<Accordion title="Uint8">
+```go
+func (SherdType) Uint8() uint8
+```
+
+Uint8 ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Shovel
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Shovel struct {
+	// Tier is the tier of the shovel.
+	Tier ToolTier
+}
+```
+
+
+
+Shovel is a tool generally used for mining ground-like blocks, such as sand, gravel and dirt. Additionally,
+shovels may be used to turn grass into dirt paths.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Tier: {
+      description: 'Tier is the tier of the shovel.',
+      type: 'ToolTier',
+      typeLink: '../item.mdx#tooltier',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AttackDamage">
+```go
+func (Shovel) AttackDamage() float64
+```
+
+AttackDamage returns the attack damage to the shovel.
+
+</Accordion>
+
+<Accordion title="BaseMiningEfficiency">
+```go
+func (Shovel) BaseMiningEfficiency(world.Block) float64
+```
+
+BaseMiningEfficiency ...
+
+</Accordion>
+
+<Accordion title="DurabilityInfo">
+```go
+func (Shovel) DurabilityInfo() DurabilityInfo
+```
+
+DurabilityInfo ...
+
+</Accordion>
+
+<Accordion title="EnchantmentValue">
+```go
+func (Shovel) EnchantmentValue() int
+```
+
+EnchantmentValue ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Shovel) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="FuelInfo">
+```go
+func (Shovel) FuelInfo() FuelInfo
+```
+
+FuelInfo ...
+
+</Accordion>
+
+<Accordion title="HarvestLevel">
+```go
+func (Shovel) HarvestLevel() int
+```
+
+HarvestLevel ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (Shovel) MaxCount() int
+```
+
+MaxCount always returns 1.
+
+</Accordion>
+
+<Accordion title="RepairableBy">
+```go
+func (Shovel) RepairableBy(i Stack) bool
+```
+
+RepairableBy ...
+
+</Accordion>
+
+<Accordion title="SmeltInfo">
+```go
+func (Shovel) SmeltInfo() SmeltInfo
+```
+
+SmeltInfo ...
+
+</Accordion>
+
+<Accordion title="ToolType">
+```go
+func (Shovel) ToolType() ToolType
+```
+
+ToolType returns the tool type for shovels.
+
+</Accordion>
+
+<Accordion title="UseOnBlock">
+```go
+func (Shovel) UseOnBlock(pos cube.Pos, face cube.Face, _ mgl64.Vec3, tx *world.Tx, _ User, ctx *UseContext) bool
+```
+
+UseOnBlock handles the creation of dirt path blocks from dirt or grass blocks.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ShulkerShell
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ShulkerShell struct{}
+```
+
+
+
+ShulkerShell are items dropped by shulkers that are used solely to craft shulker boxes.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (ShulkerShell) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Slimeball
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Slimeball struct{}
+```
+
+
+
+Slimeball is a crafting ingredient commonly dropped by slimes, and can be sneezed out by pandas.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Slimeball) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### SmeltInfo
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type SmeltInfo struct {
+	// Product returns the resulting item stack from smelting the item.
+	Product	Stack
+	// Experience returns the experience gained from performing the smelt, alongside the Product.
+	Experience	float64
+	// Food returns true if the smelt is food, for smelters such as smokers or regular furnaces.
+	Food	bool
+	// Ores returns true if the smelt is ores, for smelters such as blast furnaces or regular furnaces.
+	Ores	bool
+}
+```
+
+
+
+SmeltInfo is a struct returned by items that implement Smeltable. It contains information about the product, experience
+gained, and more.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Product: {
+      description: 'Product returns the resulting item stack from smelting the item.',
+      type: 'Stack',
+      typeLink: '../item.mdx#stack',
+    },
+    Experience: {
+      description: 'Experience returns the experience gained from performing the smelt, alongside the Product.',
+      type: 'float64',
+    },
+    Food: {
+      description: 'Food returns true if the smelt is food, for smelters such as smokers or regular furnaces.',
+      type: 'bool',
+    },
+    Ores: {
+      description: 'Ores returns true if the smelt is ores, for smelters such as blast furnaces or regular furnaces.',
+      type: 'bool',
+    },
+  }}
+/>
+
+
+
+
+
+---
+
+### Smeltable
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Smeltable interface {
+	// SmeltInfo returns information of the item related to it's smelting capabilities.
+	SmeltInfo() SmeltInfo
+}
+```
+
+
+
+Smeltable represents an item that can be input into a smelter, such as a blast furnace, furnace, or smoker, to cook and
+transform it into a different item.
+
+
+
+
+
+
+---
+
+### SmithingTemplate
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type SmithingTemplate struct {
+	// Template the upgrade item used in smithing tables.
+	Template SmithingTemplateType
+}
+```
+
+
+
+SmithingTemplate is an item used in smithing tables to alter tools and
+armour. They are consumed when used, but can be duplicated using an existing
+template, its material and diamonds.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Template: {
+      description: 'Template the upgrade item used in smithing tables.',
+      type: 'SmithingTemplateType',
+      typeLink: '../item.mdx#smithingtemplatetype',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (SmithingTemplate) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### SmithingTemplateType
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type SmithingTemplateType struct {
+	smithingTemplateType
+}
+```
+
+
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    smithingTemplateType: {
+      description: '',
+      type: 'smithingTemplateType',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="String">
+```go
+func (SmithingTemplateType) String() string
+```
+
+String ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Snowball
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Snowball struct{}
+```
+
+
+
+Snowball is a throwable combat item obtained through shovelling snow.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Snowball) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (Snowball) MaxCount() int
+```
+
+MaxCount ...
+
+</Accordion>
+
+<Accordion title="Use">
+```go
+func (Snowball) Use(tx *world.Tx, user User, ctx *UseContext) bool
+```
+
+Use ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### SpiderEye
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type SpiderEye struct {
+	defaultFood
+}
+```
+
+
+
+SpiderEye is a poisonous food and brewing item.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    defaultFood: {
+      description: '',
+      type: 'defaultFood',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (SpiderEye) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (SpiderEye) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (SpiderEye) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (SpiderEye) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### SplashPotion
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type SplashPotion struct {
+	// Type is the type of splash potion.
+	Type potion.Potion
+}
+```
+
+
+
+SplashPotion is an item that grants effects when thrown.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Type: {
+      description: 'Type is the type of splash potion.',
+      type: 'potion.Potion',
+      typeLink: '../item-potion.mdx#potion',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (SplashPotion) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (SplashPotion) MaxCount() int
+```
+
+MaxCount ...
+
+</Accordion>
+
+<Accordion title="Use">
+```go
+func (SplashPotion) Use(tx *world.Tx, user User, ctx *UseContext) bool
+```
+
+Use ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Spyglass
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Spyglass struct {
+	nopReleasable
+}
+```
+
+
+
+Spyglass is an item that zooms in on an area the player is looking at, like a telescope.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    nopReleasable: {
+      description: '',
+      type: 'nopReleasable',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Spyglass) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (Spyglass) MaxCount() int
+```
+
+MaxCount always returns 1.
+
+</Accordion>
+
+<Accordion title="Release">
+```go
+func (Spyglass) Release(Releaser, *world.Tx, *UseContext, time.Duration)
+```
+
+</Accordion>
+
+<Accordion title="Requirements">
+```go
+func (Spyglass) Requirements() []Stack
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Stack
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Stack struct {
+	id	int32
+
+	item	world.Item
+	count	int
+
+	customName	string
+	lore		[]string
+
+	damage		int
+	unbreakable	bool
+
+	anvilCost	int
+
+	data	map[string]any
+
+	enchantments	map[EnchantmentType]Enchantment
+}
+```
+
+
+
+Stack represents a stack of items. The stack shares the same item type and has a count which specifies the
+size of the stack.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AddStack">
+```go
+func (Stack) AddStack(s2 Stack) (a, b Stack)
+```
+
+AddStack adds another stack to the stack and returns both stacks. The first stack returned will have as
+many items in it as possible to fit in the stack, according to a max count of either 64 or otherwise as
+returned by Item.MaxCount(). The second stack will have the leftover items: It may be empty if the count of
+both stacks together don't exceed the max count.
+If the two stacks are not comparable, AddStack will return both the original stack and the stack passed.
+
+</Accordion>
+
+<Accordion title="AnvilCost">
+```go
+func (Stack) AnvilCost() int
+```
+
+AnvilCost returns the number of experience levels to add to the base level cost when repairing, combining, or
+renaming this item with an anvil.
+
+</Accordion>
+
+<Accordion title="AsBreakable">
+```go
+func (Stack) AsBreakable() Stack
+```
+
+AsBreakable returns a copy of the Stack without the unbreakable tag set. If the item does not implement the
+Durable interface, the original stack is returned.
+
+</Accordion>
+
+<Accordion title="AsUnbreakable">
+```go
+func (Stack) AsUnbreakable() Stack
+```
+
+AsUnbreakable returns a copy of the Stack with the unbreakable tag set. If the item does not implement the
+Durable interface, the original stack is returned.
+
+</Accordion>
+
+<Accordion title="AttackDamage">
+```go
+func (Stack) AttackDamage() float64
+```
+
+AttackDamage returns the attack damage to the stack. By default, the value returned is 1.0. If the item
+held implements the item.Weapon interface, this damage may be different.
+
+</Accordion>
+
+<Accordion title="Comparable">
+```go
+func (Stack) Comparable(s2 Stack) bool
+```
+
+Comparable checks if two stacks can be considered comparable. True is returned if the two stacks have an
+equal item type and have equal enchantments, lore and custom names, or if one of the stacks is empty.
+Comparable does not check if the two stacks have the same durability.
+
+</Accordion>
+
+<Accordion title="Count">
+```go
+func (Stack) Count() int
+```
+
+Count returns the amount of items that is present on the stack. The count is guaranteed never to be
+negative.
+
+</Accordion>
+
+<Accordion title="CustomName">
+```go
+func (Stack) CustomName() string
+```
+
+CustomName returns the custom name set for the Stack. An empty string is returned if the Stack has no
+custom name set.
+
+</Accordion>
+
+<Accordion title="Damage">
+```go
+func (Stack) Damage(d int) Stack
+```
+
+Damage returns a new stack that is damaged by the amount passed. (Meaning, its durability lowered by the
+amount passed.) If the item does not implement the Durable interface, the original stack is returned.
+The damage passed may be negative to add durability.
+If the final durability reaches 0 or below, the item returned is the resulting item of the breaking of the
+item. If the final durability reaches a number higher than the maximum durability, the stack returned will
+get the maximum durability.
+
+</Accordion>
+
+<Accordion title="Durability">
+```go
+func (Stack) Durability() int
+```
+
+Durability returns the current durability of the item stack. If the item is not one that implements the
+Durable interface, BaseDurability will always return -1.
+The closer the durability returned is to 0, the closer the item is to being broken.
+
+</Accordion>
+
+<Accordion title="Empty">
+```go
+func (Stack) Empty() bool
+```
+
+Empty checks if the stack is empty (has a count of 0).
+
+</Accordion>
+
+<Accordion title="Enchantment">
+```go
+func (Stack) Enchantment(enchant EnchantmentType) (Enchantment, bool)
+```
+
+Enchantment attempts to return an Enchantment set to the Stack using Stack.WithEnchantment(). If an Enchantment
+is found by the EnchantmentType, the enchantment and the bool true is returned.
+
+</Accordion>
+
+<Accordion title="Enchantments">
+```go
+func (Stack) Enchantments() []Enchantment
+```
+
+Enchantments returns an array of all Enchantments on the item. Enchantments returns the enchantments of a Stack in a
+deterministic order.
+
+</Accordion>
+
+<Accordion title="Equal">
+```go
+func (Stack) Equal(s2 Stack) bool
+```
+
+Equal checks if the two stacks are equal. Equal is equivalent to a Stack.Comparable check while also
+checking the count and durability.
+
+</Accordion>
+
+<Accordion title="Grow">
+```go
+func (Stack) Grow(n int) Stack
+```
+
+Grow grows the Stack's count by n, returning the resulting Stack. If a positive number is passed, the stack
+is grown, whereas if a negative size is passed, the resulting Stack will have a lower count. The count of
+the returned Stack will never be negative.
+
+</Accordion>
+
+<Accordion title="Item">
+```go
+func (Stack) Item() world.Item
+```
+
+Item returns the item that the stack holds. If the stack is considered empty (Stack.Empty()), Item will
+always return nil.
+
+</Accordion>
+
+<Accordion title="Lore">
+```go
+func (Stack) Lore() []string
+```
+
+Lore returns the lore set for the Stack. If no lore is present, the slice returned has a len of 0.
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (Stack) MaxCount() int
+```
+
+MaxCount returns the maximum count that the stack is able to hold when added to an inventory or when added
+to an item entity.
+
+</Accordion>
+
+<Accordion title="MaxDurability">
+```go
+func (Stack) MaxDurability() int
+```
+
+MaxDurability returns the maximum durability that the item stack is able to have. If the item does not
+implement the Durable interface, MaxDurability will always return -1.
+
+</Accordion>
+
+<Accordion title="String">
+```go
+func (Stack) String() string
+```
+
+String implements the fmt.Stringer interface.
+
+</Accordion>
+
+<Accordion title="Unbreakable">
+```go
+func (Stack) Unbreakable() bool
+```
+
+Unbreakable checks if the item stack is unbreakable.
+
+</Accordion>
+
+<Accordion title="Value">
+```go
+func (Stack) Value(key string) (val any, ok bool)
+```
+
+Value attempts to return a value set to the Stack using Stack.WithValue(). If a value is found by the key
+passed, it is returned and ok is true. If not found, the value returned is nil and ok is false.
+
+</Accordion>
+
+<Accordion title="Values">
+```go
+func (Stack) Values() map[string]any
+```
+
+Values returns all values associated with the stack by users. The map returned is a copy of the original:
+Modifying it will not modify the item stack.
+
+</Accordion>
+
+<Accordion title="WithAnvilCost">
+```go
+func (Stack) WithAnvilCost(anvilCost int) Stack
+```
+
+WithAnvilCost returns the current Stack with the anvil cost set to the passed value.
+
+</Accordion>
+
+<Accordion title="WithCustomName">
+```go
+func (Stack) WithCustomName(a ...any) Stack
+```
+
+WithCustomName returns a copy of the Stack with the custom name passed. The custom name is formatted
+according to the rules of fmt.Sprintln.
+
+</Accordion>
+
+<Accordion title="WithDurability">
+```go
+func (Stack) WithDurability(d int) Stack
+```
+
+WithDurability returns a new item stack with the durability passed. If the item does not implement the
+Durable interface, the original stack is returned.
+The closer the durability d is to 0, the closer the item is to being broken. If a durability of 0 is passed,
+a stack with the item type of the BrokenItem is returned. If a durability is passed that exceeds the
+maximum durability, the stack returned will have the maximum durability.
+
+</Accordion>
+
+<Accordion title="WithEnchantments">
+```go
+func (Stack) WithEnchantments(enchants ...Enchantment) Stack
+```
+
+WithEnchantments returns the current stack with the passed enchantments. If an enchantment is not compatible
+with the item stack, it will not be applied.
+
+</Accordion>
+
+<Accordion title="WithItem">
+```go
+func (Stack) WithItem(t world.Item) Stack
+```
+
+WithItem returns a Stack with the item type passed, copying all the
+properties from s to the new stack. Damage to an item, enchantments and anvil
+costs are only copied if they are still applicable to the new item type.
+
+</Accordion>
+
+<Accordion title="WithLore">
+```go
+func (Stack) WithLore(lines ...string) Stack
+```
+
+WithLore returns a copy of the Stack with the lore passed. Each string passed is put on a different line,
+where the first string is at the top and the last at the bottom.
+The lore may be cleared by passing no lines into the Stack.
+
+</Accordion>
+
+<Accordion title="WithValue">
+```go
+func (Stack) WithValue(key string, val any) Stack
+```
+
+WithValue returns the current Stack with a value set at a specific key. This method may be used to
+associate custom data with the item stack, which will persist through server restarts.
+The value stored may later be obtained by making a call to Stack.Value().
+
+WithValue may be called with a nil value, in which case the value at the key will be cleared.
+
+WithValue stores Values by encoding them using the encoding/gob package. Users of WithValue must ensure
+that their value is valid for encoding with this package.
+
+</Accordion>
+
+<Accordion title="WithoutEnchantments">
+```go
+func (Stack) WithoutEnchantments(enchants ...EnchantmentType) Stack
+```
+
+WithoutEnchantments returns the current stack but with the passed enchantments removed.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### StewType
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type StewType struct {
+	stewType
+}
+```
+
+
+
+StewType represents a type of suspicious stew.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    stewType: {
+      description: '',
+      type: 'stewType',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Effects">
+```go
+func (StewType) Effects() []effect.Effect
+```
+
+Effects returns suspicious stew effects.
+
+</Accordion>
+
+<Accordion title="Uint8">
+```go
+func (StewType) Uint8() uint8
+```
+
+Uint8 returns the stew as a uint8.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Stick
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Stick struct{}
+```
+
+
+
+Stick is one of the most abundant resources used for crafting many tools and items.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Stick) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="FuelInfo">
+```go
+func (Stick) FuelInfo() FuelInfo
+```
+
+FuelInfo ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Strippable
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Strippable interface {
+	// Strip returns a block that is the result of stripping it. Alternatively,
+	// the bool returned may be false to indicate the block couldn't be
+	// stripped.
+	Strip() (world.Block, world.Sound, bool)
+}
+```
+
+
+
+Strippable represents a block that can be stripped by right-clicking it with
+an axe.
+
+
+
+
+
+
+---
+
+### Sugar
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Sugar struct{}
+```
+
+
+
+Sugar is a food ingredient and brewing ingredient made from sugar canes.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Sugar) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### SuspiciousStew
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type SuspiciousStew struct {
+	defaultFood
+
+	// Type specifies the type of effect will be given to the player
+	Type	StewType
+}
+```
+
+
+
+SuspiciousStew is a food item that can give the player a status effect that depends on the flower used to craft it.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    defaultFood: {
+      description: '',
+      type: 'defaultFood',
+    },
+    Type: {
+      description: 'Type specifies the type of effect will be given to the player',
+      type: 'StewType',
+      typeLink: '../item.mdx#stewtype',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (SuspiciousStew) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (SuspiciousStew) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (SuspiciousStew) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (SuspiciousStew) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (SuspiciousStew) MaxCount() int
+```
+
+MaxCount ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Sword
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Sword struct {
+	// Tier is the tier of the sword.
+	Tier ToolTier
+}
+```
+
+
+
+Sword is a tool generally used to attack enemies. In addition, it may be used to mine any block slightly
+faster than without tool and to break cobwebs rapidly.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Tier: {
+      description: 'Tier is the tier of the sword.',
+      type: 'ToolTier',
+      typeLink: '../item.mdx#tooltier',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AttackDamage">
+```go
+func (Sword) AttackDamage() float64
+```
+
+AttackDamage returns the attack damage to the sword.
+
+</Accordion>
+
+<Accordion title="BaseMiningEfficiency">
+```go
+func (Sword) BaseMiningEfficiency(world.Block) float64
+```
+
+BaseMiningEfficiency always returns 1.5, unless the block passed is cobweb, in which case 15 is returned.
+
+</Accordion>
+
+<Accordion title="DurabilityInfo">
+```go
+func (Sword) DurabilityInfo() DurabilityInfo
+```
+
+DurabilityInfo ...
+
+</Accordion>
+
+<Accordion title="EnchantmentValue">
+```go
+func (Sword) EnchantmentValue() int
+```
+
+EnchantmentValue ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Sword) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="FuelInfo">
+```go
+func (Sword) FuelInfo() FuelInfo
+```
+
+FuelInfo ...
+
+</Accordion>
+
+<Accordion title="HarvestLevel">
+```go
+func (Sword) HarvestLevel() int
+```
+
+HarvestLevel returns the harvest level of the sword tier.
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (Sword) MaxCount() int
+```
+
+MaxCount always returns 1.
+
+</Accordion>
+
+<Accordion title="RepairableBy">
+```go
+func (Sword) RepairableBy(i Stack) bool
+```
+
+RepairableBy ...
+
+</Accordion>
+
+<Accordion title="SmeltInfo">
+```go
+func (Sword) SmeltInfo() SmeltInfo
+```
+
+SmeltInfo ...
+
+</Accordion>
+
+<Accordion title="ToolType">
+```go
+func (Sword) ToolType() ToolType
+```
+
+ToolType returns the tool type for swords.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Throwable
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Throwable interface {
+	// SwingAnimation returns true if the client should cause the player's arm to swing when the item is thrown.
+	SwingAnimation() bool
+}
+```
+
+
+
+Throwable represents a custom item that can be thrown such as a projectile. This will only have an effect on
+non-vanilla items.
+
+
+
+
+
+
+---
+
+### Tool
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Tool interface {
+	// ToolType returns the type of the tool. The blocks that can be mined with this tool depend on this
+	// tool type.
+	ToolType() ToolType
+	// HarvestLevel returns the level that this tool is able to harvest. If a block has a harvest level above
+	// this one, this tool won't be able to harvest it.
+	HarvestLevel() int
+	// BaseMiningEfficiency is the base efficiency of the tool, when it comes to mining blocks. This decides
+	// the speed with which blocks can be mined.
+	// Some tools have a mining efficiency that depends on the block (swords, shears). The block mined is
+	// passed for this behaviour.
+	BaseMiningEfficiency(b world.Block) float64
+}
+```
+
+
+
+Tool represents an item that may be used as a tool.
+
+
+
+
+
+
+---
+
+### ToolNone
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ToolNone struct{}
+```
+
+
+
+ToolNone is a ToolType typically used in functions for items that do not function as tools.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="BaseMiningEfficiency">
+```go
+func (ToolNone) BaseMiningEfficiency(world.Block) float64
+```
+
+BaseMiningEfficiency ...
+
+</Accordion>
+
+<Accordion title="HarvestLevel">
+```go
+func (ToolNone) HarvestLevel() int
+```
+
+HarvestLevel ...
+
+</Accordion>
+
+<Accordion title="ToolType">
+```go
+func (ToolNone) ToolType() ToolType
+```
+
+ToolType ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ToolTier
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ToolTier struct {
+	// HarvestLevel is the level that this tier of tools is able to harvest. If a block has a harvest level
+	// above this one, a tool with this tier won't be able to harvest it.
+	HarvestLevel	int
+	// BaseMiningEfficiency is the base efficiency of the tier, when it comes to mining blocks. This is
+	// specifically used for tools such as pickaxes.
+	BaseMiningEfficiency	float64
+	// BaseAttackDamage is the base attack damage to tools with this tier. All tools have a constant value
+	// that is added on top of this.
+	BaseAttackDamage	float64
+	// EnchantmentValue is the enchantment value of the tool used when selecting pseudo-random enchantments for
+	// enchanting tables.
+	EnchantmentValue	int
+	// BaseDurability returns the maximum durability that a tool with this tier has.
+	Durability	int
+	// Name is the name of the tier.
+	Name	string
+}
+```
+
+
+
+ToolTier represents the tier, or material, that a Tool is made of.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    HarvestLevel: {
+      description: 'HarvestLevel is the level that this tier of tools is able to harvest. If a block has a harvest level above this one, a tool with this tier won\'t be able to harvest it.',
+      type: 'int',
+    },
+    BaseMiningEfficiency: {
+      description: 'BaseMiningEfficiency is the base efficiency of the tier, when it comes to mining blocks. This is specifically used for tools such as pickaxes.',
+      type: 'float64',
+    },
+    BaseAttackDamage: {
+      description: 'BaseAttackDamage is the base attack damage to tools with this tier. All tools have a constant value that is added on top of this.',
+      type: 'float64',
+    },
+    EnchantmentValue: {
+      description: 'EnchantmentValue is the enchantment value of the tool used when selecting pseudo-random enchantments for enchanting tables.',
+      type: 'int',
+    },
+    Durability: {
+      description: 'BaseDurability returns the maximum durability that a tool with this tier has.',
+      type: 'int',
+    },
+    Name: {
+      description: 'Name is the name of the tier.',
+      type: 'string',
+    },
+  }}
+/>
+
+
+
+
+
+---
+
+### ToolType
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ToolType struct{ t }
+```
+
+
+
+ToolType represents the type of tool. This decides the type of blocks that the tool is used for.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    t: {
+      description: '',
+      type: 't',
+    },
+  }}
+/>
+
+
+
+
+
+---
+
+### Totem
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Totem struct{}
+```
+
+
+
+Totem is an uncommon combat item that can save holders from death.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (Totem) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (Totem) MaxCount() int
+```
+
+MaxCount always returns 1.
+
+</Accordion>
+
+<Accordion title="OffHand">
+```go
+func (Totem) OffHand() bool
+```
+
+OffHand ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Trimmable
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Trimmable interface {
+	WithTrim(trim ArmourTrim) world.Item
+}
+```
+
+
+
+Trimmable represents an item, generally Armour, that can have an ArmourTrim
+applied to it in a smithing table.
+
+
+
+
+
+
+---
+
+### TropicalFish
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type TropicalFish struct {
+	defaultFood
+}
+```
+
+
+
+TropicalFish is a food item that cannot be cooked.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    defaultFood: {
+      description: '',
+      type: 'defaultFood',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AlwaysConsumable">
+```go
+func (TropicalFish) AlwaysConsumable() bool
+```
+
+AlwaysConsumable ...
+
+</Accordion>
+
+<Accordion title="Consume">
+```go
+func (TropicalFish) Consume(_ *world.Tx, c Consumer) Stack
+```
+
+Consume ...
+
+</Accordion>
+
+<Accordion title="ConsumeDuration">
+```go
+func (TropicalFish) ConsumeDuration() time.Duration
+```
+
+ConsumeDuration ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (TropicalFish) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### TurtleShell
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type TurtleShell struct{}
+```
+
+
+
+TurtleShell are items that are used for brewing or as a helmet to give the player the Water Breathing
+status effect.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="DefencePoints">
+```go
+func (TurtleShell) DefencePoints() float64
+```
+
+DefencePoints ...
+
+</Accordion>
+
+<Accordion title="DurabilityInfo">
+```go
+func (TurtleShell) DurabilityInfo() DurabilityInfo
+```
+
+DurabilityInfo ...
+
+</Accordion>
+
+<Accordion title="EnchantmentValue">
+```go
+func (TurtleShell) EnchantmentValue() int
+```
+
+EnchantmentValue ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (TurtleShell) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="Helmet">
+```go
+func (TurtleShell) Helmet() bool
+```
+
+Helmet ...
+
+</Accordion>
+
+<Accordion title="KnockBackResistance">
+```go
+func (TurtleShell) KnockBackResistance() float64
+```
+
+KnockBackResistance ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (TurtleShell) MaxCount() int
+```
+
+MaxCount always returns 1.
+
+</Accordion>
+
+<Accordion title="RepairableBy">
+```go
+func (TurtleShell) RepairableBy(i Stack) bool
+```
+
+RepairableBy ...
+
+</Accordion>
+
+<Accordion title="Toughness">
+```go
+func (TurtleShell) Toughness() float64
+```
+
+Toughness ...
+
+</Accordion>
+
+<Accordion title="Use">
+```go
+func (TurtleShell) Use(_ *world.Tx, _ User, ctx *UseContext) bool
+```
+
+Use handles the using of a turtle shell to auto-equip it in an armour slot.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Usable
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Usable interface {
+	// Use is called when the item is used in the air. The user that used the item and the world that the item
+	// was used in are passed to the method.
+	// Use returns a bool indicating if the item was used successfully.
+	Use(tx *world.Tx, user User, ctx *UseContext) bool
+}
+```
+
+
+
+Usable represents an item that may be used 'in the air'. If an item implements this interface, the Use
+method is called whenever the item is used while pointing at the air. (For example, when throwing an egg.)
+
+
+
+
+
+
+---
+
+### UsableOnBlock
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type UsableOnBlock interface {
+	// UseOnBlock is called when an item is used on a block. The world passed is the world that the item was
+	// used in. The user passed is the entity that used the item. Usually this entity is a player.
+	// The position of the block that was clicked, along with the clicked face and the position clicked
+	// relative to the corner of the block are passed.
+	// UseOnBlock returns a bool indicating if the item was used successfully.
+	UseOnBlock(pos cube.Pos, face cube.Face, clickPos mgl64.Vec3, tx *world.Tx, user User, ctx *UseContext) bool
+}
+```
+
+
+
+UsableOnBlock represents an item that may be used on a block. If an item implements this interface, the
+UseOnBlock method is called whenever the item is used on a block.
+
+
+
+
+
+
+---
+
+### UsableOnEntity
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type UsableOnEntity interface {
+	// UseOnEntity is called when an item is used on an entity. The world passed is the world that the item is
+	// used in, and the entity clicked and the user of the item are also passed.
+	// UseOnEntity returns a bool indicating if the item was used successfully.
+	UseOnEntity(e world.Entity, tx *world.Tx, user User, ctx *UseContext) bool
+}
+```
+
+
+
+UsableOnEntity represents an item that may be used on an entity. If an item implements this interface, the
+UseOnEntity method is called whenever the item is used on an entity.
+
+
+
+
+
+
+---
+
+### UseContext
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type UseContext struct {
+	// Damage is the amount of damage that should be dealt to the item as a result of using it.
+	Damage	int
+	// CountSub is how much of the count should be subtracted after using the item.
+	CountSub	int
+	// IgnoreBBox specifies if placing the item should ignore the BBox of the player placing this. This is the case for
+	// items such as cocoa beans.
+	IgnoreBBox	bool
+	// NewItem is the item that is added after the item is used. If the player no longer has an item in the
+	// hand, it'll be added there.
+	NewItem	Stack
+	// ConsumedItems contains a list of items that were consumed in the process of using the item.
+	ConsumedItems	[]Stack
+	// NewItemSurvivalOnly will add any new items only in survival mode.
+	NewItemSurvivalOnly	bool
+
+	// FirstFunc returns the first item in the context holder's inventory if found. The second return value describes
+	// whether the item was found. The comparable function is used to compare the item to the given item.
+	FirstFunc	func(comparable func(Stack) bool) (Stack, bool)
+
+	// SwapHeldWithArmour holds a function that swaps the item currently held by a User with armour slot i.
+	SwapHeldWithArmour	func(i int)
+}
+```
+
+
+
+UseContext is passed to every item Use methods. It may be used to subtract items or to deal damage to them
+after the action is complete.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Damage: {
+      description: 'Damage is the amount of damage that should be dealt to the item as a result of using it.',
+      type: 'int',
+    },
+    CountSub: {
+      description: 'CountSub is how much of the count should be subtracted after using the item.',
+      type: 'int',
+    },
+    IgnoreBBox: {
+      description: 'IgnoreBBox specifies if placing the item should ignore the BBox of the player placing this. This is the case for items such as cocoa beans.',
+      type: 'bool',
+    },
+    NewItem: {
+      description: 'NewItem is the item that is added after the item is used. If the player no longer has an item in the hand, it\'ll be added there.',
+      type: 'Stack',
+      typeLink: '../item.mdx#stack',
+    },
+    ConsumedItems: {
+      description: 'ConsumedItems contains a list of items that were consumed in the process of using the item.',
+      type: '[]Stack',
+      typeLink: '../item.mdx#stack',
+    },
+    NewItemSurvivalOnly: {
+      description: 'NewItemSurvivalOnly will add any new items only in survival mode.',
+      type: 'bool',
+    },
+    FirstFunc: {
+      description: 'FirstFunc returns the first item in the context holder\'s inventory if found. The second return value describes whether the item was found. The comparable function is used to compare the item to the given item.',
+      type: 'func(comparable func(Stack) bool) (Stack, bool)',
+    },
+    SwapHeldWithArmour: {
+      description: 'SwapHeldWithArmour holds a function that swaps the item currently held by a User with armour slot i.',
+      type: 'func(i int)',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Consume">
+```go
+func (*UseContext) Consume(s Stack)
+```
+
+Consume consumes the provided item when the context is handled.
+
+</Accordion>
+
+<Accordion title="DamageItem">
+```go
+func (*UseContext) DamageItem(d int)
+```
+
+DamageItem damages the item used by d points.
+
+</Accordion>
+
+<Accordion title="SubtractFromCount">
+```go
+func (*UseContext) SubtractFromCount(d int)
+```
+
+SubtractFromCount subtracts d from the count of the item stack used.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### User
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type User interface {
+	Carrier
+	SetHeldItems(mainHand, offHand Stack)
+
+	UsingItem() bool
+	ReleaseItem()
+	UseItem()
+}
+```
+
+
+
+User represents an entity that is able to use an item in the world, typically entities such as players,
+which interact with the world using an item.
+
+
+
+
+
+
+---
+
+### WarpedFungusOnAStick
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type WarpedFungusOnAStick struct{}
+```
+
+
+
+WarpedFungusOnAStick is an item that can be used to control saddled striders.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="EncodeItem">
+```go
+func (WarpedFungusOnAStick) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (WarpedFungusOnAStick) MaxCount() int
+```
+
+MaxCount ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Weapon
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Weapon interface {
+	// AttackDamage returns the custom attack damage to the weapon. The damage returned must not be negative.
+	AttackDamage() float64
+}
+```
+
+
+
+Weapon is an item that may be used as a weapon. It has an attack damage which may be different to the 2
+damage that attacking with an empty hand deals.
+
+
+
+
+
+
+---
+
+### Wheat
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Wheat struct{}
+```
+
+
+
+Wheat is a crop used to craft bread, cake, & cookies.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="CompostChance">
+```go
+func (Wheat) CompostChance() float64
+```
+
+CompostChance ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (Wheat) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### WrittenBook
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type WrittenBook struct {
+	// Title is the title of the book.
+	Title	string
+	// Author is the author of the book.
+	Author	string
+	// Generation is the copy tier of the book. 0 = original, 1 = copy of original,
+	// 2 = copy of copy.
+	Generation	WrittenBookGeneration
+	// Pages represents the pages within the book.
+	Pages	[]string
+}
+```
+
+
+
+WrittenBook is the item created after a book and quill is signed. It appears the same as a regular book, but
+without the quill, and has an enchanted-looking glint.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Title: {
+      description: 'Title is the title of the book.',
+      type: 'string',
+    },
+    Author: {
+      description: 'Author is the author of the book.',
+      type: 'string',
+    },
+    Generation: {
+      description: 'Generation is the copy tier of the book. 0 = original, 1 = copy of original, 2 = copy of copy.',
+      type: 'WrittenBookGeneration',
+      typeLink: '../item.mdx#writtenbookgeneration',
+    },
+    Pages: {
+      description: 'Pages represents the pages within the book.',
+      type: '[]string',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="DecodeNBT">
+```go
+func (WrittenBook) DecodeNBT(data map[string]any) any
+```
+
+DecodeNBT ...
+
+</Accordion>
+
+<Accordion title="EncodeItem">
+```go
+func (WrittenBook) EncodeItem() (name string, meta int16)
+```
+
+EncodeItem ...
+
+</Accordion>
+
+<Accordion title="EncodeNBT">
+```go
+func (WrittenBook) EncodeNBT() map[string]any
+```
+
+EncodeNBT ...
+
+</Accordion>
+
+<Accordion title="MaxCount">
+```go
+func (WrittenBook) MaxCount() int
+```
+
+MaxCount always returns 16.
+
+</Accordion>
+
+<Accordion title="Page">
+```go
+func (WrittenBook) Page(page int) (string, bool)
+```
+
+Page returns a specific page from the book and true when the page exists. It will otherwise return an empty string
+and false.
+
+</Accordion>
+
+<Accordion title="TotalPages">
+```go
+func (WrittenBook) TotalPages() int
+```
+
+TotalPages returns the total number of pages in the book.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### WrittenBookGeneration
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type WrittenBookGeneration struct {
+	generation
+}
+```
+
+
+
+WrittenBookGeneration represents a WrittenBook generation.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    generation: {
+      description: '',
+      type: 'generation',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="String">
+```go
+func (WrittenBookGeneration) String() string
+```
+
+String ...
+
+</Accordion>
+
+<Accordion title="Uint8">
+```go
+func (WrittenBookGeneration) Uint8() uint8
+```
+
+Uint8 returns the generation as a uint8.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

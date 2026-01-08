@@ -1,0 +1,423 @@
+---
+title: "skin"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# skin
+
+
+```go
+import "github.com/df-mc/dragonfly/server/player/skin"
+```
+
+
+
+
+
+
+
+
+
+
+
+## Types
+
+
+### Animation
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Animation struct {
+	w, h	int
+	aType	AnimationType
+
+	// Pix holds skin data for every frame of the animation. This is an RGBA byte slice, meaning that every
+	// first byte is a Red value, the second a Green value, the third a Blue value and the fourth an Alpha
+	// value.
+	Pix	[]uint8
+
+	// FrameCount is the amount of frames that the animation plays for. Exactly this amount of frames should
+	// be present in the Pix animation data.
+	FrameCount	int
+
+	// AnimationExpression is the player's animation expression.
+	AnimationExpression	int
+}
+```
+
+
+
+Animation represents an animation that plays over the skin every so often. It is assigned to a particular
+part of the skin, which is represented by one of the constants above.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Pix: {
+      description: 'Pix holds skin data for every frame of the animation. This is an RGBA byte slice, meaning that every first byte is a Red value, the second a Green value, the third a Blue value and the fourth an Alpha value.',
+      type: '[]uint8',
+    },
+    FrameCount: {
+      description: 'FrameCount is the amount of frames that the animation plays for. Exactly this amount of frames should be present in the Pix animation data.',
+      type: 'int',
+    },
+    AnimationExpression: {
+      description: 'AnimationExpression is the player\'s animation expression.',
+      type: 'int',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="At">
+```go
+func (Animation) At(x, y int) color.Color
+```
+
+At returns the colour at a given position in the animation data, provided the X and Y are within the bounds
+of the animation passed during construction.
+The concrete type returned by At is a color.RGBA value.
+
+</Accordion>
+
+<Accordion title="Bounds">
+```go
+func (Animation) Bounds() image.Rectangle
+```
+
+Bounds ...
+
+</Accordion>
+
+<Accordion title="ColorModel">
+```go
+func (Animation) ColorModel() color.Model
+```
+
+ColorModel ...
+
+</Accordion>
+
+<Accordion title="Type">
+```go
+func (Animation) Type() AnimationType
+```
+
+Type returns the type of the animation, which is one of the constants above.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### AnimationType
+
+
+
+
+```go
+type AnimationType int
+```
+
+
+
+AnimationType represents a type of the animation. It is one of the constants above, and specifies to what
+part of the body it is assigned.
+
+
+
+
+
+
+---
+
+### Cape
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Cape struct {
+	w, h	int
+
+	// Pix holds the colour data of the cape in an RGBA byte array, similarly to the way that the pixels of
+	// a Skin are stored.
+	// The size of Pix is always 32 * 64 * 4 bytes.
+	Pix	[]uint8
+}
+```
+
+
+
+Cape represents the cape that a skin may additionally have. A skin is of a fixed size (always 32x64 bytes)
+and may be either empty or of that size.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Pix: {
+      description: 'Pix holds the colour data of the cape in an RGBA byte array, similarly to the way that the pixels of a Skin are stored. The size of Pix is always 32 * 64 * 4 bytes.',
+      type: '[]uint8',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="At">
+```go
+func (Cape) At(x, y int) color.Color
+```
+
+At returns the colour at a given position in the cape, provided the X and Y are within the bounds of the
+cape passed during construction.
+The concrete type returned by At is a color.RGBA value.
+
+</Accordion>
+
+<Accordion title="Bounds">
+```go
+func (Cape) Bounds() image.Rectangle
+```
+
+Bounds returns the bounds of the cape, which is always 32x64 or 0x0, depending on if the cape has any data
+in it.
+
+</Accordion>
+
+<Accordion title="ColorModel">
+```go
+func (Cape) ColorModel() color.Model
+```
+
+ColorModel ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### ModelConfig
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type ModelConfig struct {
+	// Default is the 'default' model to use. This model is essentially the model of the skin that will be
+	// used at all times, when nothing special is being done. (For example, an animation)
+	// The field holds the name of one of the models present in the JSON of the skin's model.
+	// This field should always be filled out.
+	Default	string	`json:"default"`
+	// AnimatedFace is the model of an animation played over the face. This field should be set if the model
+	// contains the model of an animation, in which case this field should hold the name of that model.
+	AnimatedFace	string	`json:"animated_face,omitempty"`
+}
+```
+
+
+
+ModelConfig specifies the way that the model (geometry data) is used to form the complete skin. It does
+this by setting model names for specific keys found in the struct.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Default: {
+      description: 'Default is the \'default\' model to use. This model is essentially the model of the skin that will be used at all times, when nothing special is being done. (For example, an animation) The field holds the name of one of the models present in the JSON of the skin\'s model. This field should always be filled out.',
+      type: 'string',
+    },
+    AnimatedFace: {
+      description: 'AnimatedFace is the model of an animation played over the face. This field should be set if the model contains the model of an animation, in which case this field should hold the name of that model.',
+      type: 'string',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Encode">
+```go
+func (ModelConfig) Encode() []byte
+```
+
+Encode encodes a ModelConfig into its JSON representation.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Skin
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Skin struct {
+	w, h	int
+	// Persona specifies if the skin uses the persona skin system.
+	Persona		bool
+	PlayFabID	string
+	FullID		string
+
+	// Pix holds the raw pixel data of the skin. This is an RGBA byte slice, meaning that every first byte is
+	// a Red value, the second a Green value, the third a Blue value and the fourth an Alpha value.
+	Pix	[]uint8
+
+	// ModelConfig specifies how the Model field below should be used to form the total skin.
+	ModelConfig	ModelConfig
+	// Model holds the raw JSON data that represents the model of the skin. If empty, it means the skin holds
+	// the standard skin data (geometry.humanoid).
+	// TODO: Write a full API for this. The model should be able to be easily modified or created runtime.
+	Model	[]byte
+
+	// Cape holds the cape of the skin. By default, an empty cape is set in the skin. Cape.Exists() may be
+	// called to check if the cape actually has any data.
+	Cape	Cape
+
+	// Animations holds a list of all animations that the skin has. These animations must be pointed to in the
+	// ModelConfig, in order to display them on the skin.
+	Animations	[]Animation
+}
+```
+
+
+
+Skin holds the data of a skin that a player has equipped. It includes geometry data, the texture and the
+cape, if one is present.
+Skin implements the image.Image interface to ease working with the value as an image.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Persona: {
+      description: 'Persona specifies if the skin uses the persona skin system.',
+      type: 'bool',
+    },
+    PlayFabID: {
+      description: '',
+      type: 'string',
+    },
+    FullID: {
+      description: '',
+      type: 'string',
+    },
+    Pix: {
+      description: 'Pix holds the raw pixel data of the skin. This is an RGBA byte slice, meaning that every first byte is a Red value, the second a Green value, the third a Blue value and the fourth an Alpha value.',
+      type: '[]uint8',
+    },
+    ModelConfig: {
+      description: 'ModelConfig specifies how the Model field below should be used to form the total skin.',
+      type: 'ModelConfig',
+      typeLink: '../player-skin.mdx#modelconfig',
+    },
+    Model: {
+      description: 'Model holds the raw JSON data that represents the model of the skin. If empty, it means the skin holds the standard skin data (geometry.humanoid). TODO: Write a full API for this. The model should be able to be easily modified or created runtime.',
+      type: '[]byte',
+    },
+    Cape: {
+      description: 'Cape holds the cape of the skin. By default, an empty cape is set in the skin. Cape.Exists() may be called to check if the cape actually has any data.',
+      type: 'Cape',
+      typeLink: '../player-skin.mdx#cape',
+    },
+    Animations: {
+      description: 'Animations holds a list of all animations that the skin has. These animations must be pointed to in the ModelConfig, in order to display them on the skin.',
+      type: '[]Animation',
+      typeLink: '../player-skin.mdx#animation',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="At">
+```go
+func (Skin) At(x, y int) color.Color
+```
+
+At returns the colour at a given position in the skin. The concrete value of the colour returned is a color.RGBA
+value.
+If the x or y values exceed the bounds of the skin, At will panic.
+
+</Accordion>
+
+<Accordion title="Bounds">
+```go
+func (Skin) Bounds() image.Rectangle
+```
+
+Bounds returns the bounds of the skin. These are either 64x32, 64x64 or 128, depending on the bounds of the
+skin of the player.
+
+</Accordion>
+
+<Accordion title="ColorModel">
+```go
+func (Skin) ColorModel() color.Model
+```
+
+ColorModel returns color.RGBAModel.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

@@ -1,0 +1,77 @@
+---
+title: "generator"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# generator
+
+
+```go
+import "github.com/df-mc/dragonfly/server/world/generator"
+```
+
+
+
+
+
+
+
+
+
+
+
+## Types
+
+
+### Flat
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Flat struct {
+	// biome is the encoded biome that the generator should use.
+	biome	uint32
+	// layers is a list of block runtime ID layers placed by the Flat generator. The layers are ordered in a way where
+	// the last element in the slice is placed as the bottom-most block of the chunk.
+	layers	[]uint32
+	// n is the amount of layers in the slice above.
+	n	int16
+}
+```
+
+
+
+Flat is the flat generator of World. It generates flat worlds (like those in vanilla) with no other
+decoration. It may be constructed by calling NewFlat.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="GenerateChunk">
+```go
+func (Flat) GenerateChunk(_ world.ChunkPos, chunk *chunk.Chunk)
+```
+
+GenerateChunk ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

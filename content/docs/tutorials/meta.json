@@ -1,0 +1,8 @@
+{
+    "title": "Tutorials",
+    "icon": "BookOpen",
+    "pages": [
+        "database",
+        "forms"
+    ]
+}

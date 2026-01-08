@@ -1,0 +1,199 @@
+---
+title: Form Types
+description: Creating Custom, Menu, and Modal forms in Dragonfly.
+---
+
+# Form Types
+
+Dragonfly provides three form types, each suited for different interaction patterns.
+
+import { Steps, Step } from 'fumadocs-ui/components/steps'
+
+## Custom Form
+
+Custom forms display multiple input elements and are ideal for collecting structured data from players.
+
+<Steps>
+
+<Step>
+### Define the Form Struct
+
+Define a struct where each exported field is a form element (Input, Slider, Toggle, etc.).
+
+```go title="registration_form.go"
+import "github.com/df-mc/dragonfly/server/player/form"
+
+type RegistrationForm struct {
+    Username   form.Input
+    Age        form.Slider
+    Class      form.Dropdown
+    Newsletter form.Toggle
+}
+```
+</Step>
+
+<Step>
+### Implement Submit
+
+Implement the `Submit` method to handle the data when the user clicks Submit.
+
+```go title="registration_submit.go"
+func (f *RegistrationForm) Submit(submitter form.Submitter, tx *world.Tx) {
+    username := f.Username.Value()
+    age := f.Age.Value()
+    classIndex := f.Class.Value() // Returns the selected index
+    wantsNewsletter := f.Newsletter.Value()
+
+    // Process the registration...
+}
+```
+</Step>
+
+<Step>
+### Send the Form
+
+Create a new instance of the form and send it to the player.
+
+```go title="show_registration.go"
+func showRegistration(p *player.Player) {
+    f := form.New(&RegistrationForm{
+        Username:   form.NewInput("Username", "", "Enter username"),
+        Age:        form.NewSlider("Your Age", 13, 100, 1, 18),
+        Class:      form.NewDropdown("Select Class", []string{"Warrior", "Mage", "Archer"}, 0),
+        Newsletter: form.NewToggle("Receive updates?", false),
+    }, "Create Account")
+
+    p.SendForm(f)
+}
+```
+</Step>
+
+</Steps>
+
+## Menu Form
+
+Menu forms display a list of buttons, perfect for navigation menus and shops.
+
+<Steps>
+
+<Step>
+### Define Menu Struct
+
+Each field in the struct represents a button.
+
+```go title="main_menu.go"
+type MainMenu struct {
+    Play     form.Button
+    Shop     form.Button
+    Settings form.Button
+    Quit     form.Button
+}
+```
+</Step>
+
+<Step>
+### Implement Logic
+
+Check which button was `pressed`.
+
+```go title="menu_submit.go"
+func (m *MainMenu) Submit(submitter form.Submitter, pressed form.Button, tx *world.Tx) {
+    switch pressed {
+    case m.Play:
+        // Start game
+    case m.Shop:
+        // Open shop
+    case m.Settings:
+        // Open settings
+    case m.Quit:
+        // Handle quit
+    }
+}
+```
+</Step>
+
+<Step>
+### Send Menu
+
+You can optionally add body text or an image to each button.
+
+```go title="show_menu.go"
+func showMainMenu(p *player.Player) {
+    menu := form.NewMenu(&MainMenu{
+        Play:     form.NewButton("Play Game", "textures/ui/play_button"),
+        Shop:     form.NewButton("Shop", "textures/ui/icon_store"),
+        Settings: form.NewButton("Settings", "textures/ui/settings_glyph_color"),
+        Quit:     form.NewButton("Quit", ""),
+    }, "Main Menu").WithBody("Welcome to the server!\nSelect an option below.")
+
+    p.SendForm(menu)
+}
+```
+</Step>
+
+</Steps>
+
+## Modal Form
+
+Modal forms are simple two-button dialogs (Yes/No).
+
+<Steps>
+<Step>
+### Define Modal Struct
+
+Must have exactly two `Button` fields.
+
+```go title="confirm_delete.go"
+type ConfirmDelete struct {
+    Confirm form.Button
+    Cancel  form.Button
+}
+```
+</Step>
+<Step>
+### Implement Logic
+
+```go title="modal_submit.go"
+func (m *ConfirmDelete) Submit(submitter form.Submitter, pressed form.Button, tx *world.Tx) {
+    if pressed == m.Confirm {
+        // Delete the item
+    }
+}
+```
+</Step>
+<Step>
+### Send Modal
+
+```go title="show_modal.go"
+func confirmDeletion(p *player.Player, itemName string) {
+    modal := form.NewModal(&ConfirmDelete{
+        Confirm: form.NewButton("Yes, delete it", ""),
+        Cancel:  form.NewButton("No, keep it", ""),
+    }, "Delete Item?").WithBody(fmt.Sprintf("Are you sure you want to delete '%s'?", itemName))
+
+    p.SendForm(modal)
+}
+```
+</Step>
+</Steps>
+
+## Handling Form Closure
+
+If a player closes a form without submitting (pressing X or escape), implement the `Closer` interface:
+
+```go title="form_closure.go"
+type MyForm struct {
+    // fields...
+}
+
+func (f *MyForm) Submit(submitter form.Submitter, tx *world.Tx) {
+    // Handle submission
+}
+
+func (f *MyForm) Close(submitter form.Submitter, tx *world.Tx) {
+    // Handle closure without submission
+    if p, ok := submitter.(*player.Player); ok {
+        p.Message("Form cancelled.")
+    }
+}
+```

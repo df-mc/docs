@@ -1,0 +1,276 @@
+---
+title: Patterns
+description: Advanced form patterns and techniques in Dragonfly.
+---
+
+# Form Patterns
+
+This guide covers advanced patterns for building complex form interactions.
+
+## Chained Forms
+
+Display a sequence of forms where each submission leads to the next:
+
+```go title="chained_step_one.go"
+type StepOne struct {
+    Name form.Input
+}
+
+func (f *StepOne) Submit(submitter form.Submitter, tx *world.Tx) {
+    name := f.Name.Value()
+
+    // Send the next form with captured data
+    stepTwo := form.New(&StepTwo{
+        name:  name, // Pass data via unexported field
+        Email: form.NewInput("Email", "", ""),
+    }, "Step 2 of 3")
+
+    submitter.SendForm(stepTwo)
+}
+
+type StepTwo struct {
+    name  string // Unexported fields are ignored by the form system
+    Email form.Input
+}
+
+func (f *StepTwo) Submit(submitter form.Submitter, tx *world.Tx) {
+    // Access both name and email
+    registerUser(f.name, f.Email.Value())
+}
+```
+
+## State via Closures
+
+Capture external state by embedding it in your form struct:
+
+```go title="state_closure.go"
+type TeleportConfirm struct {
+    target *player.Player // Reference to teleport target
+    Yes    form.Button
+    No     form.Button
+}
+
+func (f *TeleportConfirm) Submit(submitter form.Submitter, pressed form.Button, tx *world.Tx) {
+    if pressed == f.Yes {
+        if p, ok := submitter.(*player.Player); ok {
+            p.Teleport(f.target.Position())
+        }
+    }
+}
+
+func askTeleport(p *player.Player, target *player.Player) {
+    modal := form.NewModal(&TeleportConfirm{
+        target: target,
+        Yes:    form.YesButton(),
+        No:     form.NoButton(),
+    }, "Teleport").WithBody(fmt.Sprintf("Teleport to %s?", target.Name()))
+
+    p.SendForm(modal)
+}
+```
+
+## Dynamic Menu Generation
+
+Build menus with runtime-determined content:
+
+```go title="dynamic_menu.go"
+type PlayerSelectMenu struct {
+    players []*player.Player // Store reference for lookup
+}
+
+func (m *PlayerSelectMenu) Submit(submitter form.Submitter, pressed form.Button, tx *world.Tx) {
+    // Find which player was selected by button text
+    for _, p := range m.players {
+        if pressed.Text == p.Name() {
+            // Handle selection
+            return
+        }
+    }
+}
+
+func showPlayerList(p *player.Player, players []*player.Player) {
+    menu := &PlayerSelectMenu{players: players}
+
+    m := form.NewMenu(menu, "Select Player").
+        WithBody("Choose a player to interact with:")
+
+    for _, target := range players {
+        m = m.WithButtons(form.NewButton(target.Name(), "textures/ui/icon_steve"))
+    }
+
+    p.SendForm(m)
+}
+```
+
+## Handling All Button Types
+
+When mixing struct buttons with dynamic buttons:
+
+```go title="handling_buttons.go"
+type ShopMenu struct {
+    items  []ShopItem
+    Back   form.Button
+}
+
+func (m *ShopMenu) Submit(submitter form.Submitter, pressed form.Button, tx *world.Tx) {
+    // Check struct buttons first
+    if pressed == m.Back {
+        // Return to main menu
+        return
+    }
+
+    // Check dynamic buttons
+    for _, item := range m.items {
+        if pressed.Text == item.Name {
+            // Purchase item
+            return
+        }
+    }
+}
+
+func showShop(p *player.Player, items []ShopItem) {
+    menu := &ShopMenu{items: items, Back: form.NewButton("Back", "")}
+
+    m := form.NewMenu(menu, "Shop")
+
+    // Add item buttons
+    for _, item := range items {
+        m = m.WithButtons(form.NewButton(
+            fmt.Sprintf("%s\n$%d", item.Name, item.Price),
+            item.Icon,
+        ))
+    }
+
+    // Add back button last
+    m = m.AddDivider(form.Divider{}).
+        WithButtons(menu.Back)
+
+    p.SendForm(m)
+}
+```
+
+## Form with World Transaction
+
+The `tx *world.Tx` parameter gives you safe access to world operations:
+
+```go title="form_transaction.go"
+type BlockPlaceForm struct {
+    pos   mgl64.Vec3
+    X     form.Slider
+    Y     form.Slider
+    Z     form.Slider
+}
+
+func (f *BlockPlaceForm) Submit(submitter form.Submitter, tx *world.Tx) {
+    pos := cube.PosFromVec3(mgl64.Vec3{
+        f.X.Value(),
+        f.Y.Value(),
+        f.Z.Value(),
+    })
+
+    // Safe world modification within the transaction
+    tx.SetBlock(pos, block.Stone{}, nil)
+}
+```
+
+## Reusable Form Components
+
+Create factory functions for common form patterns:
+
+```go title="reusable_components.go"
+// Factory for confirmation dialogs
+func NewConfirmation(title, body string, onConfirm func(form.Submitter, *world.Tx)) form.Modal {
+    return form.NewModal(&confirmHandler{onConfirm: onConfirm}, title).
+        WithBody(body)
+}
+
+type confirmHandler struct {
+    onConfirm func(form.Submitter, *world.Tx)
+    Yes       form.Button
+    No        form.Button
+}
+
+func (h *confirmHandler) Submit(submitter form.Submitter, pressed form.Button, tx *world.Tx) {
+    if pressed == h.Yes && h.onConfirm != nil {
+        h.onConfirm(submitter, tx)
+    }
+}
+
+// Usage
+func deleteItem(p *player.Player, item string) {
+    confirm := NewConfirmation(
+        "Delete?",
+        fmt.Sprintf("Delete %s?", item),
+        func(s form.Submitter, tx *world.Tx) {
+            // Perform deletion
+        },
+    )
+    p.SendForm(confirm)
+}
+```
+
+## Timeout and Expiration
+
+Handle forms that should expire after a period:
+
+```go title="timeout_form.go"
+type TimedOffer struct {
+    expiry  time.Time
+    Accept  form.Button
+    Decline form.Button
+}
+
+func (f *TimedOffer) Submit(submitter form.Submitter, pressed form.Button, tx *world.Tx) {
+    if time.Now().After(f.expiry) {
+        if p, ok := submitter.(*player.Player); ok {
+            p.Message("This offer has expired!")
+        }
+        return
+    }
+
+    if pressed == f.Accept {
+        // Process the offer
+    }
+}
+
+func (f *TimedOffer) Close(submitter form.Submitter, tx *world.Tx) {
+    // Offer declined by closing
+}
+```
+
+## Form Validation Pattern
+
+Validate input and re-show form on failure:
+
+```go title="validation_pattern.go"
+type RegistrationForm struct {
+    Username form.Input
+    errors   []string
+}
+
+func (f *RegistrationForm) Submit(submitter form.Submitter, tx *world.Tx) {
+    username := f.Username.Value()
+
+    // Validate
+    if len(username) < 3 {
+        f.showWithError(submitter, "Username must be at least 3 characters")
+        return
+    }
+
+    if len(username) > 16 {
+        f.showWithError(submitter, "Username must be 16 characters or less")
+        return
+    }
+
+    // Valid - proceed
+    registerPlayer(submitter, username)
+}
+
+func (f *RegistrationForm) showWithError(submitter form.Submitter, err string) {
+    newForm := form.New(&RegistrationForm{
+        Username: form.NewInput("Username", f.Username.Value(), ""),
+    }, fmt.Sprintf("Registration\n\u00a7c%s", err))
+
+    submitter.SendForm(newForm)
+}
+```

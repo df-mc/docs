@@ -1,0 +1,298 @@
+---
+title: Chat & Messaging
+icon: MessageCircle
+---
+
+Sending messages to players is straightforward in Dragonfly, but chat handling and formatting work differently than in PM/Nukkit.
+
+## Sending Messages to Players
+
+In PocketMine-MP:
+
+```php title="pm_message.php"
+$player->sendMessage("§aHello, world!");
+```
+
+In Dragonfly:
+
+```go title="df_message.go"
+p.Message("Hello, world!")
+```
+
+Pretty much the same.
+
+## Formatting Messages
+
+Dragonfly's `text` package provides a powerful way to format messages using standard `fmt.Sprintf`-style formatting, but with support for colour tags.
+
+```go title="formatting.go"
+import "github.com/df-mc/dragonfly/server/player/chat"
+import "github.com/df-mc/dragonfly/server/text"
+
+// Basic coloured message
+p.Message(text.Colourf("<green>Hello, %s!</green>", p.Name()))
+
+// Using RGB hex codes
+p.Message(text.Colourf("<#ff0000>Critical Error: <grey>%v</grey></#ff0000>", err))
+
+// Bold, italic, etc.
+p.Message(text.Colourf("<bold><gold>WINNER:</gold></bold> %s", p.Name()))
+```
+
+Available tags include:
+- Standard colours: `<black>`, `<red>`, `<green>`, `<yellow>`, `<blue>`, `<magenta>`, `<cyan>`, `<white>`, etc.
+- Formatting: `<bold>`, `<italic>`, `<underline>`, `<strikethrough>`, `<obfuscated>`
+- Reset: `<reset>`
+- RGB: `<#RRGGBB>`
+
+## Broadcasting Messages
+
+In PM/Nukkit, you use `Server::broadcastMessage()`. In Dragonfly, use `chat.Global`:
+
+```go title="df_broadcast.go"
+import (
+    "github.com/df-mc/dragonfly/server/player/chat"
+    "github.com/df-mc/dragonfly/server/text"
+)
+
+chat.Global.WriteString(text.Colourf("<yellow>Server restarting in 5 minutes!</yellow>"))
+```
+
+This sends the message to all players.
+
+## Chat Subscribers
+
+Dragonfly uses a subscriber model for chat. Players are automatically subscribed to `chat.Global`, but you can create custom chat channels:
+
+```go title="chat_subscribers.go"
+import (
+    "github.com/df-mc/dragonfly/server/player/chat"
+    "github.com/df-mc/dragonfly/server/text"
+)
+
+// Create a custom channel
+arenaChat := chat.New()
+
+// Subscribe players
+arenaChat.Subscribe(player1)
+arenaChat.Subscribe(player2)
+
+// Send a message
+arenaChat.WriteString(text.Colourf("<green>The game has started!</green>"))
+
+// Unsubscribe
+arenaChat.Unsubscribe(player1)
+```
+
+This is useful for team chat, arena-specific messages, etc.
+
+## Handling Player Chat
+
+In PM/Nukkit, you'd listen for `PlayerChatEvent`. In Dragonfly, you use player handlers:
+
+```go title="df_chat_handler.go"
+type GameHandler struct {
+    player *player.Player
+}
+
+func (h *GameHandler) HandleChat(ctx *event.Context, message *string) {
+    if strings.HasPrefix(*message, "!admin") {
+        ctx.Cancel()  // Prevent the message from being sent
+        // Handle admin chat
+        h.sendAdminChat(strings.TrimPrefix(*message, "!admin "))
+        return
+    }
+
+    // Modify the message
+    *message = text.Colourf("<grey>[VIP]</grey> <white>%s</white>", *message)
+}
+
+func (h *GameHandler) sendAdminChat(msg string) {
+    // Send to all admins
+    for _, p := range h.player.World().Players() {
+        if hasPermission(p, "admin") {
+            p.Message(text.Colourf("<red>[ADMIN]</red> <white>%s: %s</white>", h.player.Name(), msg))
+        }
+    }
+}
+```
+
+You can modify the message by changing the `*message` pointer, or cancel it entirely with `ctx.Cancel()`.
+
+## Custom Chat Formats
+
+In PM/Nukkit, you'd change the chat format in the event handler. In Dragonfly, you modify the message in `HandleChat`:
+
+```go title="df_chat_format.go"
+func (h *GameHandler) HandleChat(ctx *event.Context, message *string) {
+    level := getPlayerLevel(h.player)
+    *message = text.Colourf("<grey>[Level %d]</grey> <white>%s: %s</white>", level, h.player.Name(), *message)
+}
+```
+
+Note that this replaces the entire message, so you need to include the player's name yourself.
+
+## Action Bar
+
+The action bar is the text above the hotbar.
+
+```go title="df_action_bar.go"
+p.SendActionBar(text.Colourf("<yellow>Coins: %d</yellow>", 100))
+```
+
+### Persistent Action Bar
+
+If you want to show an action bar that updates in real-time (e.g., a timer), use a goroutine:
+
+```go title="persistent_action_bar.go"
+go func() {
+    ticker := time.NewTicker(time.Second)
+    defer ticker.Stop()
+
+    countdown := 60
+    for range ticker.C {
+        if countdown <= 0 {
+            return
+        }
+
+        p.SendActionBar(text.Colourf("<yellow>Time left: <red>%d</red></yellow>", countdown))
+        countdown--
+    }
+}()
+```
+
+## Titles
+
+```go title="df_title.go"
+p.SendTitle(text.Colourf("<bold><gold>VICTORY!</gold></bold>"))
+p.SendSubtitle(text.Colourf("<grey>You won the game</grey>"))
+```
+
+Dragonfly doesn't have a single method for fade in/stay/fade out. You can control timing manually if needed:
+
+```go title="title_timing.go"
+p.SendTitle(text.Colourf("<bold><gold>VICTORY!</gold></bold>"))
+time.Sleep(3 * time.Second)
+p.SendTitle("") // Clear title
+```
+
+## Sound Effects
+
+In PM/Nukkit, you send sounds like this:
+
+```php title="pm_sound.php"
+$player->getWorld()->addSound($player->getPosition(), new ExperienceOrbPickupSound());
+```
+
+In Dragonfly:
+
+```go title="df_sound.go"
+import "github.com/df-mc/dragonfly/server/world/sound"
+
+pos := p.Position()
+w := p.World()
+
+w.PlaySound(pos, sound.LevelUp{})
+```
+
+Common sounds:
+- `sound.LevelUp{}`
+- `sound.Click{}`
+- `sound.Explode{}`
+- `sound.Thunder{}`
+- `sound.ChestOpen{}`
+- `sound.ChestClose{}`
+
+Check the `github.com/df-mc/dragonfly/server/world/sound` package for more.
+
+## Particles
+
+```go title="df_particle.go"
+import "github.com/df-mc/dragonfly/server/world/particle"
+
+pos := p.Position()
+w := p.World()
+
+w.AddParticle(pos, particle.HugeExplode{})
+```
+
+Common particles:
+- `particle.HugeExplode{}`
+- `particle.Flame{}`
+- `particle.Heart{}`
+- `particle.CriticalHit{}`
+- `particle.Splash{}`
+
+## Practical Example: Chat Channels
+
+```go title="chat_channels.go"
+type ChatChannel struct {
+    name        string
+    subscribers *chat.Chat
+}
+
+var channels = map[string]*ChatChannel{
+    "global": {
+        name:        "Global",
+        subscribers: chat.Global,
+    },
+    "staff": {
+        name:        "Staff",
+        subscribers: chat.New(),
+    },
+}
+
+type GameHandler struct {
+    player  *player.Player
+    channel string
+}
+
+func (h *GameHandler) HandleChat(ctx *event.Context, message *string) {
+    ch := channels[h.channel]
+    if ch == nil {
+        return
+    }
+
+    ctx.Cancel()  // We're handling this ourselves
+
+    formatted := text.Colourf("<grey>[%s]</grey> <white>%s: %s</white>", ch.name, h.player.Name(), *message)
+    ch.subscribers.WriteString(formatted)
+}
+
+func (h *GameHandler) SwitchChannel(name string) {
+    if _, ok := channels[name]; !ok {
+        h.player.Message(text.Colourf("<red>Channel not found</red>"))
+        return
+    }
+
+    // Unsubscribe from old channel
+    if old := channels[h.channel]; old != nil {
+        old.subscribers.Unsubscribe(h.player)
+    }
+
+    // Subscribe to new channel
+    h.channel = name
+    channels[name].subscribers.Subscribe(h.player)
+
+    h.player.Message(text.Colourf("<green>Switched to %s chat</green>", name))
+}
+```
+
+Usage:
+
+```go title="channel_usage.go"
+handler.SwitchChannel("staff")
+```
+
+## Key Takeaways
+
+- `p.Message()` for direct messages. Same as PM/Nukkit.
+- Use `text.Colourf` for coloured messages with tags like `<red>` or `<#ff0000>`.
+- `chat.Global.WriteString()` for broadcasts.
+- Create custom `chat.Chat` instances for channels.
+- Handle chat in `HandleChat` on the player handler.
+- `p.SendActionBar()` for action bar text.
+- `p.SendTitle()` and `p.SendSubtitle()` for titles.
+- `w.PlaySound()` for sounds, `w.AddParticle()` for particles.
+
+Dragonfly's chat system is flexible and powerful. The subscriber model makes it easy to build chat channels, team chats, and other advanced features.

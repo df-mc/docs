@@ -1,0 +1,2660 @@
+---
+title: "player"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# player
+
+
+```go
+import "github.com/df-mc/dragonfly/server/player"
+```
+
+
+
+
+
+
+
+
+
+
+
+## Types
+
+
+### Config
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Config struct {
+	Session		*session.Session
+	Skin		skin.Skin
+	XUID		string
+	UUID		uuid.UUID
+	Name		string
+	Locale		language.Tag
+	GameMode	world.GameMode
+
+	Position		mgl64.Vec3
+	Rotation		cube.Rotation
+	Velocity		mgl64.Vec3
+	Health			float64
+	MaxHealth		float64
+	FoodTick		int
+	Food			int
+	Exhaustion, Saturation	float64
+	AirSupply		int
+	MaxAirSupply		int
+	EnchantmentSeed		int64
+	Experience		int
+	HeldSlot		int
+	Inventory		*inventory.Inventory
+	OffHand			*inventory.Inventory
+	Armour			*inventory.Armour
+	EnderChestInventory	*inventory.Inventory
+	FireTicks		int64
+	FallDistance		float64
+	Effects			[]effect.Effect
+}
+```
+
+
+
+Config holds options that a Player can be created with.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    Session: {
+      description: '',
+      type: '*session.Session',
+      typeLink: '../session.mdx#session',
+    },
+    Skin: {
+      description: '',
+      type: 'skin.Skin',
+      typeLink: '../player-skin.mdx#skin',
+    },
+    XUID: {
+      description: '',
+      type: 'string',
+    },
+    UUID: {
+      description: '',
+      type: 'uuid.UUID',
+    },
+    Name: {
+      description: '',
+      type: 'string',
+    },
+    Locale: {
+      description: '',
+      type: 'language.Tag',
+    },
+    GameMode: {
+      description: '',
+      type: 'world.GameMode',
+      typeLink: '../world.mdx#gamemode',
+    },
+    Position: {
+      description: '',
+      type: 'mgl64.Vec3',
+    },
+    Rotation: {
+      description: '',
+      type: 'cube.Rotation',
+      typeLink: '../block-cube.mdx#rotation',
+    },
+    Velocity: {
+      description: '',
+      type: 'mgl64.Vec3',
+    },
+    Health: {
+      description: '',
+      type: 'float64',
+    },
+    MaxHealth: {
+      description: '',
+      type: 'float64',
+    },
+    FoodTick: {
+      description: '',
+      type: 'int',
+    },
+    Food: {
+      description: '',
+      type: 'int',
+    },
+    Exhaustion: {
+      description: '',
+      type: 'float64',
+    },
+    Saturation: {
+      description: '',
+      type: 'float64',
+    },
+    AirSupply: {
+      description: '',
+      type: 'int',
+    },
+    MaxAirSupply: {
+      description: '',
+      type: 'int',
+    },
+    EnchantmentSeed: {
+      description: '',
+      type: 'int64',
+    },
+    Experience: {
+      description: '',
+      type: 'int',
+    },
+    HeldSlot: {
+      description: '',
+      type: 'int',
+    },
+    Inventory: {
+      description: '',
+      type: '*inventory.Inventory',
+      typeLink: '../item-inventory.mdx#inventory',
+    },
+    OffHand: {
+      description: '',
+      type: '*inventory.Inventory',
+      typeLink: '../item-inventory.mdx#inventory',
+    },
+    Armour: {
+      description: '',
+      type: '*inventory.Armour',
+      typeLink: '../item-inventory.mdx#armour',
+    },
+    EnderChestInventory: {
+      description: '',
+      type: '*inventory.Inventory',
+      typeLink: '../item-inventory.mdx#inventory',
+    },
+    FireTicks: {
+      description: '',
+      type: 'int64',
+    },
+    FallDistance: {
+      description: '',
+      type: 'float64',
+    },
+    Effects: {
+      description: '',
+      type: '[]effect.Effect',
+      typeLink: '../entity-effect.mdx#effect',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Apply">
+```go
+func (Config) Apply(data *world.EntityData)
+```
+
+Apply applies fields from a Config to a world.EntityData, filling out empty
+fields with reasonable defaults.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Context
+
+
+
+
+```go
+type Context = event.Context[*Player]
+```
+
+
+
+
+
+
+
+
+---
+
+### Handler
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Handler interface {
+	// HandleMove handles the movement of a player. ctx.Cancel() may be called to cancel the movement event.
+	// The new position, yaw and pitch are passed.
+	HandleMove(ctx *Context, newPos mgl64.Vec3, newRot cube.Rotation)
+	// HandleJump handles the player jumping.
+	HandleJump(p *Player)
+	// HandleTeleport handles the teleportation of a player. ctx.Cancel() may be called to cancel it.
+	HandleTeleport(ctx *Context, pos mgl64.Vec3)
+	// HandleChangeWorld handles when the player is added to a new world. before may be nil.
+	HandleChangeWorld(p *Player, before, after *world.World)
+	// HandleToggleSprint handles when the player starts or stops sprinting.
+	// After is true if the player is sprinting after toggling (changing their sprinting state).
+	HandleToggleSprint(ctx *Context, after bool)
+	// HandleToggleSneak handles when the player starts or stops sneaking.
+	// After is true if the player is sneaking after toggling (changing their sneaking state).
+	HandleToggleSneak(ctx *Context, after bool)
+	// HandleChat handles a message sent in the chat by a player. ctx.Cancel() may be called to cancel the
+	// message being sent in chat.
+	// The message may be changed by assigning to *message.
+	HandleChat(ctx *Context, message *string)
+	// HandleFoodLoss handles the food bar of a player depleting naturally, for example because the player was
+	// sprinting and jumping. ctx.Cancel() may be called to cancel the food points being lost.
+	HandleFoodLoss(ctx *Context, from int, to *int)
+	// HandleHeal handles the player being healed by a healing source. ctx.Cancel() may be called to cancel
+	// the healing.
+	// The health added may be changed by assigning to *health.
+	HandleHeal(ctx *Context, health *float64, src world.HealingSource)
+	// HandleHurt handles the player being hurt by any damage source. ctx.Cancel() may be called to cancel the
+	// damage being dealt to the player.
+	// The damage dealt to the player may be changed by assigning to *damage.
+	// *damage is the final damage dealt to the player. Immune is set to true
+	// if the player was hurt during an immunity frame with higher damage than
+	// the original cause of the immunity frame. In this case, the damage is
+	// reduced but the player is still knocked back.
+	HandleHurt(ctx *Context, damage *float64, immune bool, attackImmunity *time.Duration, src world.DamageSource)
+	// HandleDeath handles the player dying to a particular damage cause.
+	HandleDeath(p *Player, src world.DamageSource, keepInv *bool)
+	// HandleRespawn handles the respawning of the player in the world. The spawn position passed may be
+	// changed by assigning to *pos. The world.World in which the Player is respawned may be modifying by assigning to
+	// *w. This world may be the world the Player died in, but it might also point to a different world (the overworld)
+	// if the Player died in the nether or end.
+	HandleRespawn(p *Player, pos *mgl64.Vec3, w **world.World)
+	// HandleSkinChange handles the player changing their skin. ctx.Cancel() may be called to cancel the skin
+	// change.
+	HandleSkinChange(ctx *Context, skin *skin.Skin)
+	// HandleFireExtinguish handles the player extinguishing a fire at a specific position. ctx.Cancel() may
+	// be called to cancel the fire being extinguished.
+	// cube.Pos can be used to see where was the fire extinguished, may be used to cancel this on specific positions.
+	HandleFireExtinguish(ctx *Context, pos cube.Pos)
+	// HandleStartBreak handles the player starting to break a block at the position passed. ctx.Cancel() may
+	// be called to stop the player from breaking the block completely.
+	HandleStartBreak(ctx *Context, pos cube.Pos)
+	// HandleBlockBreak handles a block that is being broken by a player. ctx.Cancel() may be called to cancel
+	// the block being broken. A pointer to a slice of the block's drops is passed, and may be altered
+	// to change what items will actually be dropped.
+	HandleBlockBreak(ctx *Context, pos cube.Pos, drops *[]item.Stack, xp *int)
+	// HandleBlockPlace handles the player placing a specific block at a position in its world. ctx.Cancel()
+	// may be called to cancel the block being placed.
+	HandleBlockPlace(ctx *Context, pos cube.Pos, b world.Block)
+	// HandleBlockPick handles the player picking a specific block at a position in its world. ctx.Cancel()
+	// may be called to cancel the block being picked.
+	HandleBlockPick(ctx *Context, pos cube.Pos, b world.Block)
+	// HandleItemUse handles the player using an item in the air. It is called for each item, although most
+	// will not actually do anything. Items such as snowballs may be thrown if HandleItemUse does not cancel
+	// the context using ctx.Cancel(). It is not called if the player is holding no item.
+	HandleItemUse(ctx *Context)
+	// HandleItemUseOnBlock handles the player using the item held in its main hand on a block at the block
+	// position passed. The face of the block clicked is also passed, along with the relative click position.
+	// The click position has X, Y and Z values which are all in the range 0.0-1.0. It is also called if the
+	// player is holding no item.
+	HandleItemUseOnBlock(ctx *Context, pos cube.Pos, face cube.Face, clickPos mgl64.Vec3)
+	// HandleItemUseOnEntity handles the player using the item held in its main hand on an entity passed to
+	// the method.
+	// HandleItemUseOnEntity is always called when a player uses an item on an entity, regardless of whether
+	// the item actually does anything when used on an entity. It is also called if the player is holding no
+	// item.
+	HandleItemUseOnEntity(ctx *Context, e world.Entity)
+	// HandleItemRelease handles the player releasing an item after using it for
+	// a particular duration. These include items such as bows.
+	HandleItemRelease(ctx *Context, item item.Stack, dur time.Duration)
+	// HandleItemConsume handles the player consuming an item. This is called whenever a consumable such as
+	// food is consumed.
+	HandleItemConsume(ctx *Context, item item.Stack)
+	// HandleAttackEntity handles the player attacking an entity using the item held in its hand. ctx.Cancel()
+	// may be called to cancel the attack, which will cancel damage dealt to the target and will stop the
+	// entity from being knocked back.
+	// The entity attacked may not be alive (implements entity.Living), in which case no damage will be dealt
+	// and the target won't be knocked back.
+	// The entity attacked may also be immune when this method is called, in which case no damage and knock-
+	// back will be dealt.
+	// The knock back force and height is also provided which can be modified.
+	// The attack can be a critical attack, which would increase damage by a factor of 1.5 and
+	// spawn critical hit particles around the target entity. These particles will not be displayed
+	// if no damage is dealt.
+	HandleAttackEntity(ctx *Context, e world.Entity, force, height *float64, critical *bool)
+	// HandleExperienceGain handles the player gaining experience. ctx.Cancel() may be called to cancel
+	// the gain.
+	// The amount is also provided which can be modified.
+	HandleExperienceGain(ctx *Context, amount *int)
+	// HandlePunchAir handles the player punching air.
+	HandlePunchAir(ctx *Context)
+	// HandleSignEdit handles the player editing a sign. It is called for every keystroke while editing a sign and
+	// has both the old text passed and the text after the edit. This typically only has a change of one character.
+	HandleSignEdit(ctx *Context, pos cube.Pos, frontSide bool, oldText, newText string)
+	// HandleLecternPageTurn handles the player turning a page in a lectern. ctx.Cancel() may be called to cancel the
+	// page turn. The page number may be changed by assigning to *page.
+	HandleLecternPageTurn(ctx *Context, pos cube.Pos, oldPage int, newPage *int)
+	// HandleItemDamage handles the event wherein the item either held by the player or as armour takes
+	// damage through usage.
+	// The type of the item may be checked to determine whether it was armour or a tool used. The damage to
+	// the item is passed.
+	HandleItemDamage(ctx *Context, i item.Stack, damage *int)
+	// HandleItemPickup handles the player picking up an item from the ground. The item stack laying on the
+	// ground is passed. ctx.Cancel() may be called to prevent the player from picking up the item.
+	HandleItemPickup(ctx *Context, i *item.Stack)
+	// HandleHeldSlotChange handles the player changing the slot they are currently holding.
+	HandleHeldSlotChange(ctx *Context, from, to int)
+	// HandleItemDrop handles the player dropping an item on the ground. The dropped item entity is passed.
+	// ctx.Cancel() may be called to prevent the player from dropping the entity.Item passed on the ground.
+	// e.Item() may be called to obtain the item stack dropped.
+	HandleItemDrop(ctx *Context, s item.Stack)
+	// HandleTransfer handles a player being transferred to another server. ctx.Cancel() may be called to
+	// cancel the transfer.
+	HandleTransfer(ctx *Context, addr *net.UDPAddr)
+	// HandleCommandExecution handles the command execution of a player, who wrote a command in the chat.
+	// ctx.Cancel() may be called to cancel the command execution.
+	HandleCommandExecution(ctx *Context, command cmd.Command, args []string)
+	// HandleQuit handles the closing of a player. It is always called when the player is disconnected,
+	// regardless of the reason.
+	HandleQuit(p *Player)
+	// HandleDiagnostics handles the latest diagnostics data that the player has sent to the server. This is
+	// not sent by every client however, only those with the "Creator > Enable Client Diagnostics" setting
+	// enabled.
+	HandleDiagnostics(p *Player, d session.Diagnostics)
+}
+```
+
+
+
+Handler handles events that are called by a player. Implementations of Handler may be used to listen to
+specific events such as when a player chats or moves.
+
+
+
+
+
+
+---
+
+### NopHandler
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type NopHandler struct{}
+```
+
+
+
+NopHandler implements the Handler interface but does not execute any code when an event is called. The
+default Handler of players is set to NopHandler.
+Users may embed NopHandler to avoid having to implement each method.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="HandleAttackEntity">
+```go
+func (NopHandler) HandleAttackEntity(*Context, world.Entity, *float64, *float64, *bool)
+```
+
+</Accordion>
+
+<Accordion title="HandleBlockBreak">
+```go
+func (NopHandler) HandleBlockBreak(*Context, cube.Pos, *[]item.Stack, *int)
+```
+
+</Accordion>
+
+<Accordion title="HandleBlockPick">
+```go
+func (NopHandler) HandleBlockPick(*Context, cube.Pos, world.Block)
+```
+
+</Accordion>
+
+<Accordion title="HandleBlockPlace">
+```go
+func (NopHandler) HandleBlockPlace(*Context, cube.Pos, world.Block)
+```
+
+</Accordion>
+
+<Accordion title="HandleChangeWorld">
+```go
+func (NopHandler) HandleChangeWorld(*Player, *world.World, *world.World)
+```
+
+</Accordion>
+
+<Accordion title="HandleChat">
+```go
+func (NopHandler) HandleChat(*Context, *string)
+```
+
+</Accordion>
+
+<Accordion title="HandleCommandExecution">
+```go
+func (NopHandler) HandleCommandExecution(*Context, cmd.Command, []string)
+```
+
+</Accordion>
+
+<Accordion title="HandleDeath">
+```go
+func (NopHandler) HandleDeath(*Player, world.DamageSource, *bool)
+```
+
+</Accordion>
+
+<Accordion title="HandleDiagnostics">
+```go
+func (NopHandler) HandleDiagnostics(*Player, session.Diagnostics)
+```
+
+</Accordion>
+
+<Accordion title="HandleExperienceGain">
+```go
+func (NopHandler) HandleExperienceGain(*Context, *int)
+```
+
+</Accordion>
+
+<Accordion title="HandleFireExtinguish">
+```go
+func (NopHandler) HandleFireExtinguish(*Context, cube.Pos)
+```
+
+</Accordion>
+
+<Accordion title="HandleFoodLoss">
+```go
+func (NopHandler) HandleFoodLoss(*Context, int, *int)
+```
+
+</Accordion>
+
+<Accordion title="HandleHeal">
+```go
+func (NopHandler) HandleHeal(*Context, *float64, world.HealingSource)
+```
+
+</Accordion>
+
+<Accordion title="HandleHeldSlotChange">
+```go
+func (NopHandler) HandleHeldSlotChange(*Context, int, int)
+```
+
+</Accordion>
+
+<Accordion title="HandleHurt">
+```go
+func (NopHandler) HandleHurt(*Context, *float64, bool, *time.Duration, world.DamageSource)
+```
+
+</Accordion>
+
+<Accordion title="HandleItemConsume">
+```go
+func (NopHandler) HandleItemConsume(*Context, item.Stack)
+```
+
+</Accordion>
+
+<Accordion title="HandleItemDamage">
+```go
+func (NopHandler) HandleItemDamage(*Context, item.Stack, *int)
+```
+
+</Accordion>
+
+<Accordion title="HandleItemDrop">
+```go
+func (NopHandler) HandleItemDrop(*Context, item.Stack)
+```
+
+</Accordion>
+
+<Accordion title="HandleItemPickup">
+```go
+func (NopHandler) HandleItemPickup(*Context, *item.Stack)
+```
+
+</Accordion>
+
+<Accordion title="HandleItemRelease">
+```go
+func (NopHandler) HandleItemRelease(ctx *Context, item item.Stack, dur time.Duration)
+```
+
+</Accordion>
+
+<Accordion title="HandleItemUse">
+```go
+func (NopHandler) HandleItemUse(*Context)
+```
+
+</Accordion>
+
+<Accordion title="HandleItemUseOnBlock">
+```go
+func (NopHandler) HandleItemUseOnBlock(*Context, cube.Pos, cube.Face, mgl64.Vec3)
+```
+
+</Accordion>
+
+<Accordion title="HandleItemUseOnEntity">
+```go
+func (NopHandler) HandleItemUseOnEntity(*Context, world.Entity)
+```
+
+</Accordion>
+
+<Accordion title="HandleJump">
+```go
+func (NopHandler) HandleJump(*Player)
+```
+
+</Accordion>
+
+<Accordion title="HandleLecternPageTurn">
+```go
+func (NopHandler) HandleLecternPageTurn(*Context, cube.Pos, int, *int)
+```
+
+</Accordion>
+
+<Accordion title="HandleMove">
+```go
+func (NopHandler) HandleMove(*Context, mgl64.Vec3, cube.Rotation)
+```
+
+</Accordion>
+
+<Accordion title="HandlePunchAir">
+```go
+func (NopHandler) HandlePunchAir(*Context)
+```
+
+</Accordion>
+
+<Accordion title="HandleQuit">
+```go
+func (NopHandler) HandleQuit(*Player)
+```
+
+</Accordion>
+
+<Accordion title="HandleRespawn">
+```go
+func (NopHandler) HandleRespawn(*Player, *mgl64.Vec3, **world.World)
+```
+
+</Accordion>
+
+<Accordion title="HandleSignEdit">
+```go
+func (NopHandler) HandleSignEdit(*Context, cube.Pos, bool, string, string)
+```
+
+</Accordion>
+
+<Accordion title="HandleSkinChange">
+```go
+func (NopHandler) HandleSkinChange(*Context, *skin.Skin)
+```
+
+</Accordion>
+
+<Accordion title="HandleStartBreak">
+```go
+func (NopHandler) HandleStartBreak(*Context, cube.Pos)
+```
+
+</Accordion>
+
+<Accordion title="HandleTeleport">
+```go
+func (NopHandler) HandleTeleport(*Context, mgl64.Vec3)
+```
+
+</Accordion>
+
+<Accordion title="HandleToggleSneak">
+```go
+func (NopHandler) HandleToggleSneak(*Context, bool)
+```
+
+</Accordion>
+
+<Accordion title="HandleToggleSprint">
+```go
+func (NopHandler) HandleToggleSprint(*Context, bool)
+```
+
+</Accordion>
+
+<Accordion title="HandleTransfer">
+```go
+func (NopHandler) HandleTransfer(*Context, *net.UDPAddr)
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### NopProvider
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type NopProvider struct{}
+```
+
+
+
+NopProvider is a player data provider that won't store any data and instead always return default values
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Close">
+```go
+func (NopProvider) Close() error
+```
+
+</Accordion>
+
+<Accordion title="Load">
+```go
+func (NopProvider) Load(uuid.UUID, func(world.Dimension) *world.World) (Config, *world.World, error)
+```
+
+</Accordion>
+
+<Accordion title="Save">
+```go
+func (NopProvider) Save(uuid.UUID, Config, *world.World) error
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Player
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Player struct {
+	tx	*world.Tx
+	handle	*world.EntityHandle
+	data	*world.EntityData
+	*playerData
+}
+```
+
+
+
+Player is an implementation of a player entity. It has methods that implement the behaviour that players
+need to play in the world.
+
+
+
+#### Fields
+
+<TypeTable
+  type={{
+    "*playerData": {
+      description: '',
+      type: '*playerData',
+    },
+  }}
+/>
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="AbortBreaking">
+```go
+func (*Player) AbortBreaking()
+```
+
+AbortBreaking makes the player stop breaking the block it is currently breaking, or returns immediately
+if the player isn't breaking anything.
+Unlike FinishBreaking, AbortBreaking does not stop the animation.
+
+</Accordion>
+
+<Accordion title="Absorption">
+```go
+func (*Player) Absorption() float64
+```
+
+Absorption returns the absorption health that the player has.
+
+</Accordion>
+
+<Accordion title="AddDebugShape">
+```go
+func (*Player) AddDebugShape(shape debug.Shape)
+```
+
+AddDebugShape adds a debug shape to be rendered to the player. If the shape already exists, it will be
+updated with the new information.
+
+</Accordion>
+
+<Accordion title="AddEffect">
+```go
+func (*Player) AddEffect(e effect.Effect)
+```
+
+AddEffect adds an entity.Effect to the Player. If the effect is instant, it is applied to the Player
+immediately. If not, the effect is applied to the player every time the Tick method is called.
+AddEffect will overwrite any effects present if the level of the effect is higher than the existing one, or
+if the effects' levels are equal and the new effect has a longer duration.
+
+</Accordion>
+
+<Accordion title="AddExperience">
+```go
+func (*Player) AddExperience(amount int) int
+```
+
+AddExperience adds experience to the player.
+
+</Accordion>
+
+<Accordion title="AddFood">
+```go
+func (*Player) AddFood(points int)
+```
+
+AddFood adds a number of points to the food level of the player. If the new food level is negative or if
+it exceeds 20, it will be set to 0 or 20 respectively.
+
+</Accordion>
+
+<Accordion title="Addr">
+```go
+func (*Player) Addr() net.Addr
+```
+
+Addr returns the net.Addr of the Player. If the Player is not connected to a network session, nil is returned.
+
+</Accordion>
+
+<Accordion title="AirSupply">
+```go
+func (*Player) AirSupply() time.Duration
+```
+
+AirSupply returns the player's remaining air supply.
+
+</Accordion>
+
+<Accordion title="Armour">
+```go
+func (*Player) Armour() *inventory.Armour
+```
+
+Armour returns the armour inventory of the player. This inventory yields 4 slots, for the helmet,
+chestplate, leggings and boots respectively.
+
+</Accordion>
+
+<Accordion title="AttackEntity">
+```go
+func (*Player) AttackEntity(e world.Entity) bool
+```
+
+AttackEntity uses the item held in the main hand of the player to attack the entity passed, provided it is
+within range of the player.
+The damage dealt to the entity will depend on the item held by the player and any effects the player may
+have.
+If the player cannot reach the entity at its position, the method returns immediately.
+
+</Accordion>
+
+<Accordion title="BeaconAffected">
+```go
+func (*Player) BeaconAffected() bool
+```
+
+BeaconAffected ...
+
+</Accordion>
+
+<Accordion title="BreakBlock">
+```go
+func (*Player) BreakBlock(pos cube.Pos)
+```
+
+BreakBlock makes the player break a block in the world at a position passed. If the player is unable to
+reach the block passed, the method returns immediately.
+
+</Accordion>
+
+<Accordion title="Breathing">
+```go
+func (*Player) Breathing() bool
+```
+
+Breathing checks if the player is currently able to breathe. If it's underwater and the player does not
+have the water breathing or conduit power effect, this returns false.
+If the player is in creative or spectator mode, Breathing always returns true.
+
+</Accordion>
+
+<Accordion title="Chat">
+```go
+func (*Player) Chat(msg ...any)
+```
+
+Chat writes a message in the global chat (chat.Global). The message is prefixed with the name of the
+player and is formatted following the rules of fmt.Sprintln.
+
+</Accordion>
+
+<Accordion title="Close">
+```go
+func (*Player) Close() error
+```
+
+Close closes the player and removes it from the world.
+Close disconnects the player with a 'Connection closed.' message. Disconnect should be used to disconnect a
+player with a custom message.
+
+</Accordion>
+
+<Accordion title="CloseDialogue">
+```go
+func (*Player) CloseDialogue()
+```
+
+CloseDialogue closes the player's currently open dialogue, if any. If the dialogue's Submittable implements
+dialogue.Closer, the Close method of the Submittable is called after the client acknowledges the closing
+of the dialogue.
+
+</Accordion>
+
+<Accordion title="CloseForm">
+```go
+func (*Player) CloseForm()
+```
+
+CloseForm closes any forms that the player currently has open. If the player has no forms open, nothing
+happens.
+
+</Accordion>
+
+<Accordion title="Collect">
+```go
+func (*Player) Collect(s item.Stack) (int, bool)
+```
+
+Collect makes the player collect the item stack passed, adding it to the inventory. The amount of items that could
+be added is returned.
+
+</Accordion>
+
+<Accordion title="CollectExperience">
+```go
+func (*Player) CollectExperience(value int) bool
+```
+
+CollectExperience makes the player collect the experience points passed, adding it to the experience manager. A bool
+is returned indicating whether the player was able to collect the experience or not, due to the 100ms delay between
+experience collection or if the player was dead or in a game mode that doesn't allow collection.
+
+</Accordion>
+
+<Accordion title="ContinueBreaking">
+```go
+func (*Player) ContinueBreaking(face cube.Face)
+```
+
+ContinueBreaking makes the player continue breaking the block it started breaking after a call to
+Player.StartBreaking().
+The face passed is used to display particles on the side of the block broken.
+
+</Accordion>
+
+<Accordion title="Crawling">
+```go
+func (*Player) Crawling() bool
+```
+
+Crawling checks if the player is currently crawling.
+
+</Accordion>
+
+<Accordion title="Data">
+```go
+func (*Player) Data() Config
+```
+
+Data returns the player data that needs to be saved. This is used when the player
+gets disconnected and the player provider needs to save the data.
+
+</Accordion>
+
+<Accordion title="Dead">
+```go
+func (*Player) Dead() bool
+```
+
+Dead checks if the player is considered dead. True is returned if the health of the player is equal to or
+lower than 0.
+
+</Accordion>
+
+<Accordion title="DeathPosition">
+```go
+func (*Player) DeathPosition() (mgl64.Vec3, world.Dimension, bool)
+```
+
+DeathPosition returns the last position the player was at when they died. If the player has never died, the third
+return value will be false.
+
+</Accordion>
+
+<Accordion title="DeviceID">
+```go
+func (*Player) DeviceID() string
+```
+
+DeviceID returns the device ID of the player. If the Player is not connected to a network session, an empty string is
+returned. Otherwise, the device ID the network session sent in the ClientData is returned.
+
+</Accordion>
+
+<Accordion title="DeviceModel">
+```go
+func (*Player) DeviceModel() string
+```
+
+DeviceModel returns the device model of the player. If the Player is not connected to a network session, an empty
+string is returned. Otherwise, the device model the network session sent in the ClientData is returned.
+
+</Accordion>
+
+<Accordion title="DisableInstantRespawn">
+```go
+func (*Player) DisableInstantRespawn()
+```
+
+DisableInstantRespawn disables the vanilla instant respawn for the player.
+
+</Accordion>
+
+<Accordion title="Disconnect">
+```go
+func (*Player) Disconnect(msg ...any)
+```
+
+Disconnect closes the player and removes it from the world.
+Disconnect, unlike Close, allows a custom message to be passed to show to the player when it is
+disconnected. The message is formatted following the rules of fmt.Sprintln without a newline at the end.
+
+</Accordion>
+
+<Accordion title="Drop">
+```go
+func (*Player) Drop(s item.Stack) int
+```
+
+Drop makes the player drop the item.Stack passed as an entity.Item, so that it may be picked up from the
+ground.
+The dropped item entity has a pickup delay of 2 seconds.
+The number of items that was dropped in the end is returned. It is generally the count of the stack passed
+or 0 if dropping the item.Stack was cancelled.
+
+</Accordion>
+
+<Accordion title="EditSign">
+```go
+func (*Player) EditSign(pos cube.Pos, frontText, backText string) error
+```
+
+EditSign edits the sign at the cube.Pos passed and writes the text passed to a sign at that position. If no sign is
+present, an error is returned.
+
+</Accordion>
+
+<Accordion title="Effect">
+```go
+func (*Player) Effect(e effect.Type) (effect.Effect, bool)
+```
+
+Effect returns the effect instance and true if the Player has the effect. If not found, it will return an empty
+effect instance and false.
+
+</Accordion>
+
+<Accordion title="Effects">
+```go
+func (*Player) Effects() []effect.Effect
+```
+
+Effects returns any effect currently applied to the entity. The returned effects are guaranteed not to have
+expired when returned.
+
+</Accordion>
+
+<Accordion title="EnableInstantRespawn">
+```go
+func (*Player) EnableInstantRespawn()
+```
+
+EnableInstantRespawn enables the vanilla instant respawn for the player.
+
+</Accordion>
+
+<Accordion title="EnchantmentSeed">
+```go
+func (*Player) EnchantmentSeed() int64
+```
+
+EnchantmentSeed is a seed used to calculate random enchantments with enchantment tables.
+
+</Accordion>
+
+<Accordion title="EnderChestInventory">
+```go
+func (*Player) EnderChestInventory() *inventory.Inventory
+```
+
+EnderChestInventory returns the player's ender chest inventory. Its accessed by the player when opening
+ender chests anywhere.
+
+</Accordion>
+
+<Accordion title="ExecuteCommand">
+```go
+func (*Player) ExecuteCommand(commandLine string)
+```
+
+ExecuteCommand executes a command passed as the player. If the command could not be found, or if the usage
+was incorrect, an error message is sent to the player. This message should start with a "/" for the command to be
+recognised.
+
+</Accordion>
+
+<Accordion title="Exhaust">
+```go
+func (*Player) Exhaust(points float64)
+```
+
+Exhaust exhausts the player by the amount of points passed if the player is in survival mode. If the total
+exhaustion level exceeds 4, a saturation point, or food point, if saturation is 0, will be subtracted.
+
+</Accordion>
+
+<Accordion title="Experience">
+```go
+func (*Player) Experience() int
+```
+
+Experience returns the amount of experience the player has.
+
+</Accordion>
+
+<Accordion title="ExperienceLevel">
+```go
+func (*Player) ExperienceLevel() int
+```
+
+ExperienceLevel returns the experience level of the player.
+
+</Accordion>
+
+<Accordion title="ExperienceProgress">
+```go
+func (*Player) ExperienceProgress() float64
+```
+
+ExperienceProgress returns the experience progress of the player.
+
+</Accordion>
+
+<Accordion title="Explode">
+```go
+func (*Player) Explode(explosionPos mgl64.Vec3, impact float64, c block.ExplosionConfig)
+```
+
+Explode ...
+
+</Accordion>
+
+<Accordion title="Extinguish">
+```go
+func (*Player) Extinguish()
+```
+
+Extinguish ...
+
+</Accordion>
+
+<Accordion title="EyeHeight">
+```go
+func (*Player) EyeHeight() float64
+```
+
+EyeHeight returns the eye height of the player: 1.62, 1.26 if player is sneaking or 0.52 if the player is
+swimming, gliding or crawling.
+
+</Accordion>
+
+<Accordion title="FallDistance">
+```go
+func (*Player) FallDistance() float64
+```
+
+FallDistance returns the player's fall distance.
+
+</Accordion>
+
+<Accordion title="FinalDamageFrom">
+```go
+func (*Player) FinalDamageFrom(dmg float64, src world.DamageSource) float64
+```
+
+FinalDamageFrom resolves the final damage received by the player if it is attacked by the source passed
+with the damage passed. FinalDamageFrom takes into account things such as the armour worn and the
+enchantments on the individual pieces.
+The damage returned will be at the least 0.
+
+</Accordion>
+
+<Accordion title="FinishBreaking">
+```go
+func (*Player) FinishBreaking()
+```
+
+FinishBreaking makes the player finish breaking the block it is currently breaking, or returns immediately
+if the player isn't breaking anything.
+FinishBreaking will stop the animation and break the block.
+
+</Accordion>
+
+<Accordion title="FireProof">
+```go
+func (*Player) FireProof() bool
+```
+
+FireProof checks if the Player is currently fireproof. True is returned if the player has a fireResistance effect or
+if it is in creative mode.
+
+</Accordion>
+
+<Accordion title="FlightSpeed">
+```go
+func (*Player) FlightSpeed() float64
+```
+
+FlightSpeed returns the flight speed of the player, with the value representing the base speed. The actual
+blocks/tick speed is this value multiplied by 10. The default flight speed of a player is 0.05, which
+corresponds to 0.5 blocks/tick.
+
+</Accordion>
+
+<Accordion title="Flying">
+```go
+func (*Player) Flying() bool
+```
+
+Flying checks if the player is currently flying.
+
+</Accordion>
+
+<Accordion title="Food">
+```go
+func (*Player) Food() int
+```
+
+Food returns the current food level of a player. The level returned is guaranteed to always be between 0
+and 20. Every half drumstick is one level.
+
+</Accordion>
+
+<Accordion title="GameMode">
+```go
+func (*Player) GameMode() world.GameMode
+```
+
+GameMode returns the current game mode assigned to the player. If not changed, the game mode returned will
+be the same as that of the world that the player spawns in.
+The game mode may be changed using Player.SetGameMode().
+
+</Accordion>
+
+<Accordion title="Gliding">
+```go
+func (*Player) Gliding() bool
+```
+
+Gliding checks if the player is currently gliding.
+
+</Accordion>
+
+<Accordion title="H">
+```go
+func (*Player) H() *world.EntityHandle
+```
+
+</Accordion>
+
+<Accordion title="Handle">
+```go
+func (*Player) Handle(h Handler)
+```
+
+Handle changes the current Handler of the player. As a result, events called by the player will call
+handlers of the Handler passed.
+Handle sets the player's Handler to NopHandler if nil is passed.
+
+</Accordion>
+
+<Accordion title="Handler">
+```go
+func (*Player) Handler() Handler
+```
+
+Handler returns the Handler of the player.
+
+</Accordion>
+
+<Accordion title="HasCooldown">
+```go
+func (*Player) HasCooldown(item world.Item) bool
+```
+
+HasCooldown returns true if the item passed has an active cooldown, meaning it currently cannot be used again. If the
+world.Item passed is nil, HasCooldown always returns false.
+
+</Accordion>
+
+<Accordion title="Heal">
+```go
+func (*Player) Heal(health float64, source world.HealingSource)
+```
+
+Heal heals the entity for a given amount of health. The source passed
+represents the cause of the healing, for example entity.FoodHealingSource if
+the entity healed by having a full food bar. If the health added to the
+original health exceeds the entity's max health, Heal will not add the full
+amount. If the health passed is negative, Heal will not do anything.
+
+</Accordion>
+
+<Accordion title="Health">
+```go
+func (*Player) Health() float64
+```
+
+Health returns the current health of the player. It will always be lower than Player.MaxHealth().
+
+</Accordion>
+
+<Accordion title="HeldItems">
+```go
+func (*Player) HeldItems() (mainHand, offHand item.Stack)
+```
+
+HeldItems returns the items currently held in the hands of the player. The first item stack returned is the
+one held in the main hand, the second is held in the off-hand.
+If no item was held in a hand, the stack returned has a count of 0. Stack.Empty() may be used to check if
+the hand held anything.
+
+</Accordion>
+
+<Accordion title="HideCoordinates">
+```go
+func (*Player) HideCoordinates()
+```
+
+HideCoordinates disables the vanilla coordinates for the player.
+
+</Accordion>
+
+<Accordion title="HideEntity">
+```go
+func (*Player) HideEntity(e world.Entity)
+```
+
+HideEntity hides a world.Entity from the Player so that it can under no circumstance see it. Hidden entities can be
+made visible again through a call to ShowEntity.
+
+</Accordion>
+
+<Accordion title="HideHudElement">
+```go
+func (*Player) HideHudElement(e hud.Element)
+```
+
+HideHudElement hides a HUD element from the player if it is not already hidden.
+
+</Accordion>
+
+<Accordion title="HudElementHidden">
+```go
+func (*Player) HudElementHidden(e hud.Element) bool
+```
+
+HudElementHidden checks if a HUD element is currently hidden from the player.
+
+</Accordion>
+
+<Accordion title="Hurt">
+```go
+func (*Player) Hurt(dmg float64, src world.DamageSource) (float64, bool)
+```
+
+Hurt hurts the player for a given amount of damage. The source passed
+represents the cause of the damage, for example entity.AttackDamageSource if
+the player is attacked by another entity. If the final damage exceeds the
+health that the player currently has, the player is killed and will have to
+respawn.
+If the damage passed is negative, Hurt will not do anything. Hurt returns the
+final damage dealt to the Player and if the Player was vulnerable to this
+kind of damage.
+
+</Accordion>
+
+<Accordion title="Immobile">
+```go
+func (*Player) Immobile() bool
+```
+
+Immobile checks if the Player is currently immobile.
+
+</Accordion>
+
+<Accordion title="Inventory">
+```go
+func (*Player) Inventory() *inventory.Inventory
+```
+
+Inventory returns the inventory of the player. This inventory holds the items stored in the normal part of
+the inventory and the hotbar. It also includes the item in the main hand as returned by Player.HeldItems().
+
+</Accordion>
+
+<Accordion title="Invisible">
+```go
+func (*Player) Invisible() bool
+```
+
+Invisible checks if the Player is currently invisible.
+
+</Accordion>
+
+<Accordion title="Jump">
+```go
+func (*Player) Jump()
+```
+
+Jump makes the player jump if they are on ground. It exhausts the player by 0.05 food points, an additional 0.15
+is exhausted if the player is sprint jumping.
+
+</Accordion>
+
+<Accordion title="KnockBack">
+```go
+func (*Player) KnockBack(src mgl64.Vec3, force, height float64)
+```
+
+KnockBack knocks the player back with a given force and height. A source is passed which indicates the
+source of the velocity, typically the position of an attacking entity. The source is used to calculate the
+direction which the entity should be knocked back in.
+
+</Accordion>
+
+<Accordion title="Latency">
+```go
+func (*Player) Latency() time.Duration
+```
+
+Latency returns a rolling average of latency between the sending and the receiving end of the connection of
+the player.
+The latency returned is updated continuously and is half the round trip time (RTT).
+If the Player does not have a session associated with it, Latency returns 0.
+
+</Accordion>
+
+<Accordion title="Locale">
+```go
+func (*Player) Locale() language.Tag
+```
+
+Locale returns the language and locale of the Player, as selected in the Player's settings.
+
+</Accordion>
+
+<Accordion title="MaxAirSupply">
+```go
+func (*Player) MaxAirSupply() time.Duration
+```
+
+MaxAirSupply returns the player's maximum air supply.
+
+</Accordion>
+
+<Accordion title="MaxHealth">
+```go
+func (*Player) MaxHealth() float64
+```
+
+MaxHealth returns the maximum amount of health that a player may have. The MaxHealth will always be higher
+than Player.Health().
+
+</Accordion>
+
+<Accordion title="Message">
+```go
+func (*Player) Message(a ...any)
+```
+
+Message sends a formatted message to the player. The message is formatted following the rules of
+fmt.Sprintln, however the newline at the end is not written.
+
+</Accordion>
+
+<Accordion title="Messagef">
+```go
+func (*Player) Messagef(f string, a ...any)
+```
+
+Messagef sends a formatted message using a specific format to the player. The message is formatted
+according to the fmt.Sprintf formatting rules.
+
+</Accordion>
+
+<Accordion title="Messaget">
+```go
+func (*Player) Messaget(t chat.Translation, a ...any)
+```
+
+Messaget sends a translatable message to a player and parameterises it using
+the arguments passed. Messaget panics if an incorrect amount of arguments
+is passed.
+
+</Accordion>
+
+<Accordion title="Move">
+```go
+func (*Player) Move(deltaPos mgl64.Vec3, deltaYaw, deltaPitch float64)
+```
+
+Move moves the player from one position to another in the world, by adding the delta passed to the current
+position of the player.
+Move also rotates the player, adding deltaYaw and deltaPitch to the respective values.
+
+</Accordion>
+
+<Accordion title="MoveItemsToInventory">
+```go
+func (*Player) MoveItemsToInventory()
+```
+
+MoveItemsToInventory moves items kept in 'temporary' slots, such as the
+crafting grid of slots in an enchantment table, to the player's inventory.
+If no space is left for these items, the leftover items are dropped.
+
+</Accordion>
+
+<Accordion title="Name">
+```go
+func (*Player) Name() string
+```
+
+Name returns the username of the player. If the player is controlled by a client, it is the username of
+the client. (Typically the XBOX Live name)
+
+</Accordion>
+
+<Accordion title="NameTag">
+```go
+func (*Player) NameTag() string
+```
+
+NameTag returns the current name tag of the Player as shown in-game. It can be changed using SetNameTag.
+
+</Accordion>
+
+<Accordion title="OnFireDuration">
+```go
+func (*Player) OnFireDuration() time.Duration
+```
+
+OnFireDuration ...
+
+</Accordion>
+
+<Accordion title="OnGround">
+```go
+func (*Player) OnGround() bool
+```
+
+OnGround checks if the player is considered to be on the ground.
+
+</Accordion>
+
+<Accordion title="OpenBlockContainer">
+```go
+func (*Player) OpenBlockContainer(pos cube.Pos, tx *world.Tx)
+```
+
+OpenBlockContainer opens a block container, such as a chest, at the position passed. If no container was
+present at that location, OpenBlockContainer does nothing.
+OpenBlockContainer will also do nothing if the player has no session connected to it.
+
+</Accordion>
+
+<Accordion title="OpenSign">
+```go
+func (*Player) OpenSign(pos cube.Pos, frontSide bool)
+```
+
+OpenSign makes the player open the sign at the cube.Pos passed, with the specific side provided. The client will not
+show the interface if it is not aware of a sign at the position.
+
+</Accordion>
+
+<Accordion title="PickBlock">
+```go
+func (*Player) PickBlock(pos cube.Pos)
+```
+
+PickBlock makes the player pick a block in the world at a position passed. If the player is unable to
+pick the block, the method returns immediately.
+
+</Accordion>
+
+<Accordion title="PlaceBlock">
+```go
+func (*Player) PlaceBlock(pos cube.Pos, b world.Block, ctx *item.UseContext)
+```
+
+PlaceBlock makes the player place the block passed at the position passed, granted it is within the range
+of the player.
+An item.UseContext may be passed to obtain information on if the block placement was successful. (SubCount will
+be incremented). Nil may also be passed for the context parameter.
+
+</Accordion>
+
+<Accordion title="PlaySound">
+```go
+func (*Player) PlaySound(sound world.Sound)
+```
+
+PlaySound plays a world.Sound that only this Player can hear. Unlike World.PlaySound, it is not broadcast
+to players around it.
+
+</Accordion>
+
+<Accordion title="Position">
+```go
+func (*Player) Position() mgl64.Vec3
+```
+
+Position returns the current position of the player. It may be changed as the player moves or is moved
+around the world.
+
+</Accordion>
+
+<Accordion title="PunchAir">
+```go
+func (*Player) PunchAir()
+```
+
+PunchAir makes the player punch the air and plays the sound for attacking with no damage.
+
+</Accordion>
+
+<Accordion title="ReleaseItem">
+```go
+func (*Player) ReleaseItem()
+```
+
+ReleaseItem makes the Player release the item it is currently using. This is only applicable for items that
+implement the item.Releasable interface.
+If the Player is not currently using any item, ReleaseItem returns immediately.
+ReleaseItem either aborts the using of the item or finished it, depending on the time that elapsed since
+the item started being used.
+
+</Accordion>
+
+<Accordion title="RemoveAllDebugShapes">
+```go
+func (*Player) RemoveAllDebugShapes()
+```
+
+RemoveAllDebugShapes removes all rendered debug shapes from the player, as well as any shapes that have
+not yet been rendered.
+
+</Accordion>
+
+<Accordion title="RemoveBossBar">
+```go
+func (*Player) RemoveBossBar()
+```
+
+RemoveBossBar removes any boss bar currently active on the player's screen. If no boss bar is currently
+present, nothing happens.
+
+</Accordion>
+
+<Accordion title="RemoveDebugShape">
+```go
+func (*Player) RemoveDebugShape(shape debug.Shape)
+```
+
+RemoveDebugShape removes a debug shape from the player by its unique identifier.
+
+</Accordion>
+
+<Accordion title="RemoveEffect">
+```go
+func (*Player) RemoveEffect(e effect.Type)
+```
+
+RemoveEffect removes any effect that might currently be active on the Player.
+
+</Accordion>
+
+<Accordion title="RemoveExperience">
+```go
+func (*Player) RemoveExperience(amount int)
+```
+
+RemoveExperience removes experience from the player.
+
+</Accordion>
+
+<Accordion title="RemoveScoreboard">
+```go
+func (*Player) RemoveScoreboard()
+```
+
+RemoveScoreboard removes any scoreboard currently present on the screen of the player. Nothing happens if
+the player has no scoreboard currently active.
+
+</Accordion>
+
+<Accordion title="ResetEnchantmentSeed">
+```go
+func (*Player) ResetEnchantmentSeed()
+```
+
+ResetEnchantmentSeed resets the enchantment seed to a new random value.
+
+</Accordion>
+
+<Accordion title="ResetFallDistance">
+```go
+func (*Player) ResetFallDistance()
+```
+
+ResetFallDistance resets the player's fall distance.
+
+</Accordion>
+
+<Accordion title="Respawn">
+```go
+func (*Player) Respawn() *world.EntityHandle
+```
+
+Respawn spawns the player after it dies, so that its health is replenished,
+and it is spawned in the world again. Nothing will happen if the player does
+not have a session connected to it.
+Calling Respawn may lead to the player being removed from its world and being
+added to a new world. This means that p cannot be assumed to be valid after
+a call to Respawn.
+
+</Accordion>
+
+<Accordion title="Rotation">
+```go
+func (*Player) Rotation() cube.Rotation
+```
+
+Rotation returns the yaw and pitch of the player in degrees. Yaw is horizontal rotation (rotation around the
+vertical axis, 0 when facing forward), pitch is vertical rotation (rotation around the horizontal axis, also 0
+when facing forward).
+
+</Accordion>
+
+<Accordion title="Saturate">
+```go
+func (*Player) Saturate(food int, saturation float64)
+```
+
+Saturate saturates the player's food bar with the amount of food points and saturation points passed. The
+total saturation of the player will never exceed its total food level.
+
+</Accordion>
+
+<Accordion title="Scale">
+```go
+func (*Player) Scale() float64
+```
+
+Scale returns the scale modifier of the Player. The default value for a normal scale is 1. A scale of 0
+will make the Player completely invisible.
+
+</Accordion>
+
+<Accordion title="ScoreTag">
+```go
+func (*Player) ScoreTag() string
+```
+
+ScoreTag returns the current score tag of the player. It can be changed using SetScoreTag and by default is empty.
+
+</Accordion>
+
+<Accordion title="SelfSignedID">
+```go
+func (*Player) SelfSignedID() string
+```
+
+SelfSignedID returns the self-signed ID of the player. If the Player is not connected to a network session, an empty
+string is returned. Otherwise, the self-signed ID the network session sent in the ClientData is returned.
+
+</Accordion>
+
+<Accordion title="SendBossBar">
+```go
+func (*Player) SendBossBar(bar bossbar.BossBar)
+```
+
+SendBossBar sends a boss bar to the player, so that it will be shown indefinitely at the top of the
+player's screen.
+The boss bar may be removed by calling Player.RemoveBossBar().
+
+</Accordion>
+
+<Accordion title="SendCommandOutput">
+```go
+func (*Player) SendCommandOutput(output *cmd.Output)
+```
+
+SendCommandOutput sends the output of a command to the player.
+
+</Accordion>
+
+<Accordion title="SendDialogue">
+```go
+func (*Player) SendDialogue(d dialogue.Dialogue, e world.Entity)
+```
+
+SendDialogue sends an NPC dialogue to the player, using the entity passed as the entity that the dialogue
+is shown for. Dialogues can be sent on top of each other without the other closing, making it possible
+to have non-flashing transitions between menus compared to forms. The player can either press one of the
+buttons or close the dialogue. It is impossible for a dialogue to have any more than 6 buttons.
+
+</Accordion>
+
+<Accordion title="SendForm">
+```go
+func (*Player) SendForm(f form.Form)
+```
+
+SendForm sends a form to the player for the client to fill out. Once the client fills it out, the Submit
+method of the form will be called.
+Note that the client may also close the form instead of filling it out, which will result in the form not
+having its Submit method called at all. Forms should never depend on the player actually filling out the
+form.
+
+</Accordion>
+
+<Accordion title="SendJukeboxPopup">
+```go
+func (*Player) SendJukeboxPopup(a ...any)
+```
+
+SendJukeboxPopup sends a formatted jukebox popup to the player. This popup is shown above the hotbar of the player.
+The popup is close to the position of an action bar message and the text has no background.
+
+</Accordion>
+
+<Accordion title="SendPopup">
+```go
+func (*Player) SendPopup(a ...any)
+```
+
+SendPopup sends a formatted popup to the player. The popup is shown above the hotbar of the player and
+overwrites/is overwritten by the name of the item equipped.
+The popup is formatted following the rules of fmt.Sprintln without a newline at the end.
+
+</Accordion>
+
+<Accordion title="SendScoreboard">
+```go
+func (*Player) SendScoreboard(scoreboard *scoreboard.Scoreboard)
+```
+
+SendScoreboard sends a scoreboard to the player. The scoreboard will be present indefinitely until removed
+by the caller.
+SendScoreboard may be called at any time to change the scoreboard of the player.
+
+</Accordion>
+
+<Accordion title="SendTip">
+```go
+func (*Player) SendTip(a ...any)
+```
+
+SendTip sends a tip to the player. The tip is shown in the middle of the screen of the player.
+The tip is formatted following the rules of fmt.Sprintln without a newline at the end.
+
+</Accordion>
+
+<Accordion title="SendTitle">
+```go
+func (*Player) SendTitle(t title.Title)
+```
+
+SendTitle sends a title to the player. The title may be configured to change the duration it is displayed
+and the text it shows.
+If non-empty, the subtitle is shown in a smaller font below the title. The same counts for the action text
+of the title, which is shown in a font similar to that of a tip/popup.
+
+</Accordion>
+
+<Accordion title="SendToast">
+```go
+func (*Player) SendToast(title, message string)
+```
+
+SendToast sends a toast to the player. This toast is shown at the top of the screen, similar to achievements or pack
+loading.
+
+</Accordion>
+
+<Accordion title="SetAbsorption">
+```go
+func (*Player) SetAbsorption(health float64)
+```
+
+SetAbsorption sets the absorption health of a player. This extra health shows as golden hearts and do not
+actually increase the maximum health. Once the hearts are lost, they will not regenerate.
+Nothing happens if a negative number is passed.
+
+</Accordion>
+
+<Accordion title="SetAirSupply">
+```go
+func (*Player) SetAirSupply(duration time.Duration)
+```
+
+SetAirSupply sets the player's remaining air supply.
+
+</Accordion>
+
+<Accordion title="SetCooldown">
+```go
+func (*Player) SetCooldown(item world.Item, cooldown time.Duration)
+```
+
+SetCooldown sets a cooldown for an item. If the world.Item passed is nil, nothing happens.
+
+</Accordion>
+
+<Accordion title="SetExperienceLevel">
+```go
+func (*Player) SetExperienceLevel(level int)
+```
+
+SetExperienceLevel sets the experience level of the player. The level must have a value between 0 and 2,147,483,647,
+otherwise the method panics.
+
+</Accordion>
+
+<Accordion title="SetExperienceProgress">
+```go
+func (*Player) SetExperienceProgress(progress float64)
+```
+
+SetExperienceProgress sets the experience progress of the player. The progress must have a value between 0.0 and 1.0, otherwise
+the method panics.
+
+</Accordion>
+
+<Accordion title="SetFlightSpeed">
+```go
+func (*Player) SetFlightSpeed(flightSpeed float64)
+```
+
+SetFlightSpeed sets the flight speed of the player. The value passed represents the base speed, which is
+multiplied by 10 to obtain the actual blocks/tick speed that the player will then obtain while flying.
+
+</Accordion>
+
+<Accordion title="SetFood">
+```go
+func (*Player) SetFood(level int)
+```
+
+SetFood sets the food level of a player. The level passed must be in a range of 0-20. If the level passed
+is negative, the food level will be set to 0. If the level exceeds 20, the food level will be set to 20.
+
+</Accordion>
+
+<Accordion title="SetGameMode">
+```go
+func (*Player) SetGameMode(mode world.GameMode)
+```
+
+SetGameMode sets the game mode of a player. The game mode specifies the way that the player can interact
+with the world that it is in.
+
+</Accordion>
+
+<Accordion title="SetHeldItems">
+```go
+func (*Player) SetHeldItems(mainHand, offHand item.Stack)
+```
+
+SetHeldItems sets items to the main hand and the off-hand of the player. The Stacks passed may be empty
+(Stack.Empty()) to clear the held item.
+
+</Accordion>
+
+<Accordion title="SetHeldSlot">
+```go
+func (*Player) SetHeldSlot(to int) error
+```
+
+SetHeldSlot updates the held slot of the player to the slot provided. The
+slot must be between 0 and 8.
+
+</Accordion>
+
+<Accordion title="SetImmobile">
+```go
+func (*Player) SetImmobile()
+```
+
+SetImmobile prevents the player from moving around, but still allows them to look around.
+
+</Accordion>
+
+<Accordion title="SetInvisible">
+```go
+func (*Player) SetInvisible()
+```
+
+SetInvisible sets the player invisible, so that other players will not be able to see it.
+
+</Accordion>
+
+<Accordion title="SetMaxAirSupply">
+```go
+func (*Player) SetMaxAirSupply(duration time.Duration)
+```
+
+SetMaxAirSupply sets the player's maximum air supply.
+
+</Accordion>
+
+<Accordion title="SetMaxHealth">
+```go
+func (*Player) SetMaxHealth(health float64)
+```
+
+SetMaxHealth sets the maximum health of the player. If the current health of the player is higher than the
+new maximum health, the health is set to the new maximum.
+SetMaxHealth panics if the max health passed is 0 or lower.
+
+</Accordion>
+
+<Accordion title="SetMobile">
+```go
+func (*Player) SetMobile()
+```
+
+SetMobile allows the player to freely move around again after being immobile.
+
+</Accordion>
+
+<Accordion title="SetNameTag">
+```go
+func (*Player) SetNameTag(name string)
+```
+
+SetNameTag changes the name tag displayed over the player in-game. Changing the name tag does not change
+the player's name in, for example, the player list or the chat.
+
+</Accordion>
+
+<Accordion title="SetOnFire">
+```go
+func (*Player) SetOnFire(duration time.Duration)
+```
+
+SetOnFire ...
+
+</Accordion>
+
+<Accordion title="SetScale">
+```go
+func (*Player) SetScale(s float64)
+```
+
+SetScale changes the scale modifier of the Player. The default value for a normal scale is 1. A scale of 0
+will make the Player completely invisible.
+
+</Accordion>
+
+<Accordion title="SetScoreTag">
+```go
+func (*Player) SetScoreTag(a ...any)
+```
+
+SetScoreTag changes the score tag displayed over the player in-game. The score tag is displayed under the player's
+name tag.
+
+</Accordion>
+
+<Accordion title="SetSkin">
+```go
+func (*Player) SetSkin(skin skin.Skin)
+```
+
+SetSkin changes the skin of the player. This skin will be visible to other players that the player
+is shown to.
+
+</Accordion>
+
+<Accordion title="SetSpeed">
+```go
+func (*Player) SetSpeed(speed float64)
+```
+
+SetSpeed sets the speed of the player. The value passed is the blocks/tick speed that the player will then
+obtain.
+
+</Accordion>
+
+<Accordion title="SetVelocity">
+```go
+func (*Player) SetVelocity(velocity mgl64.Vec3)
+```
+
+SetVelocity updates the player's velocity. If there is an attached session, this will just send
+the velocity to the player session for the player to update.
+
+</Accordion>
+
+<Accordion title="SetVerticalFlightSpeed">
+```go
+func (*Player) SetVerticalFlightSpeed(flightSpeed float64)
+```
+
+SetVerticalFlightSpeed sets the flight speed of the player on the Y axis. The value passed represents the
+base speed, which is the blocks/tick speed that the player will obtain while flying.
+
+</Accordion>
+
+<Accordion title="SetVisible">
+```go
+func (*Player) SetVisible()
+```
+
+SetVisible sets the player visible again, so that other players can see it again. If the player was already
+visible, or if the player is in spectator mode, nothing happens.
+
+</Accordion>
+
+<Accordion title="ShowCoordinates">
+```go
+func (*Player) ShowCoordinates()
+```
+
+ShowCoordinates enables the vanilla coordinates for the player.
+
+</Accordion>
+
+<Accordion title="ShowEntity">
+```go
+func (*Player) ShowEntity(e world.Entity)
+```
+
+ShowEntity shows a world.Entity previously hidden from the Player using HideEntity. It does nothing if the entity
+wasn't currently hidden.
+
+</Accordion>
+
+<Accordion title="ShowHudElement">
+```go
+func (*Player) ShowHudElement(e hud.Element)
+```
+
+ShowHudElement shows a HUD element to the player if it is not already shown.
+
+</Accordion>
+
+<Accordion title="ShowParticle">
+```go
+func (*Player) ShowParticle(pos mgl64.Vec3, particle world.Particle)
+```
+
+ShowParticle shows a particle that only this Player can see. Unlike World.AddParticle, it is not broadcast
+to players around it.
+
+</Accordion>
+
+<Accordion title="Skin">
+```go
+func (*Player) Skin() skin.Skin
+```
+
+Skin returns the skin that a player is currently using. This skin will be visible to other players
+that the player is shown to.
+If the player was not connected to a network session, a default skin will be set.
+
+</Accordion>
+
+<Accordion title="Sneaking">
+```go
+func (*Player) Sneaking() bool
+```
+
+Sneaking checks if the player is currently sneaking.
+
+</Accordion>
+
+<Accordion title="Speed">
+```go
+func (*Player) Speed() float64
+```
+
+Speed returns the speed of the player, returning a value that indicates the blocks/tick speed. The default
+speed of a player is 0.1.
+
+</Accordion>
+
+<Accordion title="Splash">
+```go
+func (*Player) Splash(*world.Tx, mgl64.Vec3)
+```
+
+Splash is called when a water bottle splashes onto the player.
+
+</Accordion>
+
+<Accordion title="Sprinting">
+```go
+func (*Player) Sprinting() bool
+```
+
+Sprinting checks if the player is currently sprinting.
+
+</Accordion>
+
+<Accordion title="StartBreaking">
+```go
+func (*Player) StartBreaking(pos cube.Pos, face cube.Face)
+```
+
+StartBreaking makes the player start breaking the block at the position passed using the item currently
+held in its main hand.
+If no block is present at the position, or if the block is out of range, StartBreaking will return
+immediately and the block will not be broken. StartBreaking will stop the breaking of any block that the
+player might be breaking before this method is called.
+
+</Accordion>
+
+<Accordion title="StartCrawling">
+```go
+func (*Player) StartCrawling()
+```
+
+StartCrawling makes the player start crawling if it is not currently doing so. If the player is sneaking
+while StartCrawling is called, the sneaking is stopped.
+
+</Accordion>
+
+<Accordion title="StartFlying">
+```go
+func (*Player) StartFlying()
+```
+
+StartFlying makes the player start flying if they aren't already. It requires the player to be in a gamemode which
+allows flying.
+
+</Accordion>
+
+<Accordion title="StartGliding">
+```go
+func (*Player) StartGliding()
+```
+
+StartGliding makes the player start gliding if it is not currently doing so.
+
+</Accordion>
+
+<Accordion title="StartSneaking">
+```go
+func (*Player) StartSneaking()
+```
+
+StartSneaking makes a player start sneaking. If the player is already sneaking, StartSneaking will not do
+anything.
+If the player is sprinting while StartSneaking is called, the sprinting is stopped.
+
+</Accordion>
+
+<Accordion title="StartSprinting">
+```go
+func (*Player) StartSprinting()
+```
+
+StartSprinting makes a player start sprinting, increasing the speed of the player by 30% and making
+particles show up under the feet. The player will only start sprinting if its food level is high enough.
+If the player is sneaking when calling StartSprinting, it is stopped from sneaking.
+
+</Accordion>
+
+<Accordion title="StartSwimming">
+```go
+func (*Player) StartSwimming()
+```
+
+StartSwimming makes the player start swimming if it is not currently doing so. If the player is sneaking
+while StartSwimming is called, the sneaking is stopped.
+
+</Accordion>
+
+<Accordion title="StopCrawling">
+```go
+func (*Player) StopCrawling()
+```
+
+StopCrawling makes the player stop crawling if it is currently doing so.
+
+</Accordion>
+
+<Accordion title="StopFlying">
+```go
+func (*Player) StopFlying()
+```
+
+StopFlying makes the player stop flying if it currently is.
+
+</Accordion>
+
+<Accordion title="StopGliding">
+```go
+func (*Player) StopGliding()
+```
+
+StopGliding makes the player stop gliding if it is currently doing so.
+
+</Accordion>
+
+<Accordion title="StopSneaking">
+```go
+func (*Player) StopSneaking()
+```
+
+StopSneaking makes a player stop sneaking if it currently is. If the player is not sneaking, StopSneaking
+will not do anything.
+
+</Accordion>
+
+<Accordion title="StopSprinting">
+```go
+func (*Player) StopSprinting()
+```
+
+StopSprinting makes a player stop sprinting, setting back the speed of the player to its original value.
+
+</Accordion>
+
+<Accordion title="StopSwimming">
+```go
+func (*Player) StopSwimming()
+```
+
+StopSwimming makes the player stop swimming if it is currently doing so.
+
+</Accordion>
+
+<Accordion title="Swimming">
+```go
+func (*Player) Swimming() bool
+```
+
+Swimming checks if the player is currently swimming.
+
+</Accordion>
+
+<Accordion title="SwingArm">
+```go
+func (*Player) SwingArm()
+```
+
+SwingArm makes the player swing its arm.
+
+</Accordion>
+
+<Accordion title="Teleport">
+```go
+func (*Player) Teleport(pos mgl64.Vec3)
+```
+
+Teleport teleports the player to a target position in the world. Unlike Move, it immediately changes the
+position of the player, rather than showing an animation.
+
+</Accordion>
+
+<Accordion title="Tick">
+```go
+func (*Player) Tick(tx *world.Tx, current int64)
+```
+
+Tick ticks the entity, performing actions such as checking if the player is still breaking a block.
+
+</Accordion>
+
+<Accordion title="TorsoHeight">
+```go
+func (*Player) TorsoHeight() float64
+```
+
+TorsoHeight returns the torso height of the player: 1.52, 1.16 if the player is sneaking, or 0.42 if the player is
+swimming, gliding, or crawling.
+
+</Accordion>
+
+<Accordion title="Transfer">
+```go
+func (*Player) Transfer(address string) error
+```
+
+Transfer transfers the player to a server at the address passed. If the address could not be resolved, an
+error is returned. If it is returned, the player is closed and transferred to the server.
+
+</Accordion>
+
+<Accordion title="TurnLecternPage">
+```go
+func (*Player) TurnLecternPage(pos cube.Pos, page int) error
+```
+
+TurnLecternPage edits the lectern at the cube.Pos passed by turning the page to the page passed. If no lectern is
+present, an error is returned.
+
+</Accordion>
+
+<Accordion title="Tx">
+```go
+func (*Player) Tx() *world.Tx
+```
+
+</Accordion>
+
+<Accordion title="UUID">
+```go
+func (*Player) UUID() uuid.UUID
+```
+
+UUID returns the UUID of the player. This UUID will remain consistent with an XBOX Live account, and will,
+unlike the name of the player, never change.
+It is therefore recommended using the UUID over the name of the player. Additionally, it is recommended to
+use the UUID over the XUID because of its standard format.
+
+</Accordion>
+
+<Accordion title="UpdateDiagnostics">
+```go
+func (*Player) UpdateDiagnostics(d session.Diagnostics)
+```
+
+UpdateDiagnostics updates the diagnostics of the player.
+
+</Accordion>
+
+<Accordion title="UseItem">
+```go
+func (*Player) UseItem()
+```
+
+UseItem uses the item currently held in the player's main hand in the air. Generally, nothing happens,
+unless the held item implements the item.Usable interface, in which case it will be activated.
+This generally happens for items such as throwable items like snowballs.
+
+</Accordion>
+
+<Accordion title="UseItemOnBlock">
+```go
+func (*Player) UseItemOnBlock(pos cube.Pos, face cube.Face, clickPos mgl64.Vec3)
+```
+
+UseItemOnBlock uses the item held in the main hand of the player on a block at the position passed. The
+player is assumed to have clicked the face passed with the relative click position clickPos.
+If the item could not be used successfully, for example when the position is out of range, the method
+returns immediately.
+UseItemOnBlock does nothing if the block at the cube.Pos passed is of the type block.Air.
+
+</Accordion>
+
+<Accordion title="UseItemOnEntity">
+```go
+func (*Player) UseItemOnEntity(e world.Entity) bool
+```
+
+UseItemOnEntity uses the item held in the main hand of the player on the entity passed, provided it is
+within range of the player.
+If the item held in the main hand of the player does nothing when used on an entity, nothing will happen.
+
+</Accordion>
+
+<Accordion title="UsingItem">
+```go
+func (*Player) UsingItem() bool
+```
+
+UsingItem checks if the Player is currently using an item. True is returned if the Player is currently eating an
+item or using it over a longer duration such as when using a bow.
+
+</Accordion>
+
+<Accordion title="Velocity">
+```go
+func (*Player) Velocity() mgl64.Vec3
+```
+
+Velocity returns the players current velocity. If there is an attached session, this will be empty.
+
+</Accordion>
+
+<Accordion title="VerticalFlightSpeed">
+```go
+func (*Player) VerticalFlightSpeed() float64
+```
+
+VerticalFlightSpeed returns the flight speed of the player on the Y axis, with the value representing the
+base speed. The default vertical flight speed of a player is 1.0, which corresponds to 1 block/tick.
+
+</Accordion>
+
+<Accordion title="VisibleDebugShapes">
+```go
+func (*Player) VisibleDebugShapes() []debug.Shape
+```
+
+VisibleDebugShapes returns a slice of all debug shapes that are currently being shown to the player.
+
+</Accordion>
+
+<Accordion title="XUID">
+```go
+func (*Player) XUID() string
+```
+
+XUID returns the XBOX Live user ID of the player. It will remain consistent with the XBOX Live account,
+and will not change in the lifetime of an account.
+The XUID is a number that can be parsed as an int64. No more information on what it represents is
+available, and the UUID should be preferred.
+The XUID returned is empty if the Player is not connected to a network session or if the Player is not
+authenticated with XBOX Live.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Provider
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Provider interface {
+	// Save is called when the player leaves the server. The Data of the player is passed.
+	Save(uuid uuid.UUID, data Config, w *world.World) error
+	// Load is called when the player joins and passes the UUID of the player.
+	// It expects to the player data, and an error that is nil if the player data could be found. If non-nil, the player
+	// will use default values, and you can use an empty Data struct.
+	Load(uuid uuid.UUID, world func(world.Dimension) *world.World) (Config, *world.World, error)
+	// Closer is used on server close when the server calls Provider.Close() and is used to safely close the Provider.
+	io.Closer
+}
+```
+
+
+
+Provider represents a value that may provide data to a Player value. It usually does the reading and
+writing of the player data so that the Player may use it.
+
+
+
+
+
+
+---
+
+### StarvationDamageSource
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type StarvationDamageSource struct{}
+```
+
+
+
+StarvationDamageSource is the world.DamageSource passed when a player is
+dealt damage from an empty food bar.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Fire">
+```go
+func (StarvationDamageSource) Fire() bool
+```
+
+</Accordion>
+
+<Accordion title="IgnoreTotem">
+```go
+func (StarvationDamageSource) IgnoreTotem() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByArmour">
+```go
+func (StarvationDamageSource) ReducedByArmour() bool
+```
+
+</Accordion>
+
+<Accordion title="ReducedByResistance">
+```go
+func (StarvationDamageSource) ReducedByResistance() bool
+```
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+

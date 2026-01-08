@@ -1,0 +1,385 @@
+---
+title: "chat"
+description: ""
+---
+
+import { TypeTable } from 'fumadocs-ui/components/type-table';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+# chat
+
+
+```go
+import "github.com/df-mc/dragonfly/server/player/chat"
+```
+
+
+
+
+
+
+
+## Variables
+
+<Accordions>
+
+<Accordion title="Global">
+```go
+var Global 
+```
+
+Global represents a global chat. Players will write in this chat by default
+when they send any message in the chat.
+
+</Accordion>
+
+<Accordion title="MessageJoin">
+```go
+var MessageJoin 
+```
+
+</Accordion>
+
+<Accordion title="MessageQuit">
+```go
+var MessageQuit 
+```
+
+</Accordion>
+
+<Accordion title="MessageServerDisconnect">
+```go
+var MessageServerDisconnect 
+```
+
+</Accordion>
+
+</Accordions>
+
+
+
+
+
+## Types
+
+
+### Chat
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Chat struct {
+	m		sync.Mutex
+	subscribers	map[uuid.UUID]Subscriber
+}
+```
+
+
+
+Chat represents the in-game chat. Messages may be written to it to send a
+message to all subscribers.
+Methods on Chat may be called from multiple goroutines concurrently. Chat
+implements the io.Writer and io.StringWriter interfaces. fmt.Fprintf and
+fmt.Fprint may be used to write formatted messages to the chat.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Close">
+```go
+func (*Chat) Close() error
+```
+
+Close closes the chat, removing all subscribers from it.
+
+</Accordion>
+
+<Accordion title="Subscribe">
+```go
+func (*Chat) Subscribe(s Subscriber)
+```
+
+Subscribe adds a subscriber to the chat, sending it every message written to
+the chat. In order to remove it again, use Chat.Unsubscribe().
+
+</Accordion>
+
+<Accordion title="Subscribed">
+```go
+func (*Chat) Subscribed(s Subscriber) bool
+```
+
+Subscribed checks if a subscriber is currently subscribed to the chat.
+
+</Accordion>
+
+<Accordion title="Unsubscribe">
+```go
+func (*Chat) Unsubscribe(s Subscriber)
+```
+
+Unsubscribe removes a subscriber from the chat, so that messages written to
+the chat will no longer be sent to it.
+
+</Accordion>
+
+<Accordion title="Write">
+```go
+func (*Chat) Write(p []byte) (n int, err error)
+```
+
+Write writes the byte slice p as a string to the chat. It is equivalent to
+calling Chat.WriteString(string(p)).
+
+</Accordion>
+
+<Accordion title="WriteString">
+```go
+func (*Chat) WriteString(s string) (n int, err error)
+```
+
+WriteString writes a string s to the chat.
+
+</Accordion>
+
+<Accordion title="Writet">
+```go
+func (*Chat) Writet(t Translation, a ...any)
+```
+
+Writet writes a Translation message to a Chat, parameterising the message
+using the arguments passed. Messages are translated according to the locale
+of subscribers if they implement Translator. Subscribers that do not
+implement Translator have the fallback message sent.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### StdoutSubscriber
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type StdoutSubscriber struct{}
+```
+
+
+
+StdoutSubscriber is an implementation of Subscriber that forwards messages
+sent to the chat to the stdout.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Message">
+```go
+func (StdoutSubscriber) Message(a ...any)
+```
+
+Message ...
+
+</Accordion>
+
+<Accordion title="UUID">
+```go
+func (StdoutSubscriber) UUID() uuid.UUID
+```
+
+UUID ...
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### Subscriber
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Subscriber interface {
+	// UUID returns a unique ID for the Subscriber.
+	UUID() uuid.UUID
+	// Message sends a formatted message to the subscriber. The message is
+	// formatted as it would when using fmt.Println.
+	Message(a ...any)
+}
+```
+
+
+
+Subscriber represents an entity that may subscribe to a Chat. In order to do
+so, the Subscriber must implement methods to send messages to it.
+
+
+
+
+
+
+---
+
+### Translation
+
+
+<Callout type="info">Struct</Callout>
+
+
+
+```go
+type Translation struct {
+	str		TranslationString
+	format		string
+	params		int
+	fallback	string
+}
+```
+
+
+
+Translation represents a TranslationString with additional formatting, that
+may be filled out by calling F on it with a list of arguments for the
+translation.
+
+
+
+
+
+#### Methods
+
+<Accordions>
+
+<Accordion title="Enc">
+```go
+func (Translation) Enc(format string) Translation
+```
+
+Enc encapsulates the translation string into the format passed. This format
+should have exactly one formatting identifier, %v, to specify where the
+translation string should go, such as 'translation: %v'.
+Enc accepts colouring formats parsed by text.Colourf.
+
+</Accordion>
+
+<Accordion title="F">
+```go
+func (Translation) F(a ...any) translation
+```
+
+F takes arguments for a translation string passed and returns a filled out
+translation that may be sent to players. The number of arguments passed must
+be exactly equal to the number specified in Translate. If not, F will panic.
+Arguments passed are converted to strings using fmt.Sprint(). Exceptions are
+made for argument values of the type TranslationString, Translation and
+translation, which are resolved based on the Translator's language.
+Translations used as arguments should not require any parameters.
+
+</Accordion>
+
+<Accordion title="Resolve">
+```go
+func (Translation) Resolve(l language.Tag) string
+```
+
+Resolve passes 0 arguments to the translation and resolves the translation
+string for the language passed. It is equal to calling t.F().Resolve(l).
+Resolve panics if the Translation requires at least 1 argument.
+
+</Accordion>
+
+<Accordion title="Zero">
+```go
+func (Translation) Zero() bool
+```
+
+Zero returns false if a Translation was not created using Translate or
+Untranslated.
+
+</Accordion>
+
+</Accordions>
+
+
+---
+
+### TranslationString
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type TranslationString interface {
+	// Resolve finds a suitable translated version for a translation string for
+	// a specific language.Tag.
+	Resolve(l language.Tag) string
+}
+```
+
+
+
+TranslationString is a value that can resolve a translated version of itself
+for a language.Tag passed.
+
+
+
+
+
+
+---
+
+### Translator
+
+
+<Callout type="info">Interface</Callout>
+
+
+
+```go
+type Translator interface {
+	// Messaget sends a Translation message to the Translator, using the
+	// arguments passed to fill out any translation parameters.
+	Messaget(t Translation, a ...any)
+}
+```
+
+
+
+Translator is a Subscriber that is able to translate messages to their own
+locale.
+
+
+
+
+
+
+---
+
+

@@ -1,0 +1,12 @@
+{
+    "pages": [
+        "welcome",
+        "getting-started",
+        "tutorials",
+        "core-concepts",
+        "migration",
+        "community",
+        "source",
+        "reference"
+    ]
+}
