@@ -6,7 +6,7 @@ const withMDX = createMDX();
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
-    optimizePackageImports: ['lucide-react', 'geist']
+    optimizePackageImports: ['lucide-react', 'geist'],
   },
   images: {
     domains: ['github.com', 'discord.com', 'user-images.githubusercontent.com', 'discordapp.com', 'avatars.githubusercontent.com', 'go.dev'],

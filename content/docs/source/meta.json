@@ -2,7 +2,6 @@
   "description": "Dragonfly API documentation",
   "pages": [
     "block",
-    "block-cube",
     "block-cube-trace",
     "block-customblock",
     "block-model",
