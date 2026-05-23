@@ -1,0 +1,50 @@
+---
+title: v0.10.10
+icon: Milestone
+order: 9
+---
+
+> Released 22nd December 2025.
+
+This version includes protocol support for 1.21.130.
+
+## Changes
+
+- Updated Bedrock protocol support through gophertunnel v1.52.0.
+- Refreshed vanilla block state, item, biome, creative item, recipe, and spawn egg data for 1.21.124 and 1.21.130.
+
+### block
+
+- Implemented Copper Age blocks.
+- Explosions now calculate damage before destroying blocks.
+- Fire now ignites TNT instead of burning it.
+
+### cmd
+
+- Added `cmd.ParamDescriber` so command parameter schemas can be described without reflection.
+
+### entity
+
+- Added a count option to `EnchantedHitAction` and `CriticalHitAction`.
+- Destroy dropped items when they explode.
+
+### item
+
+- Implemented the dynamic recipe system with decorated pot support.
+- Implemented the Multishot enchantment.
+- Fixed missing defence points on copper armour.
+- Used full item identifiers when building item textures in packbuilder.
+
+### player
+
+- `HandleItemDamage` now receives damage as a pointer.
+- Knockback enchantment is now applied before damage is passed to player handlers.
+
+### session
+
+- Fixed entity action particles.
+- Added armour equip sounds when armour is equipped from the inventory.
+
+### world
+
+- Fixed time flickering when the time cycle is disabled.

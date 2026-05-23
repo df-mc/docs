@@ -18,7 +18,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                                 </svg>
                                 <span className="text-xs font-medium text-cyan-600 dark:text-cyan-400">
-                                    v0.10.7
+                                    v0.10.13
                                 </span>
                             </div>
                             <div className="flex items-center justify-between px-4 py-1.5 text-xs text-zinc-500 dark:text-zinc-400">

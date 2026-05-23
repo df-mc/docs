@@ -1,0 +1,46 @@
+---
+title: v0.10.13
+icon: Milestone
+order: 12
+---
+
+> Released 7th May 2026.
+
+This version includes protocol support for 1.26.20.
+
+## Breaking Changes
+
+- Dragonfly now requires Go 1.26 or newer.
+
+## Changes
+
+- Updated Bedrock protocol support through gophertunnel v1.56.2.
+- Refreshed vanilla block state, item, biome, creative item, recipe, and spawn egg data for 1.26.20.
+- Added golangci-lint configuration and migrated staticcheck configuration into it.
+- Added `cube.Pos.Within`.
+- Added `String` formatting for `block.Block`.
+- Added per-viewer view layers.
+- Added compression configuration support.
+
+### block
+
+- Implemented Magma blocks.
+- Implemented Cobweb.
+- Implemented Infested Blocks.
+- Fixed drops for lava-removable blocks.
+
+### item
+
+- Implemented Honey Bottle.
+- Fixed Fortune not applying to iron and gold ore drops.
+- Item durability is now reduced on every attack against a living entity.
+
+### session
+
+- Fixed a debug drawer deadlock.
+- Avoided holding the HUD lock while sending HUD packets.
+- Fixed empty nametag metadata handling.
+
+### world
+
+- Safely clones entity slices while iterating nearby entities.

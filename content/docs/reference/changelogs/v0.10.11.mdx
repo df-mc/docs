@@ -1,0 +1,69 @@
+---
+title: v0.10.11
+icon: Milestone
+order: 10
+---
+
+> Released 21st March 2026.
+
+This version includes protocol support for 1.26.0.
+
+## Breaking Changes
+
+- Dragonfly now requires Go 1.24 or newer.
+- The Bedrock chunk version was bumped from 41 to 42.
+
+## Changes
+
+- Updated Bedrock protocol support through gophertunnel v1.54.0.
+- Refreshed vanilla block state, item, biome, creative item, recipe, and spawn egg data for 1.26.0.
+
+### block
+
+- Implemented beds, Smooth Basalt, Slime Block, and Azalea Leaves.
+- Added or fixed bounding boxes for brewing stands, tilled grass, walls, and cocoa beans.
+- Fixed block drops carrying unintended NBT.
+- Fixed skulls decoding hanging state from NBT.
+- Allowed block placement where the only intersection is an XP orb.
+
+### cube
+
+- Added `Pos.Min`, `Pos.Max`, and `Range3D`.
+- Fixed `Range3D` iteration and returned position generation.
+
+### enchantment
+
+- Implemented the Fortune enchantment.
+- Silk Touch mining no longer drops XP.
+
+### entity
+
+- Added the baby interface for entity metadata.
+- Spectators can no longer move XP orbs.
+
+### form
+
+- Added divider and header elements.
+- Added menu label elements.
+
+### player
+
+- Fixed inventory and container state desyncs.
+- Updated dynamic soft enum command handling.
+- Exported the AvailableCommands packet builder.
+
+### session
+
+- Only resends blocks within render distance.
+- Sends chunk publisher updates only when needed, and forces one after world switches.
+- Added entity-attached debug shapes.
+- Added a scale field to text debug shapes.
+- Fixed bossbar colour values.
+
+### world
+
+- Added `SaveInterval` and `ChunkUnloadInterval` configuration.
+- Fixed spawn points in dimensions other than the overworld.
+- Fixed the mcdb iterator skipping non-overworld chunks.
+- Improved chunk palette compaction performance and allocations.
+- Fixed block state decoding.
