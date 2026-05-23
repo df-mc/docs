@@ -42,7 +42,7 @@ export default function Footer() {
                             </li>
                             <li>
                                 <Link
-                                    href="/docs/guides"
+                                    href="/docs/tutorials"
                                     className="text-sm text-zinc-600 hover:text-cyan-600 dark:text-zinc-400 dark:hover:text-cyan-400 transition-colors duration-200"
                                 >
                                     Guides
@@ -50,7 +50,7 @@ export default function Footer() {
                             </li>
                             <li>
                                 <Link
-                                    href="/docs/guides/migration"
+                                    href="/docs/migration"
                                     className="text-sm text-zinc-600 hover:text-cyan-600 dark:text-zinc-400 dark:hover:text-cyan-400 transition-colors duration-200"
                                 >
                                     Migration from PM/Nukkit
@@ -121,7 +121,7 @@ export default function Footer() {
                             </li>
                             <li>
                                 <Link
-                                    href="/docs/resources/what-is-dragonfly"
+                                    href="/docs/welcome"
                                     className="text-sm text-zinc-600 hover:text-cyan-600 dark:text-zinc-400 dark:hover:text-cyan-400 transition-colors duration-200"
                                 >
                                     What is Dragonfly?
