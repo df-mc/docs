@@ -45,6 +45,10 @@ bun run build
 bun run start
 ```
 
+### GitHub Pages
+
+GitHub Pages is deployed by `.github/workflows/pages.yml`. The workflow builds the Next.js app with `GITHUB_PAGES=true`, which enables static export, writes the site to `out/`, and deploys that artifact with GitHub Pages Actions.
+
 ## Project Structure
 
 ```

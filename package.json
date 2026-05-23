@@ -16,7 +16,7 @@
     "clsx": "^2.0.0",
     "foxact": "^0.2.51",
     "framer-motion": "^12.24.10",
-    "fumadocs-core": "16.4.3",
+    "fumadocs-core": "16.4.4",
     "fumadocs-mdx": "^14.2.4",
     "fumadocs-ui": "^16.4.4",
     "geist": "^1.4.2",
@@ -28,6 +28,7 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-use-measure": "^2.1.7",
+    "styled-jsx": "5.1.6",
     "tailwind-merge": "^2.0.0",
     "tailwindcss": "latest",
     "tailwindcss-animate": "^1.0.7"

@@ -1,6 +1,7 @@
 node_modules/
-.github/
 .next/
+out/
 .source/
 .claude/
 .vercel
+tsconfig.tsbuildinfo
